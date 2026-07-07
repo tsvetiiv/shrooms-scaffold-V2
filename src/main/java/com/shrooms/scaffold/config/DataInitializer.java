@@ -1,10 +1,12 @@
 package com.shrooms.scaffold.config;
 
+import com.shrooms.scaffold.model.entity.ourWork.OurWorkProject;
 import com.shrooms.scaffold.model.entity.scaffold.MaterialType;
 import com.shrooms.scaffold.model.entity.scaffold.Scaffold;
 import com.shrooms.scaffold.model.entity.scaffold.ScaffoldCategory;
 import com.shrooms.scaffold.model.entity.user.RoleType;
 import com.shrooms.scaffold.model.entity.user.User;
+import com.shrooms.scaffold.repository.ourWork.OurWorkProjectRepository;
 import com.shrooms.scaffold.repository.scaffold.ScaffoldRepository;
 import com.shrooms.scaffold.repository.user.UserRepository;
 import org.springframework.boot.CommandLineRunner;
@@ -18,23 +20,27 @@ public class DataInitializer implements CommandLineRunner {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final ScaffoldRepository scaffoldRepository;
+    private final OurWorkProjectRepository ourWorkProjectRepository;
 
     public DataInitializer(UserRepository userRepository,
                            PasswordEncoder passwordEncoder,
-                           ScaffoldRepository scaffoldRepository) {
+                           ScaffoldRepository scaffoldRepository, OurWorkProjectRepository ourWorkProjectRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.scaffoldRepository = scaffoldRepository;
+        this.ourWorkProjectRepository = ourWorkProjectRepository;
     }
 
     @Override
     public void run(String... args) {
         seedAdmin();
+        seedOwner();
         seedScaffolds();
+        seedOurWorkProjects();
     }
 
     private void seedAdmin() {
-        if (userRepository.count() == 0) {
+        if (userRepository.findByUsername("admin").isEmpty()) {
             User admin = User.builder()
                     .username("admin")
                     .firstName("Admin")
@@ -43,9 +49,28 @@ public class DataInitializer implements CommandLineRunner {
                     .password(passwordEncoder.encode("shrooms123"))
                     .roleType(RoleType.ADMIN)
                     .profilePicture("/images/skull-logo.png")
+                    .active(true)
+                    .blocked(false)
                     .build();
 
             userRepository.save(admin);
+        }
+    }
+
+    private void seedOwner() {
+        if (userRepository.findByUsername("owner").isEmpty()) {
+            User owner = User.builder()
+                    .username("owner")
+                    .firstName("Owner")
+                    .lastName("Shrooms")
+                    .email("owner.shrooms@gmail.com")
+                    .password(passwordEncoder.encode("owner123"))
+                    .roleType(RoleType.OWNER)
+                    .profilePicture("/images/skull-logo.png")
+                    .active(true)
+                    .blocked(false)
+                    .build();
+            userRepository.save(owner);
         }
     }
 
@@ -133,6 +158,68 @@ public class DataInitializer implements CommandLineRunner {
             scaffoldRepository.save(facadeAluminiumScaffold);
             scaffoldRepository.save(roomScaffold);
 
+        }
+    }
+
+    private void seedOurWorkProjects() {
+        if (ourWorkProjectRepository.count() == 0) {
+            ourWorkProjectRepository.save(OurWorkProject.builder()
+                    .title("Facade Renovation")
+                    .imageUrl("/images/project3.png")
+                    .description("Scaffold system prepared for safe exterior renovation work.")
+                    .visible(true)
+                    .build());
+
+            ourWorkProjectRepository.save(OurWorkProject.builder()
+                    .title("Commercial Building Scaffold")
+                    .imageUrl("/images/project4.JPG")
+                    .description("Large scaffold structure for professional building maintenance.")
+                    .visible(true)
+                    .build());
+
+            ourWorkProjectRepository.save(OurWorkProject.builder()
+                    .title("Custom Access Scaffold")
+                    .imageUrl("/images/project9.JPG")
+                    .description("Specialized scaffold construction featuring elevated access\n" +
+                            "platforms and protective screening for complex urban projects.")
+                    .visible(true)
+                    .build());
+
+            ourWorkProjectRepository.save(OurWorkProject.builder()
+                    .title("Historic Building Restoration")
+                    .imageUrl("/images/project1.png")
+                    .description("A specialized scaffold solution providing secure\n" +
+                            "vertical access for restoration and maintenance work\n" +
+                            "on historic and architectural landmarks.")
+                    .visible(true)
+                    .build());
+
+            ourWorkProjectRepository.save(OurWorkProject.builder()
+                    .title("Custom Residential Access Solution")
+                    .imageUrl("/images/project7.JPG")
+                    .description("Specialized scaffold system installed for facade\n" +
+                            "and roof maintenance, ensuring safe and efficient\n" +
+                            "access to elevated work areas.")
+                    .visible(true)
+                    .build());
+
+            ourWorkProjectRepository.save(OurWorkProject.builder()
+                    .title("Historic Windmill Scaffolding")
+                    .imageUrl("/images/custom-windmill.JPG")
+                    .description("Specialized scaffolding erected for the restoration of a traditional windmill. The structure provides\n" +
+                            "safe access to all elevations while supporting conservation and maintenance activities on this historic\n" +
+                            "landmark.")
+                    .visible(true)
+                    .build());
+
+            ourWorkProjectRepository.save(OurWorkProject.builder()
+                    .title("Roof Access Scaffolding System")
+                    .imageUrl("/images/roofCustom.JPG")
+                    .description("Temporary access scaffolding installed for inspection, maintenance, and refurbishment works. The system\n" +
+                            "provides a safe and stable working platform while ensuring minimal impact on the building and its\n" +
+                            "surroundings.")
+                    .visible(true)
+                    .build());
         }
     }
 }

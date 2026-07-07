@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Shrooms Scaffold</title>
@@ -18,7 +19,7 @@
 <section class="services">
 
     <div class="service-card"
-         th:if="${session.user == null or session.user.roleType.name() == 'USER'}">
+         sec:authorize="!hasAnyRole('ADMIN', 'OWNER')">
         <img src="/images/rentCard.png" alt="Scaffold rental">
         <div class="service-content">
             <h2>Rent Scaffold</h2>
@@ -28,7 +29,7 @@
     </div>
 
     <div class="service-card"
-         th:if="${session.user == null or session.user.roleType.name() == 'USER'}">
+         sec:authorize="!hasAnyRole('ADMIN', 'OWNER')">
         <img src="/images/purchaseCard.png" alt="Scaffold purchase">
         <div class="service-content">
             <h2>Purchase Scaffold</h2>
@@ -38,7 +39,7 @@
     </div>
 
     <div class="service-card"
-         th:if="${session.user == null or session.user.roleType.name() == 'USER'}">
+         sec:authorize="!hasAnyRole('ADMIN', 'OWNER')">
         <img src="/images/custom-windmill.JPG" alt="Custom scaffold request">
         <div class="service-content">
             <h2>Custom Scaffold</h2>
@@ -48,7 +49,7 @@
     </div>
 
     <div class="service-card admin-service-card"
-         th:if="${session.user != null and session.user.roleType.name() == 'ADMIN'}">
+         sec:authorize="hasAnyRole('ADMIN', 'OWNER')">
         <img src="/images/facade.png" alt="Admin order management">
         <div class="service-content">
             <h2>Manage Orders</h2>
@@ -58,7 +59,7 @@
     </div>
 
     <div class="service-card admin-service-card"
-         th:if="${session.user != null and session.user.roleType.name() == 'ADMIN'}">
+         sec:authorize="hasAnyRole('ADMIN', 'OWNER')">
         <img src="/images/custom-windmill.JPG" alt="Admin custom request management">
         <div class="service-content">
             <h2>Custom Requests</h2>
@@ -68,12 +69,42 @@
     </div>
 
     <div class="service-card admin-service-card"
-         th:if="${session.user != null and session.user.roleType.name() == 'ADMIN'}">
-        <img src="/images/aluminiumFacade.png" alt="Admin scaffold management">
+         sec:authorize="hasRole('ADMIN')">
+        <img src="/images/aluminiumFacade.png" alt="Our work catalog">
         <div class="service-content">
-            <h2>Manage Scaffolds</h2>
-            <p>Edit scaffold information, prices, images and availability.</p>
-            <a th:href="@{/admin/scaffolds}" class="service-btn">Open Catalog</a>
+            <h2>Our Work Catalog</h2>
+            <p>Review completed scaffold projects in the gallery.</p>
+            <a th:href="@{/our-work}" class="service-btn">Open Catalog</a>
+        </div>
+    </div>
+
+    <div class="service-card admin-service-card"
+         sec:authorize="hasRole('OWNER')">
+        <img src="/images/aluminiumFacade.png" alt="Our work catalog management">
+        <div class="service-content">
+            <h2>Our Work Catalog</h2>
+            <p>Create, edit and manage gallery projects.</p>
+            <a th:href="@{/owner/our-work}" class="service-btn">Open Catalog</a>
+        </div>
+    </div>
+
+    <div class="service-card admin-service-card"
+         sec:authorize="hasRole('OWNER')">
+        <img src="/images/accountManager.png" alt="Owner user management">
+        <div class="service-content">
+            <h2>Manage Users</h2>
+            <p>Review user accounts, roles and account status.</p>
+            <a th:href="@{/owner/users}" class="service-btn">Open Users</a>
+        </div>
+    </div>
+
+    <div class="service-card admin-service-card"
+         sec:authorize="hasRole('OWNER')">
+        <img src="/images/account-closure-card.png" alt="Account closure requests">
+        <div class="service-content">
+            <h2>Account Closures</h2>
+            <p>Review account closure requests that require owner approval.</p>
+            <a th:href="@{/owner/account-closures}" class="service-btn">Open Requests</a>
         </div>
     </div>
 
