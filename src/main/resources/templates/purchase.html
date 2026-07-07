@@ -40,14 +40,21 @@
                          th:text="'€' + ${scaffold.priceForSale}">
                     </div>
 
+                    <button class="purchase-btn disabled-btn"
+                            th:if="${accountClosurePending}"
+                            type="button"
+                            disabled>
+                        Account closure pending
+                    </button>
+
                     <a class="purchase-btn"
                        th:href="@{/scaffolds/purchase/{id}(id=${scaffold.id})}"
-                       th:if="${scaffold.available}">
+                       th:if="${!accountClosurePending && scaffold.available}">
                         Purchase This Scaffold
                     </a>
 
                     <span class="purchase-btn disabled-btn"
-                          th:if="${!scaffold.available}">
+                          th:if="${!accountClosurePending && !scaffold.available}">
                             Unavailable
                     </span>
                 </div>

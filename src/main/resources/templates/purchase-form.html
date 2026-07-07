@@ -83,11 +83,23 @@
                    th:if="${orderError}"
                    th:text="${orderError}">
             </small>
+            <p class="error-message"
+               th:if="${accountClosurePending}">
+                You cannot place new orders because you requested account closure.
+            </p>
             <p class="payment-note">
                 Payment is made on delivery after your order is approved.
             </p>
-            <button type="submit" class="submit-btn">
+            <button th:if="${!accountClosurePending}"
+                    type="submit"
+                    class="submit-btn">
                 Submit Purchase Order
+            </button>
+            <button th:if="${accountClosurePending}"
+                    type="button"
+                    class="submit-btn disabled-btn"
+                    disabled>
+                Account closure pending
             </button>
         </form>
 

@@ -2,16 +2,17 @@ package com.shrooms.scaffold.web;
 
 import com.shrooms.scaffold.model.dto.user.UserDto;
 import com.shrooms.scaffold.model.dto.user.UserEditProfileDto;
+import com.shrooms.scaffold.service.user.UserDetailsData;
 import com.shrooms.scaffold.service.user.UserService;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/users")
@@ -24,9 +25,9 @@ public class ProfileController {
     }
 
     @GetMapping("/profile")
-    public ModelAndView getProfilePage(HttpSession session) {
+    public ModelAndView getProfilePage(@AuthenticationPrincipal UserDetailsData userDetails) {
 
-        UserDto user = (UserDto) session.getAttribute("user");
+        UserDto user = userService.getUserById(userDetails.getId());
 
         ModelAndView modelAndView = new ModelAndView("profile");
         modelAndView.addObject("user", user);
@@ -35,9 +36,9 @@ public class ProfileController {
     }
 
     @GetMapping("/profile/edit")
-    public ModelAndView getEditProfilePage(HttpSession session) {
+    public ModelAndView getEditProfilePage(@AuthenticationPrincipal UserDetailsData userDetails) {
 
-        UserDto user = (UserDto) session.getAttribute("user");
+        UserDto user = userService.getUserById(userDetails.getId());
 
         UserEditProfileDto userEditProfileDto = UserEditProfileDto.builder()
                 .firstName(user.getFirstName())
@@ -49,6 +50,7 @@ public class ProfileController {
         ModelAndView modelAndView = new ModelAndView("edit-profile");
         modelAndView.addObject("user", user);
         modelAndView.addObject("userEditProfileDto", userEditProfileDto);
+        addAccountClosureAttributes(modelAndView, userDetails.getId());
 
         return modelAndView;
     }
@@ -56,23 +58,45 @@ public class ProfileController {
     @PutMapping("/profile/edit")
     public ModelAndView editProfile(@Valid @ModelAttribute("userEditProfileDto") UserEditProfileDto userEditProfileDto,
                                     BindingResult bindingResult,
-                                    HttpSession session) {
+                                    @AuthenticationPrincipal UserDetailsData userDetails) {
 
         if (bindingResult.hasErrors()) {
-            UserDto currentUser = (UserDto) session.getAttribute("user");
+            UserDto currentUser = userService.getUserById(userDetails.getId());
 
             ModelAndView modelAndView = new ModelAndView("edit-profile");
             modelAndView.addObject("user", currentUser);
             modelAndView.addObject("userEditProfileDto", userEditProfileDto);
+            addAccountClosureAttributes(modelAndView, userDetails.getId());
 
             return modelAndView;
         }
 
-        UserDto currentUser = (UserDto) session.getAttribute("user");
-        UserDto updatedUser = userService.editProfile(currentUser.getId(), userEditProfileDto);
-
-        session.setAttribute("user", updatedUser);
+        userService.editProfile(userDetails.getId(), userEditProfileDto);
 
         return new ModelAndView("redirect:/users/profile");
+    }
+
+    @PostMapping("/profile/close-account")
+    public ModelAndView requestAccountClosure(@AuthenticationPrincipal UserDetailsData userDetails,
+                                              RedirectAttributes redirectAttributes) {
+        try {
+            userService.requestAccountClosure(userDetails.getId());
+            userDetails.setActive(false);
+
+            redirectAttributes.addFlashAttribute("accountClosureMessage",
+                    "Your account closure request is waiting for owner approval.");
+        } catch (RuntimeException exception) {
+            redirectAttributes.addFlashAttribute("accountClosureError", exception.getMessage());
+        }
+
+        return new ModelAndView("redirect:/users/profile/edit");
+    }
+
+    private void addAccountClosureAttributes(ModelAndView modelAndView, UUID userId) {
+        boolean accountClosurePending = userService.hasPendingAccountClosureRequest(userId);
+        boolean hasUnfinishedOrders = userService.hasUnfinishedOrders(userId);
+
+        modelAndView.addObject("accountClosurePending", accountClosurePending);
+        modelAndView.addObject("hasUnfinishedOrders", hasUnfinishedOrders);
     }
 }

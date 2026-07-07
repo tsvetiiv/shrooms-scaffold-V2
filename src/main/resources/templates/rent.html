@@ -40,14 +40,22 @@
                          th:text="'€' + ${scaffold.priceForRent} + ' / week'">
                     </div>
 
-                    <a th:if="${scaffold.available}"
+                    <button th:if="${accountClosurePending}"
+                            type="button"
+                            class="rent-btn disabled-btn"
+                            disabled>
+                        Account closure pending
+                    </button>
+
+                    <a th:if="${!accountClosurePending && scaffold.available}"
                        th:href="@{/scaffolds/rent/{id}(id=${scaffold.id})}"
                        class="rent-btn">
                         Rent This Scaffold
                     </a>
-                    <span th:if="${!scaffold.available}"
+
+                    <span th:if="${!accountClosurePending && !scaffold.available}"
                           class="rent-btn disabled-btn">
-                            Unavailable
+                        Unavailable
                     </span>
                 </div>
 

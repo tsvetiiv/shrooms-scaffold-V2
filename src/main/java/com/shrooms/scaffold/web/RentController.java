@@ -4,8 +4,10 @@ import com.shrooms.scaffold.model.dto.order.RentOrderRequest;
 import com.shrooms.scaffold.model.dto.user.UserDto;
 import com.shrooms.scaffold.service.order.OrderService;
 import com.shrooms.scaffold.service.scaffold.ScaffoldService;
-import jakarta.servlet.http.HttpSession;
+import com.shrooms.scaffold.service.user.UserDetailsData;
+import com.shrooms.scaffold.service.user.UserService;
 import jakarta.validation.Valid;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,27 +25,32 @@ public class RentController {
 
     private final OrderService orderService;
     private final ScaffoldService scaffoldService;
+    private final UserService userService;
 
-    public RentController(OrderService orderService, ScaffoldService scaffoldService) {
+    public RentController(OrderService orderService, ScaffoldService scaffoldService, UserService userService) {
         this.orderService = orderService;
         this.scaffoldService = scaffoldService;
+        this.userService = userService;
     }
 
     @GetMapping
-    public ModelAndView getRentPage() {
+    public ModelAndView getRentPage(@AuthenticationPrincipal UserDetailsData userDetails) {
 
         ModelAndView modelAndView = new ModelAndView("rent");
         modelAndView.addObject("scaffolds", scaffoldService.findAll());
+        addAccountClosurePending(modelAndView, userDetails);
 
         return modelAndView;
     }
 
     @GetMapping("/{id}")
-    public ModelAndView getRentForm(@PathVariable UUID id) {
+    public ModelAndView getRentForm(@PathVariable UUID id,
+                                    @AuthenticationPrincipal UserDetailsData userDetails) {
 
         ModelAndView modelAndView = new ModelAndView("rent-form");
         modelAndView.addObject("scaffold", scaffoldService.findById(id));
         modelAndView.addObject("rentOrderRequest", new RentOrderRequest());
+        addAccountClosurePending(modelAndView, userDetails);
 
         return modelAndView;
     }
@@ -52,16 +59,17 @@ public class RentController {
     public ModelAndView rentScaffold(@PathVariable UUID id,
                                      @Valid @ModelAttribute("rentOrderRequest") RentOrderRequest rentOrderRequest,
                                      BindingResult bindingResult,
-                                     HttpSession session) {
+                                     @AuthenticationPrincipal UserDetailsData userDetails) {
 
         if (bindingResult.hasErrors()) {
             ModelAndView modelAndView = new ModelAndView("rent-form");
             modelAndView.addObject("scaffold", scaffoldService.findById(id));
             modelAndView.addObject("rentOrderRequest", rentOrderRequest);
+            addAccountClosurePending(modelAndView, userDetails);
             return modelAndView;
         }
 
-        UserDto user = (UserDto) session.getAttribute("user");
+        UserDto user = userService.getUserById(userDetails.getId());
 
         rentOrderRequest.setScaffoldId(id);
         try {
@@ -72,7 +80,13 @@ public class RentController {
             modelAndView.addObject("scaffold", scaffoldService.findById(id));
             modelAndView.addObject("rentOrderRequest", rentOrderRequest);
             modelAndView.addObject("orderError", exception.getMessage());
+            addAccountClosurePending(modelAndView, userDetails);
             return modelAndView;
         }
+    }
+
+    private void addAccountClosurePending(ModelAndView modelAndView, UserDetailsData userDetails) {
+        modelAndView.addObject("accountClosurePending",
+                userDetails != null && userService.hasPendingAccountClosureRequest(userDetails.getId()));
     }
 }

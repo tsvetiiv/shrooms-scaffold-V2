@@ -25,6 +25,16 @@
             designed for safe and efficient work on your site.
         </p>
 
+        <p class="error-message"
+           th:if="${accountClosurePending}">
+            You cannot place new custom orders because you requested account closure.
+        </p>
+
+        <p class="error-message"
+           th:if="${customOrderError}"
+           th:text="${customOrderError}">
+        </p>
+
         <form th:action="@{/custom-order}" th:method="post" th:object="${customOrderRequest}">
 
             <div class="form-group">
@@ -151,7 +161,16 @@
                 Payment is made on delivery after your request is approved and priced.
             </p>
 
-            <button type="submit">Submit Request</button>
+            <button th:if="${!accountClosurePending}"
+                    type="submit">
+                Submit Request
+            </button>
+
+            <button th:if="${accountClosurePending}"
+                    type="button"
+                    disabled>
+                Account closure pending
+            </button>
 
         </form>
 

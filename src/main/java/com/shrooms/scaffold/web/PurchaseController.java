@@ -4,8 +4,10 @@ import com.shrooms.scaffold.model.dto.order.PurchaseOrderRequest;
 import com.shrooms.scaffold.model.dto.user.UserDto;
 import com.shrooms.scaffold.service.order.OrderService;
 import com.shrooms.scaffold.service.scaffold.ScaffoldService;
-import jakarta.servlet.http.HttpSession;
+import com.shrooms.scaffold.service.user.UserDetailsData;
+import com.shrooms.scaffold.service.user.UserService;
 import jakarta.validation.Valid;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,26 +25,31 @@ public class PurchaseController {
 
     private final OrderService orderService;
     private final ScaffoldService scaffoldService;
+    private final UserService userService;
 
-    public PurchaseController(OrderService orderService, ScaffoldService scaffoldService) {
+    public PurchaseController(OrderService orderService, ScaffoldService scaffoldService, UserService userService) {
         this.orderService = orderService;
         this.scaffoldService = scaffoldService;
+        this.userService = userService;
     }
 
     @GetMapping
-    public ModelAndView getPurchasePage() {
+    public ModelAndView getPurchasePage(@AuthenticationPrincipal UserDetailsData userDetails) {
 
         ModelAndView modelAndView = new ModelAndView("purchase");
         modelAndView.addObject("scaffolds", scaffoldService.findAll());
+        addAccountClosurePending(modelAndView, userDetails);
 
         return modelAndView;
     }
 
     @GetMapping("/{id}")
-    public ModelAndView getPurchaseForm(@PathVariable UUID id) {
+    public ModelAndView getPurchaseForm(@PathVariable UUID id,
+                                        @AuthenticationPrincipal UserDetailsData userDetails) {
         ModelAndView modelAndView = new ModelAndView("purchase-form");
         modelAndView.addObject("scaffold", scaffoldService.findById(id));
         modelAndView.addObject("purchaseOrderRequest", new PurchaseOrderRequest());
+        addAccountClosurePending(modelAndView, userDetails);
 
         return modelAndView;
     }
@@ -51,15 +58,16 @@ public class PurchaseController {
     public ModelAndView purchaseScaffold(@PathVariable UUID id,
                                          @Valid @ModelAttribute("purchaseOrderRequest") PurchaseOrderRequest purchaseOrderRequest,
                                          BindingResult bindingResult,
-                                         HttpSession session) {
+                                         @AuthenticationPrincipal UserDetailsData userDetails) {
         if (bindingResult.hasErrors()) {
             ModelAndView modelAndView = new ModelAndView("purchase-form");
             modelAndView.addObject("scaffold", scaffoldService.findById(id));
             modelAndView.addObject("purchaseOrderRequest", purchaseOrderRequest);
+            addAccountClosurePending(modelAndView, userDetails);
             return modelAndView;
         }
 
-        UserDto user = (UserDto) session.getAttribute("user");
+        UserDto user = userService.getUserById(userDetails.getId());
 
         purchaseOrderRequest.setScaffoldId(id);
 
@@ -72,7 +80,13 @@ public class PurchaseController {
             modelAndView.addObject("scaffold", scaffoldService.findById(id));
             modelAndView.addObject("purchaseOrderRequest", purchaseOrderRequest);
             modelAndView.addObject("orderError", exception.getMessage());
+            addAccountClosurePending(modelAndView, userDetails);
             return modelAndView;
         }
+    }
+
+    private void addAccountClosurePending(ModelAndView modelAndView, UserDetailsData userDetails) {
+        modelAndView.addObject("accountClosurePending",
+                userDetails != null && userService.hasPendingAccountClosureRequest(userDetails.getId()));
     }
 }
