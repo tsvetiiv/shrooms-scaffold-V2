@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Edit Profile | Shrooms</title>
@@ -58,12 +59,37 @@
                 </p>
             </div>
 
-            <button type="submit" class="save-profile-btn">Save Changes</button>
+            <button type="submit"
+                    class="save-profile-btn"
+                    th:disabled="${accountClosurePending}">
+                Save Changes
+            </button>
 
         </form>
         <a th:href="@{/users/profile}" class="back-link">
             Back to Profile
         </a>
+
+        <div class="danger-zone" sec:authorize="hasRole('USER')">
+            <h2>Account Closure</h2>
+            <p class="closure-message"
+               th:if="${accountClosureMessage}"
+               th:text="${accountClosureMessage}">
+            </p>
+            <p class="closure-error"
+               th:if="${accountClosureError}"
+               th:text="${accountClosureError}">
+            </p>
+            <form th:action="@{/users/profile/close-account}" method="post">
+                <button type="submit"
+                        class="close-account-btn"
+                        th:disabled="${accountClosurePending}"
+                        onclick="return confirm('Are you sure you want to request account closure? This action will require owner approval.');"
+                        th:text="${accountClosurePending} ? 'Pending approval for close account' : 'Close Account'">
+                    Close Account
+                </button>
+            </form>
+        </div>
 
     </section>
 </main>

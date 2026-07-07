@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Account Closure Requests | Shrooms</title>
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/owner.css">
+</head>
+<body>
+<div th:insert="~{fragments/common/header :: header}"></div>
+
+<main class="owner-page">
+    <section class="owner-panel">
+        <div class="owner-page-heading">
+            <h1>Account Closure Requests</h1>
+            <a th:href="@{/owner}" class="owner-back-link">Owner Dashboard</a>
+        </div>
+        <div class="red-line"></div>
+
+        <div class="flash-message success"
+             th:if="${successMessage}"
+             th:text="${successMessage}">
+        </div>
+
+        <div class="flash-message warning"
+             th:if="${warningMessage}"
+             th:text="${warningMessage}">
+        </div>
+
+        <div class="owner-empty-panel"
+             th:if="${#lists.isEmpty(accountClosureRequests)}">
+            <h2>No account closure requests yet</h2>
+        </div>
+        <div class="table-responsive"
+             th:if="${!#lists.isEmpty(accountClosureRequests)}">
+            <table class="owner-table">
+                <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Requested On</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="request : ${accountClosureRequests}">
+                    <td th:text="${request.username}">username</td>
+                    <td th:text="${request.firstName + ' ' + request.lastName}">Full Name</td>
+                    <td th:text="${request.email}">email@example.com</td>
+                    <td th:text="${#temporals.format(request.requestedOn, 'dd MMM yyyy HH:mm')}">
+                        02 Jul 2026 12:30
+                    </td>
+                    <td>
+                <span class="status-pill role-pill"
+                      th:text="${request.status}">
+                    PENDING
+                </span>
+                    </td>
+                    <td class="actions-cell">
+
+                        <form th:action="@{/owner/account-closures/{id}/approve(id=${request.id})}"
+                              method="post"
+                              onsubmit="return confirm('Are you sure you want to approve this account closure request?');">
+                            <button type="submit" class="owner-action-btn">
+                                Approve
+                            </button>
+                        </form>
+
+                        <form th:action="@{/owner/account-closures/{id}/reject(id=${request.id})}"
+                              method="post"
+                              onsubmit="return confirm('Are you sure you want to reject this account closure request?');">
+                            <button type="submit" class="owner-action-btn danger">
+                                Reject
+                            </button>
+                        </form>
+
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+
+<div th:insert="~{fragments/common/footer :: footer}"></div>
+</body>
+</html>

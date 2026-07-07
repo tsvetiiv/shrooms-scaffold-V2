@@ -141,3 +141,59 @@ button:hover {
     margin: 6px 0 0;
     text-align: left;
 }
+
+.danger-zone {
+    margin-top: 28px;
+    padding-top: 24px;
+
+    border-top: 1px solid rgba(214, 31, 31, 0.35);
+}
+
+.danger-zone h2 {
+    margin: 0 0 12px;
+
+    color: #ffffff;
+    font-size: 20px;
+}
+
+.close-account-btn {
+    margin-top: 0;
+
+    background: rgba(214, 31, 31, 0.82);
+}
+
+.close-account-btn:hover {
+    background: #b81818;
+}
+
+.close-account-btn:disabled,
+.save-profile-btn:disabled {
+    background: rgba(214, 31, 31, 0.42);
+    cursor: not-allowed;
+}
+
+.close-account-btn:disabled:hover,
+.save-profile-btn:disabled:hover {
+    background: rgba(214, 31, 31, 0.42);
+}
+
+.danger-zone form {
+    margin: 0;
+}
+
+.closure-message,
+.closure-error {
+    margin: 0 0 12px;
+
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.4;
+}
+
+.closure-message {
+    color: #d6d6d6;
+}
+
+.closure-error {
+    color: #ff7777;
+}
