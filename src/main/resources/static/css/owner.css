@@ -1,0 +1,339 @@
+body {
+    margin: 0;
+    min-height: 100vh;
+
+    background: #050505;
+    color: #f5f5f5;
+    font-family: Arial, sans-serif;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.owner-page {
+    flex: 1;
+    padding: 60px 40px;
+
+    background: linear-gradient(rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0.92)),
+    url('/images/facade.png') center/cover no-repeat;
+}
+
+.owner-panel {
+    max-width: 1250px;
+    margin: 0 auto;
+    padding: 40px 36px;
+
+    background: rgba(8, 10, 10, 0.92);
+    border: 1px solid rgba(214, 31, 31, 0.35);
+    border-radius: 10px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65);
+}
+
+.owner-page-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+}
+
+.owner-page-heading h1 {
+    margin: 0;
+
+    color: #ffffff;
+    font-size: 38px;
+    text-transform: uppercase;
+}
+
+.owner-back-link {
+    padding: 10px 16px;
+
+    background: #d61f1f;
+    border-radius: 4px;
+
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 700;
+
+    transition: background 0.2s ease;
+}
+
+.owner-back-link:hover {
+    background: #b81818;
+}
+
+.red-line {
+    width: 90px;
+    height: 4px;
+    margin: 18px 0 34px;
+
+    background: #d61f1f;
+}
+
+.owner-actions {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+}
+
+.owner-card {
+    min-height: 170px;
+    padding: 26px;
+
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid rgba(214, 31, 31, 0.35);
+    border-radius: 8px;
+
+    color: #ffffff;
+    text-decoration: none;
+
+    display: flex;
+    align-items: stretch;
+
+    transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.owner-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(214, 31, 31, 0.8);
+    background: rgba(214, 31, 31, 0.12);
+}
+
+.owner-card-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.owner-card h2,
+.owner-empty-panel h2 {
+    margin: 0 0 12px;
+
+    color: #ffffff;
+    font-size: 23px;
+}
+
+.owner-card p,
+.owner-empty-panel p {
+    margin: 0;
+
+    color: #d6d6d6;
+    font-size: 15px;
+    line-height: 1.55;
+}
+
+.table-responsive {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+
+    border-radius: 10px;
+
+    -webkit-overflow-scrolling: touch;
+}
+
+.owner-table {
+    width: 100%;
+    min-width: 960px;
+
+    border-collapse: collapse;
+    table-layout: auto;
+
+    overflow: hidden;
+    border-radius: 10px;
+
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.owner-table thead th {
+    padding: 16px 14px;
+
+    background: #d61f1f;
+    color: #ffffff;
+
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.owner-table tbody td {
+    padding: 16px 14px;
+
+    color: #d8d8d8;
+    text-align: center;
+    vertical-align: middle;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.owner-table th:first-child,
+.owner-table td:first-child,
+.owner-table th:nth-child(2),
+.owner-table td:nth-child(2),
+.owner-table th:nth-child(3),
+.owner-table td:nth-child(3) {
+    text-align: left;
+}
+
+.owner-table tbody tr:nth-child(odd) {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.owner-table tbody tr:nth-child(even) {
+    background: rgba(255, 255, 255, 0.015);
+}
+
+.owner-table tbody tr:hover {
+    background: rgba(214, 31, 31, 0.12);
+}
+
+.owner-table tbody tr:hover td {
+    color: #ffffff;
+}
+
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 76px;
+    padding: 7px 10px;
+
+    border-radius: 999px;
+
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.role-pill {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.active-pill {
+    background: rgba(38, 138, 76, 0.86);
+}
+
+.blocked-pill {
+    background: rgba(214, 31, 31, 0.86);
+}
+
+.actions-cell {
+    min-width: 170px;
+}
+
+.muted-action {
+    color: #9f9f9f;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.owner-action-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.owner-action-buttons form {
+    margin: 0;
+}
+
+.owner-action-btn {
+    min-width: 92px;
+    padding: 8px 12px;
+
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 4px;
+
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+
+    cursor: pointer;
+
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.owner-action-btn:hover {
+    transform: translateY(-1px);
+    background: rgba(214, 31, 31, 0.7);
+    border-color: rgba(214, 31, 31, 0.9);
+}
+
+.owner-action-btn.danger {
+    background: rgba(214, 31, 31, 0.82);
+    border-color: rgba(214, 31, 31, 0.95);
+}
+
+.owner-action-btn.danger:hover {
+    background: #b81818;
+}
+
+.empty-state {
+    padding: 34px 18px !important;
+
+    color: #cfcfcf !important;
+    font-weight: 700;
+    text-align: center !important;
+}
+
+.owner-empty-panel {
+    padding: 34px;
+
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+}
+
+.flash-message {
+    margin: 18px 0 22px;
+    padding: 14px 18px;
+
+    border-radius: 8px;
+
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.flash-message.success {
+    color: #dff8e5;
+    background: rgba(34, 139, 74, 0.22);
+    border: 1px solid rgba(79, 190, 116, 0.5);
+}
+
+.flash-message.warning {
+    color: #ffe0e0;
+    background: rgba(214, 31, 31, 0.22);
+    border: 1px solid rgba(214, 31, 31, 0.5);
+}
+
+@media (max-width: 900px) {
+    .owner-page {
+        padding: 45px 22px;
+    }
+
+    .owner-panel {
+        padding: 32px 20px;
+    }
+
+    .owner-page-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .owner-page-heading h1 {
+        font-size: 32px;
+    }
+
+    .owner-actions {
+        grid-template-columns: 1fr;
+    }
+}

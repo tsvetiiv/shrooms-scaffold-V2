@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Users | Shrooms</title>
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/owner.css">
+</head>
+<body>
+<div th:insert="~{fragments/common/header :: header}"></div>
+
+<main class="owner-page">
+    <section class="owner-panel">
+        <div class="owner-page-heading">
+            <h1>Users</h1>
+            <a th:href="@{/owner}" class="owner-back-link">Owner Dashboard</a>
+        </div>
+        <div class="red-line"></div>
+
+        <div class="flash-message success"
+             th:if="${successMessage}"
+             th:text="${successMessage}">
+        </div>
+
+        <div class="flash-message warning"
+             th:if="${warningMessage}"
+             th:text="${warningMessage}">
+        </div>
+
+        <div class="table-responsive">
+            <table class="owner-table">
+                <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${#lists.isEmpty(users)}">
+                    <td colspan="6" class="empty-state">No users found.</td>
+                </tr>
+                <tr th:each="user : ${users}">
+                    <td th:text="${user.username}">username</td>
+                    <td th:text="${user.firstName + ' ' + user.lastName}">Full Name</td>
+                    <td th:text="${user.email}">email@example.com</td>
+                    <td>
+                        <span class="status-pill role-pill" th:text="${user.role}">USER</span>
+                    </td>
+                    <td>
+                        <span th:if="${!user.active}" class="status-pill blocked-pill">Deactivated</span>
+                        <span th:if="${user.active && user.blocked}" class="status-pill blocked-pill">Blocked</span>
+                        <span th:if="${user.active && !user.blocked}" class="status-pill active-pill">Active</span>
+                    </td>
+                    <td class="actions-cell">
+
+    <span th:if="${user.role.name() == 'OWNER'}"
+          class="muted-action">
+        Protected
+    </span>
+
+                        <div th:if="${user.role.name() != 'OWNER'}"
+                             class="owner-action-buttons">
+
+                            <form th:if="${user.role.name() == 'USER' && user.active && !user.blocked}"
+                                  th:action="@{/owner/users/{id}/make-admin(id=${user.id})}"
+                                  method="post"
+                                  onsubmit="return confirm('Are you sure you want to make this user an admin?');">
+                                <button type="submit" class="owner-action-btn">
+                                    Make Admin
+                                </button>
+                            </form>
+
+                            <form th:if="${user.role.name() == 'ADMIN'}"
+                                  th:action="@{/owner/users/{id}/make-user(id=${user.id})}"
+                                  method="post"
+                                  onsubmit="return confirm('Are you sure you want to change this admin to a user?');">
+                                <button type="submit" class="owner-action-btn">
+                                    Make User
+                                </button>
+                            </form>
+
+                            <form th:if="${user.active && !user.blocked && user.role.name() == 'USER'}"
+                                  th:action="@{/owner/users/{id}/block(id=${user.id})}"
+                                  method="post"
+                                  onsubmit="return confirm('Are you sure you want to block this user?');">
+                                <button type="submit" class="owner-action-btn danger">
+                                    Block
+                                </button>
+                            </form>
+
+                            <form th:if="${user.role.name() == 'USER' && (user.blocked || !user.active)}"
+                                  th:action="@{/owner/users/{id}/unblock(id=${user.id})}"
+                                  method="post"
+                                  onsubmit="return confirm('Are you sure you want to restore this user account?');">
+                                <button type="submit"
+                                        class="owner-action-btn"
+                                        th:text="${!user.active} ? 'Reactivate' : 'Unblock'">
+                                    Restore
+                                </button>
+                            </form>
+
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+
+<div th:insert="~{fragments/common/footer :: footer}"></div>
+</body>
+</html>
