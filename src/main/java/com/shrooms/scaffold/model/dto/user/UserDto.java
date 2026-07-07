@@ -20,5 +20,6 @@ public class UserDto {
     private String email;
     private RoleType roleType;
     private List<Order> orders;
-
+    private boolean active;
+    private boolean blocked;
 }

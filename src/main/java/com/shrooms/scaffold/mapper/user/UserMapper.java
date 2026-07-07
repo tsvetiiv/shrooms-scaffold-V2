@@ -23,6 +23,8 @@ public class UserMapper {
                 .roleType(RoleType.USER)
                 .firstName(userRegisterRequest.getFirstName())
                 .lastName(userRegisterRequest.getLastName())
+                .active(true)
+                .blocked(false)
                 .build();
     }
 
@@ -40,6 +42,8 @@ public class UserMapper {
                 .profilePicture(user.getProfilePicture())
                 .roleType(user.getRoleType())
                 .orders(user.getOrders())
+                .active(true)
+                .blocked(false)
                 .build();
     }
 }

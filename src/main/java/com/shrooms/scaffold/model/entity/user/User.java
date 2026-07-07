@@ -32,6 +32,12 @@ public class User {
 
     private String profilePicture;
 
+    @Column(nullable = false)
+    private boolean active;
+
+    @Column(nullable = false)
+    private boolean blocked;
+
     @Column(nullable = false, unique = true)
     private String email;
 

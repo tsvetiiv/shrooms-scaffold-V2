@@ -1,12 +1,14 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Header Fragment</title>
 </head>
 <body>
 <header th:fragment="header" class="header">
-    <a th:if="${session.user == null or session.user.roleType.name() == 'USER'}"
+    <a sec:authorize="!hasAnyRole('ADMIN', 'OWNER')"
        th:href="@{/}"
        class="logo">
         <img src="/images/skull-logo.png" alt="Shrooms logo">
@@ -17,7 +19,7 @@
         </div>
     </a>
 
-    <a th:if="${session.user != null and session.user.roleType.name() == 'ADMIN'}"
+    <a sec:authorize="hasRole('ADMIN')"
        th:href="@{/admin}"
        class="logo">
         <img src="/images/skull-logo.png" alt="Shrooms logo">
@@ -28,44 +30,73 @@
         </div>
     </a>
 
+    <a sec:authorize="hasRole('OWNER')"
+       th:href="@{/owner}"
+       class="logo">
+        <img src="/images/skull-logo.png" alt="Shrooms logo">
+
+        <div class="logo-text">
+            <div class="logo-title">SHROOMS</div>
+            <div class="logo-subtitle">SCAFFOLD SOLUTIONS</div>
+        </div>
+    </a>
+
     <nav class="nav">
-        <a th:if="${session.user == null or session.user.roleType.name() == 'USER'}"
+        <a sec:authorize="!hasAnyRole('ADMIN', 'OWNER')"
            th:href="@{/}">
             Home
         </a>
 
-        <a th:if="${session.user != null and session.user.roleType.name() == 'ADMIN'}"
+        <a sec:authorize="hasRole('ADMIN')"
            th:href="@{/admin}">
             Home
         </a>
 
-        <a th:href="@{/our-work}">Our Work</a>
+        <a sec:authorize="hasRole('OWNER')"
+           th:href="@{/owner}">
+            Home
+        </a>
 
-        <a th:if="${session.user == null}" th:href="@{/login}">Login</a>
-        <a th:if="${session.user == null}" th:href="@{/register}" class="register-btn">Register</a>
+        <a sec:authorize="hasRole('OWNER')"
+           th:href="@{/owner/our-work}">
+            Our Work
+        </a>
 
-        <a th:if="${session.user != null and session.user.roleType.name() == 'USER'}"
+        <a sec:authorize="!hasRole('OWNER')"
+           th:href="@{/our-work}">
+            Our Work
+        </a>
+
+        <a sec:authorize="isAnonymous()" th:href="@{/login}">Login</a>
+        <a sec:authorize="isAnonymous()" th:href="@{/register}" class="register-btn">Register</a>
+
+        <a sec:authorize="hasRole('USER')"
            th:href="@{/orders}">
             My Orders
         </a>
 
-        <a th:if="${session.user != null and session.user.roleType.name() == 'ADMIN'}"
+        <a sec:authorize="hasAnyRole('ADMIN', 'OWNER')"
            th:href="@{/admin/orders}">
             Orders
         </a>
 
-        <a th:if="${session.user != null and session.user.roleType.name() == 'ADMIN'}"
+        <a sec:authorize="hasAnyRole('ADMIN', 'OWNER')"
            th:href="@{/admin/custom-orders}">
             Custom Requests
         </a>
 
-        <a th:if="${session.user != null and session.user.roleType.name() == 'ADMIN'}"
+        <a sec:authorize="hasRole('OWNER')"
            th:href="@{/admin/scaffolds}">
             Scaffolds
         </a>
 
-        <a th:if="${session.user != null}" th:href="@{/users/profile}">Profile</a>
-        <a th:if="${session.user != null}" th:href="@{/logout}" class="logout-btn">Logout</a>
+        <a sec:authorize="hasRole('OWNER')"
+           th:href="@{/owner/users}">
+            Users
+        </a>
+
+        <a sec:authorize="isAuthenticated()" th:href="@{/users/profile}">Profile</a>
+        <a sec:authorize="isAuthenticated()" th:href="@{/logout}" class="logout-btn">Logout</a>
     </nav>
 </header>
 </body>
