@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Admin Dashboard | Shrooms</title>
@@ -11,34 +12,74 @@
 
 <main class="admin-page">
     <section class="admin-panel">
-        <h1>Admin Dashboard</h1>
+        <h1 sec:authorize="hasRole('OWNER')">Owner Dashboard</h1>
+        <h1 sec:authorize="hasRole('ADMIN')">Admin Dashboard</h1>
         <div class="red-line"></div>
 
         <div class="admin-actions">
-            <a th:href="@{/admin/orders}" class="admin-card">
+            <a sec:authorize="hasAnyRole('ADMIN', 'OWNER')"
+                    th:href="@{/admin/orders}" class="admin-card">
                 <img src="/images/purchaseCard.png" alt="Orders management">
 
                 <div class="admin-card-content">
                     <h2>Orders</h2>
                     <p>Manage rent and purchase orders.</p>
+                    <span class="admin-card-btn">Open Orders</span>
                 </div>
             </a>
 
-            <a th:href="@{/admin/custom-orders}" class="admin-card">
+            <a sec:authorize="hasAnyRole('ADMIN', 'OWNER')"
+                    th:href="@{/admin/custom-orders}" class="admin-card">
                 <img src="/images/custom-windmill.JPG" alt="Custom request management">
 
                 <div class="admin-card-content">
                     <h2>Custom Requests</h2>
                     <p>Review custom scaffold requests and set estimated prices.</p>
+                    <span class="admin-card-btn">Open Requests</span>
                 </div>
             </a>
 
-            <a th:href="@{/admin/scaffolds}" class="admin-card">
-                <img src="/images/aluminiumFacade.png" alt="Scaffold catalog management">
+            <a sec:authorize="hasRole('ADMIN')"
+                    th:href="@{/our-work}" class="admin-card">
+                <img src="/images/aluminiumFacade.png" alt="Our work catalog">
 
                 <div class="admin-card-content">
-                    <h2>Scaffolds</h2>
-                    <p>Create, edit and manage scaffold offers.</p>
+                    <h2>Our Work Catalog</h2>
+                    <p>Review completed scaffold projects in the gallery.</p>
+                    <span class="admin-card-btn">Open Catalog</span>
+                </div>
+            </a>
+
+            <a sec:authorize="hasRole('OWNER')"
+                    th:href="@{/owner/our-work}" class="admin-card">
+                <img src="/images/aluminiumFacade.png" alt="Our work catalog management">
+
+                <div class="admin-card-content">
+                    <h2>Our Work Catalog</h2>
+                    <p>Create, edit and manage gallery projects.</p>
+                    <span class="admin-card-btn">Open Catalog</span>
+                </div>
+            </a>
+
+            <a sec:authorize="hasRole('OWNER')"
+               th:href="@{/owner/users}" class="admin-card">
+                <img src="/images/accountManager.png" alt="Owner user management">
+
+                <div class="admin-card-content">
+                    <h2>Users</h2>
+                    <p>Manage users.</p>
+                    <span class="admin-card-btn">Open Users</span>
+                </div>
+            </a>
+
+            <a sec:authorize="hasRole('OWNER')"
+               th:href="@{/owner/account-closures}" class="admin-card">
+                <img src="/images/account-closure-card.png" alt="Account closure requests">
+
+                <div class="admin-card-content">
+                    <h2>Account Closure Requests</h2>
+                    <p>Manage account closure request.</p>
+                    <span class="admin-card-btn">Open Requests</span>
                 </div>
             </a>
         </div>

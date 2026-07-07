@@ -86,18 +86,33 @@ body {
 }
 
 .admin-card h2 {
-    margin: 0 0 14px;
+    margin: 0 0 12px;
 
     color: #ffffff;
-    font-size: 24px;
+    font-size: 26px;
 }
 
 .admin-card p {
-    margin: 0;
+    margin: 0 0 22px;
 
-    color: #d6d6d6;
-    font-size: 15px;
+    color: #d8d8d8;
+    font-size: 16px;
     line-height: 1.55;
+}
+
+.admin-card-btn {
+    display: block;
+
+    margin-top: auto;
+    padding: 13px 18px;
+
+    background: #d61f1f;
+    border-radius: 6px;
+
+    color: #ffffff;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 700;
 }
 
 @media (max-width: 900px) {
