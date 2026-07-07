@@ -14,5 +14,7 @@ public interface CustomOrderRepository extends JpaRepository<CustomOrder, UUID> 
 
     List<CustomOrder> findAllByOrderByCreatedOnDesc();
 
+    boolean existsByUserIdAndRequestStatus(UUID userId, RequestStatus requestStatus);
+
     int countAllByRequestStatus(RequestStatus requestStatus);
 }

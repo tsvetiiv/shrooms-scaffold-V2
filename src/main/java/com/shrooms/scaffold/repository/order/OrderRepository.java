@@ -17,5 +17,7 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
 
     boolean existsByScaffoldId(UUID scaffoldId);
 
-     int countAllByOrderStatus(OrderStatus orderStatus);
+    boolean existsByUserIdAndOrderStatus(UUID userId, OrderStatus orderStatus);
+
+    int countAllByOrderStatus(OrderStatus orderStatus);
 }

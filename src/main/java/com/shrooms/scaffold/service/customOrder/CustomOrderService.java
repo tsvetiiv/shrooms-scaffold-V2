@@ -3,10 +3,12 @@ package com.shrooms.scaffold.service.customOrder;
 import com.shrooms.scaffold.event.CustomOrderStatusChangedEvent;
 import com.shrooms.scaffold.model.dto.order.CustomOrderRequest;
 import com.shrooms.scaffold.model.dto.user.UserDto;
+import com.shrooms.scaffold.model.entity.accountClosure.AccountClosureStatus;
 import com.shrooms.scaffold.model.entity.customOrder.CustomOrder;
 import com.shrooms.scaffold.model.entity.customOrder.RequestStatus;
 import com.shrooms.scaffold.model.entity.order.OrderType;
 import com.shrooms.scaffold.model.entity.user.User;
+import com.shrooms.scaffold.repository.accountClosure.AccountClosureRequestRepository;
 import com.shrooms.scaffold.repository.customRequest.CustomOrderRepository;
 import com.shrooms.scaffold.repository.user.UserRepository;
 import org.springframework.context.ApplicationEventPublisher;
@@ -23,13 +25,16 @@ public class CustomOrderService {
 
     private final UserRepository userRepository;
     private final CustomOrderRepository customOrderRepository;
+    private final AccountClosureRequestRepository accountClosureRequestRepository;
     private final ApplicationEventPublisher publisher;
 
     public CustomOrderService(UserRepository userRepository,
                               CustomOrderRepository customOrderRepository,
+                              AccountClosureRequestRepository accountClosureRequestRepository,
                               ApplicationEventPublisher publisher) {
         this.userRepository = userRepository;
         this.customOrderRepository = customOrderRepository;
+        this.accountClosureRequestRepository = accountClosureRequestRepository;
         this.publisher = publisher;
     }
 
@@ -58,6 +63,13 @@ public class CustomOrderService {
         User user = userRepository
                 .findById(userDto.getId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
+
+        boolean hasPendingClosureRequest = accountClosureRequestRepository
+                .existsByUserIdAndStatus(user.getId(), AccountClosureStatus.PENDING);
+
+        if (user.isBlocked() || hasPendingClosureRequest) {
+            throw new RuntimeException("You cannot place new custom orders because you requested account closure");
+        }
 
         CustomOrder customOrder = CustomOrder.builder()
                 .user(user)

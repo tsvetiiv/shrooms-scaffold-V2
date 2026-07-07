@@ -4,11 +4,13 @@ import com.shrooms.scaffold.event.OrderStatusChangedEvent;
 import com.shrooms.scaffold.model.dto.order.PurchaseOrderRequest;
 import com.shrooms.scaffold.model.dto.order.RentOrderRequest;
 import com.shrooms.scaffold.model.dto.user.UserDto;
+import com.shrooms.scaffold.model.entity.accountClosure.AccountClosureStatus;
 import com.shrooms.scaffold.model.entity.order.Order;
 import com.shrooms.scaffold.model.entity.order.OrderStatus;
 import com.shrooms.scaffold.model.entity.order.OrderType;
 import com.shrooms.scaffold.model.entity.scaffold.Scaffold;
 import com.shrooms.scaffold.model.entity.user.User;
+import com.shrooms.scaffold.repository.accountClosure.AccountClosureRequestRepository;
 import com.shrooms.scaffold.repository.order.OrderRepository;
 import com.shrooms.scaffold.repository.scaffold.ScaffoldRepository;
 import com.shrooms.scaffold.repository.user.UserRepository;
@@ -26,14 +28,18 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final ScaffoldRepository scaffoldRepository;
+    private final AccountClosureRequestRepository accountClosureRequestRepository;
     private final ApplicationEventPublisher publisher;
 
     public OrderService(OrderRepository orderRepository,
                         UserRepository userRepository,
-                        ScaffoldRepository scaffoldRepository, ApplicationEventPublisher publisher) {
+                        ScaffoldRepository scaffoldRepository,
+                        AccountClosureRequestRepository accountClosureRequestRepository,
+                        ApplicationEventPublisher publisher) {
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
         this.scaffoldRepository = scaffoldRepository;
+        this.accountClosureRequestRepository = accountClosureRequestRepository;
         this.publisher = publisher;
     }
 
@@ -45,6 +51,8 @@ public class OrderService {
         User user = userRepository
                 .findById(userDto.getId())
                 .orElseThrow();
+
+        validateUserCanPlaceOrder(user);
 
         Scaffold scaffold = scaffoldRepository
                 .findById(request.getScaffoldId())
@@ -79,6 +87,8 @@ public class OrderService {
                 .findById(userDto.getId())
                 .orElseThrow();
 
+        validateUserCanPlaceOrder(user);
+
         Scaffold scaffold = scaffoldRepository
                 .findById(request.getScaffoldId())
                 .orElseThrow();
@@ -108,6 +118,15 @@ public class OrderService {
 
     public List<Order> getAllOrders() {
         return orderRepository.findAllByOrderByCreatedOnDesc();
+    }
+
+    private void validateUserCanPlaceOrder(User user) {
+        boolean hasPendingClosureRequest = accountClosureRequestRepository
+                .existsByUserIdAndStatus(user.getId(), AccountClosureStatus.PENDING);
+
+        if (user.isBlocked() || hasPendingClosureRequest) {
+            throw new RuntimeException("You cannot place new orders because you requested account closure");
+        }
     }
 
     public void updateOrderStatus(UUID orderId, OrderStatus orderStatus) {

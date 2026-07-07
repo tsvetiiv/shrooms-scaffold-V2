@@ -3,8 +3,10 @@ package com.shrooms.scaffold.web;
 import com.shrooms.scaffold.model.dto.order.CustomOrderRequest;
 import com.shrooms.scaffold.model.dto.user.UserDto;
 import com.shrooms.scaffold.service.customOrder.CustomOrderService;
-import jakarta.servlet.http.HttpSession;
+import com.shrooms.scaffold.service.user.UserDetailsData;
+import com.shrooms.scaffold.service.user.UserService;
 import jakarta.validation.Valid;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,15 +20,18 @@ import org.springframework.web.servlet.ModelAndView;
 public class CustomOrderController {
 
     private final CustomOrderService customOrderService;
+    private final UserService userService;
 
-    public CustomOrderController(CustomOrderService customOrderService) {
+    public CustomOrderController(CustomOrderService customOrderService, UserService userService) {
         this.customOrderService = customOrderService;
+        this.userService = userService;
     }
 
     @GetMapping
-    public ModelAndView getCustomOrderPage() {
+    public ModelAndView getCustomOrderPage(@AuthenticationPrincipal UserDetailsData userDetails) {
         ModelAndView modelAndView = new ModelAndView("custom-order");
         modelAndView.addObject("customOrderRequest", new CustomOrderRequest());
+        addAccountClosurePending(modelAndView, userDetails);
 
         return modelAndView;
     }
@@ -34,23 +39,30 @@ public class CustomOrderController {
     @PostMapping
     public ModelAndView makeCustomOrder(@Valid @ModelAttribute("customOrderRequest") CustomOrderRequest customOrderRequest,
                                         BindingResult bindingResult,
-                                        HttpSession session) {
+                                        @AuthenticationPrincipal UserDetailsData userDetails) {
         if (bindingResult.hasErrors()) {
             ModelAndView modelAndView = new ModelAndView("custom-order");
             modelAndView.addObject("customOrderRequest", customOrderRequest);
+            addAccountClosurePending(modelAndView, userDetails);
             return modelAndView;
         }
-        UserDto user = (UserDto) session.getAttribute("user");
 
         try {
+            UserDto user = userService.getUserById(userDetails.getId());
             customOrderService.createCustomOrder(customOrderRequest, user);
             return new ModelAndView("redirect:/orders");
 
         } catch (RuntimeException exception) {
             ModelAndView modelAndView = new ModelAndView("custom-order");
             modelAndView.addObject("customOrderRequest", customOrderRequest);
-            modelAndView.addObject("dateError", exception.getMessage());
+            modelAndView.addObject("customOrderError", exception.getMessage());
+            addAccountClosurePending(modelAndView, userDetails);
             return modelAndView;
         }
+    }
+
+    private void addAccountClosurePending(ModelAndView modelAndView, UserDetailsData userDetails) {
+        modelAndView.addObject("accountClosurePending",
+                userDetails != null && userService.hasPendingAccountClosureRequest(userDetails.getId()));
     }
 }

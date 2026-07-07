@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Admin Custom Requests | Shrooms</title>
@@ -15,7 +16,10 @@
 
         <div class="admin-page-heading">
             <h1>Custom Requests</h1>
-            <a th:href="@{/admin}" class="back-admin-link">Back to Dashboard</a>
+            <a sec:authorize="hasRole('ADMIN')"
+               th:href="@{/admin}" class="back-admin-link">Back to Dashboard</a>
+            <a sec:authorize="hasRole('OWNER')"
+               th:href="@{/owner}" class="back-admin-link">Back to Dashboard</a>
         </div>
 
         <div class="red-line"></div>

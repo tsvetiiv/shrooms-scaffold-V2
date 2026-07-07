@@ -1,9 +1,9 @@
 package com.shrooms.scaffold.web;
 
-import com.shrooms.scaffold.model.dto.user.UserDto;
 import com.shrooms.scaffold.service.customOrder.CustomOrderService;
 import com.shrooms.scaffold.service.order.OrderService;
-import jakarta.servlet.http.HttpSession;
+import com.shrooms.scaffold.service.user.UserDetailsData;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -23,16 +23,14 @@ public class OrdersController {
     }
 
     @GetMapping
-    public ModelAndView getOrdersPage(HttpSession session) {
-
-        UserDto user = (UserDto) session.getAttribute("user");
-
+    public ModelAndView getOrdersPage(@AuthenticationPrincipal UserDetailsData userDetails) {
         ModelAndView modelAndView = new ModelAndView("orders");
-        modelAndView.addObject("orders", orderService.getOrdersByUserId(user.getId()));
 
-        modelAndView.addObject(
-                "customOrders",
-                customOrderService.getOrdersByUserId(user.getId()));
+        modelAndView.addObject("orders",
+                orderService.getOrdersByUserId(userDetails.getId()));
+        modelAndView.addObject("customOrders",
+                customOrderService.getOrdersByUserId(userDetails.getId()));
+
         return modelAndView;
     }
 }
