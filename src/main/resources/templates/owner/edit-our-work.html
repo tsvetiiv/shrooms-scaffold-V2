@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Our Work Project | Shrooms</title>
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/admin-scaffold-form.css">
+</head>
+<body>
+
+<div th:insert="~{fragments/common/header :: header}"></div>
+
+<main class="admin-scaffold-form-page">
+    <section class="admin-scaffold-form-card">
+
+        <div class="admin-page-heading">
+            <h1>Edit Project</h1>
+            <a th:href="@{/owner/our-work}" class="back-admin-link">Back to Our Work</a>
+        </div>
+
+        <div class="red-line"></div>
+
+        <form th:action="@{/owner/our-work/{id}(id=${projectId})}"
+              th:object="${ourWorkProjectRequest}"
+              method="post"
+              class="scaffold-form">
+
+            <input type="hidden" name="_method" value="put">
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    <input id="title" type="text" th:field="*{title}">
+                    <small th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></small>
+                </div>
+
+                <div class="form-group">
+                    <label for="imageUrl">Image URL</label>
+                    <input id="imageUrl" type="text" th:field="*{imageUrl}">
+                    <small th:if="${#fields.hasErrors('imageUrl')}" th:errors="*{imageUrl}"></small>
+                </div>
+            </div>
+
+            <div class="form-group full-width">
+                <label for="description">Description</label>
+                <textarea id="description" th:field="*{description}"></textarea>
+                <small th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></small>
+            </div>
+
+            <label class="checkbox-row">
+                <input type="checkbox" th:field="*{visible}">
+                <span>Visible in gallery</span>
+            </label>
+
+            <button type="submit" class="save-scaffold-btn">Save Changes</button>
+        </form>
+
+    </section>
+</main>
+
+<div th:insert="~{fragments/common/footer :: footer}"></div>
+
+</body>
+</html>

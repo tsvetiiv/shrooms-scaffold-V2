@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Our Work Projects | Shrooms</title>
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/admin-scaffolds.css">
+</head>
+<body>
+
+<div th:insert="~{fragments/common/header :: header}"></div>
+
+<main class="admin-scaffolds-page">
+    <section class="admin-scaffolds-panel">
+
+        <div class="admin-page-heading">
+            <h1>Our Work</h1>
+            <a th:href="@{/owner/our-work/create}" class="back-admin-link">Add Project</a>
+            <a th:href="@{/owner}" class="back-admin-link">Owner Dashboard</a>
+        </div>
+
+        <div class="red-line"></div>
+
+        <div class="admin-empty-panel"
+             th:if="${#lists.isEmpty(projects)}">
+            <h2>No projects yet</h2>
+            <p>Add your first completed project to the gallery.</p>
+        </div>
+
+        <div class="scaffold-admin-grid"
+             th:if="${!#lists.isEmpty(projects)}">
+            <article class="scaffold-admin-card our-work-admin-card" th:each="project : ${projects}">
+                <img th:src="${project.imageUrl}"
+                     th:alt="${project.title}">
+
+                <div class="scaffold-admin-content">
+                    <h2 th:text="${project.title}">Project Title</h2>
+
+                    <p th:text="${project.description}">
+                        Project description
+                    </p>
+
+                    <div class="scaffold-admin-info">
+                        <span th:text="${project.visible ? 'Visible' : 'Hidden'}">Visible</span>
+                    </div>
+
+                    <div class="scaffold-actions">
+                        <a th:href="@{/owner/our-work/{id}/edit(id=${project.id})}"
+                           class="edit-scaffold-btn">
+                            Edit
+                        </a>
+
+                        <form th:action="@{/owner/our-work/{id}/hide(id=${project.id})}"
+                              method="post"
+                              class="delete-scaffold-form"
+                              onsubmit="return confirm('Are you sure you want to hide this project?');">
+                            <input type="hidden" name="_method" value="delete">
+
+                            <button type="submit" class="hide-scaffold-btn">
+                                Hide
+                            </button>
+                        </form>
+                        <form th:action="@{/owner/our-work/{id}(id=${project.id})}"
+                              method="post"
+                              class="delete-scaffold-form"
+                              onsubmit="return confirm('Are you sure you want to delete this project?');">
+                            <input type="hidden" name="_method" value="delete">
+
+                            <button type="submit" class="delete-scaffold-btn danger">
+                                Delete
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </article>
+        </div>
+
+    </section>
+</main>
+
+<div th:insert="~{fragments/common/footer :: footer}"></div>
+
+</body>
+</html>
