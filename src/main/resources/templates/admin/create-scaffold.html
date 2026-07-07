@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Scaffold | Shrooms</title>
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/admin-scaffold-form.css">
+</head>
+<body>
+
+<div th:insert="~{fragments/common/header :: header}"></div>
+
+<main class="admin-scaffold-form-page">
+    <section class="admin-scaffold-form-card">
+
+        <div class="admin-page-heading">
+            <h1>Create Scaffold</h1>
+            <a th:href="@{/admin/scaffolds}" class="back-admin-link">Back to Scaffolds</a>
+        </div>
+
+        <div class="red-line"></div>
+
+        <form th:action="@{/admin/scaffolds}"
+              th:object="${scaffoldRequest}"
+              method="post"
+              class="scaffold-form">
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input id="name" type="text" th:field="*{name}">
+                    <small th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></small>
+                </div>
+
+                <div class="form-group">
+                    <label for="imageUrl">Image URL</label>
+                    <input id="imageUrl" type="text" th:field="*{imageUrl}">
+                    <small th:if="${#fields.hasErrors('imageUrl')}" th:errors="*{imageUrl}"></small>
+                </div>
+
+                <div class="form-group">
+                    <label for="height">Height</label>
+                    <input id="height" type="number" step="0.01" th:field="*{height}">
+                    <small th:if="${#fields.hasErrors('height')}" th:errors="*{height}"></small>
+                </div>
+
+                <div class="form-group">
+                    <label for="width">Width</label>
+                    <input id="width" type="number" step="0.01" th:field="*{width}">
+                    <small th:if="${#fields.hasErrors('width')}" th:errors="*{width}"></small>
+                </div>
+
+                <div class="form-group">
+                    <label for="length">Length</label>
+                    <input id="length" type="number" step="0.01" th:field="*{length}">
+                    <small th:if="${#fields.hasErrors('length')}" th:errors="*{length}"></small>
+                </div>
+
+                <div class="form-group">
+                    <label for="priceForRent">Rent Price</label>
+                    <input id="priceForRent" type="number" step="0.01" th:field="*{priceForRent}">
+                    <small th:if="${#fields.hasErrors('priceForRent')}" th:errors="*{priceForRent}"></small>
+                </div>
+
+                <div class="form-group">
+                    <label for="priceForSale">Sale Price</label>
+                    <input id="priceForSale" type="number" step="0.01" th:field="*{priceForSale}">
+                    <small th:if="${#fields.hasErrors('priceForSale')}" th:errors="*{priceForSale}"></small>
+                </div>
+
+                <div class="form-group">
+                    <label for="materialType">Material</label>
+                    <select id="materialType" th:field="*{materialType}">
+                        <option value="">Select material</option>
+                        <option th:each="material : ${materialTypes}"
+                                th:value="${material}"
+                                th:text="${material}">
+                        </option>
+                    </select>
+                    <small th:if="${#fields.hasErrors('materialType')}" th:errors="*{materialType}"></small>
+                </div>
+
+                <div class="form-group">
+                    <label for="scaffoldCategory">Category</label>
+                    <select id="scaffoldCategory" th:field="*{scaffoldCategory}">
+                        <option value="">Select category</option>
+                        <option th:each="category : ${scaffoldCategories}"
+                                th:value="${category}"
+                                th:text="${category}">
+                        </option>
+                    </select>
+                    <small th:if="${#fields.hasErrors('scaffoldCategory')}" th:errors="*{scaffoldCategory}"></small>
+                </div>
+            </div>
+
+            <div class="form-group full-width">
+                <label for="description">Description</label>
+                <textarea id="description" th:field="*{description}"></textarea>
+                <small th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></small>
+            </div>
+
+            <label class="checkbox-row">
+                <input type="checkbox" th:field="*{available}">
+                <span>Available</span>
+            </label>
+
+            <button type="submit" class="save-scaffold-btn">Create Scaffold</button>
+        </form>
+
+    </section>
+</main>
+
+<div th:insert="~{fragments/common/footer :: footer}"></div>
+
+</body>
+</html>

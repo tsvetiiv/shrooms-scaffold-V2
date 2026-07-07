@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Registration Successful</title>
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/register-success.css">
+</head>
+<body>
+
+<div th:insert="~{fragments/common/header :: header}"></div>
+
+<main class="success-page">
+
+    <section class="success-card">
+
+        <div class="checkmark">✓</div>
+
+        <h1>Registration Successful</h1>
+
+        <div class="red-line"></div>
+
+        <p>
+            Your account has been successfully created.
+            You can now login and access Shrooms Scaffold services.
+        </p>
+
+        <a th:href="@{/login}" class="success-btn">
+            GO TO LOGIN
+        </a>
+
+    </section>
+
+</main>
+
+<div th:insert="~{fragments/common/footer :: footer}"></div>
+
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Purchase Scaffold | Shrooms</title>
+    <link href="/css/layout.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/purchase.css}">
+</head>
+<body>
+
+<div th:insert="~{fragments/common/header :: header}"></div>
+
+<main class="purchase-page">
+    <section class="purchase-wrapper">
+
+        <h1>Purchase Scaffold</h1>
+        <div class="red-line"></div>
+
+        <div class="scaffold-grid">
+
+            <article class="scaffold-card" th:each="scaffold : ${scaffolds}">
+
+                <img th:alt="${scaffold.name}"
+                     th:src="${scaffold.imageUrl}">
+
+                <div class="scaffold-content">
+                    <h2 th:text="${scaffold.name}">Scaffold name</h2>
+
+                    <p th:text="${scaffold.description}">
+                        Description
+                    </p>
+
+                    <div class="scaffold-info">
+                        <span th:text="'Height: ' + ${scaffold.height} + ' m'"></span>
+                        <span th:text="'Length: ' + ${scaffold.length} + ' m'"></span>
+                        <span th:text="'Material: ' + ${scaffold.materialType}"></span>
+                    </div>
+
+                    <div class="price"
+                         th:text="'€' + ${scaffold.priceForSale}">
+                    </div>
+
+                    <a class="purchase-btn"
+                       th:href="@{/scaffolds/purchase/{id}(id=${scaffold.id})}"
+                       th:if="${scaffold.available}">
+                        Purchase This Scaffold
+                    </a>
+
+                    <span class="purchase-btn disabled-btn"
+                          th:if="${!scaffold.available}">
+                            Unavailable
+                    </span>
+                </div>
+
+            </article>
+
+        </div>
+
+    </section>
+</main>
+
+<div th:insert="~{fragments/common/footer :: footer}"></div>
+
+</body>
+</html>

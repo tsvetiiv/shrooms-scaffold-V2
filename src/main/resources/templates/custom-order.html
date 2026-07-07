@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Custom Scaffold | Shrooms</title>
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/custom-order.css">
+</head>
+<body>
+
+<div th:insert="~{fragments/common/header :: header}"></div>
+
+
+<main class="custom-page">
+
+    <section class="custom-card">
+
+        <h1>Custom Scaffold</h1>
+        <div class="red-line"></div>
+
+        <p class="intro">
+            Need a scaffold solution built around your project?
+            Tell us more about the dimensions, location and access requirements.
+            Our team will review your request and prepare a custom scaffold solution
+            designed for safe and efficient work on your site.
+        </p>
+
+        <form th:action="@{/custom-order}" th:method="post" th:object="${customOrderRequest}">
+
+            <div class="form-group">
+                <label for="projectName">Project name</label>
+                <input id="projectName" type="text" th:field="*{projectName}" placeholder="Example: Roof renovation">
+                <small class="error-message"
+                       th:if="${#fields.hasErrors('projectName')}"
+                       th:errors="*{projectName}">
+                </small>
+            </div>
+
+            <div class="dimensions">
+                <div class="form-group">
+                    <label for="height">Height</label>
+                    <input id="height" type="number" step="0.01" th:field="*{height}" placeholder="m">
+                    <small class="error-message"
+                           th:if="${#fields.hasErrors('height')}"
+                           th:errors="*{height}">
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <label for="width">Width</label>
+                    <input id="width" type="number" step="0.01" th:field="*{width}" placeholder="m">
+                    <small class="error-message"
+                           th:if="${#fields.hasErrors('width')}"
+                           th:errors="*{width}">
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <label for="length">Length</label>
+                    <input id="length" type="number" step="0.01" th:field="*{length}" placeholder="m">
+                    <small class="error-message"
+                           th:if="${#fields.hasErrors('length')}"
+                           th:errors="*{length}">
+                    </small>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="address">Project address</label>
+                <input id="address" type="text" th:field="*{address}" placeholder="Enter project address">
+                <small class="error-message"
+                       th:if="${#fields.hasErrors('address')}"
+                       th:errors="*{address}">
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label for="contactPhone">Contact phone</label>
+                <input id="contactPhone" type="text" th:field="*{contactPhone}" placeholder="Enter phone number">
+                <small class="error-message"
+                       th:if="${#fields.hasErrors('contactPhone')}"
+                       th:errors="*{contactPhone}">
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label for="projectDescription">Project description</label>
+                <textarea id="projectDescription"
+                          th:field="*{projectDescription}"
+                          placeholder="Describe your project, access needs and special requirements"></textarea>
+                <small class="error-message"
+                       th:if="${#fields.hasErrors('projectDescription')}"
+                       th:errors="*{projectDescription}">
+                </small>
+            </div>
+            <div class="form-group">
+                <label for="projectImage">Project image URL</label>
+                <input id="projectImage"
+                       type="text"
+                       th:field="*{projectImage}"
+                       placeholder="Optional image URL">
+
+                <small class="error-message"
+                       th:if="${#fields.hasErrors('projectImage')}"
+                       th:errors="*{projectImage}">
+                </small>
+            </div>
+            <div class="form-group">
+                <label for="orderType">Request type</label>
+                <select id="orderType" th:field="*{orderType}">
+                    <option value="">Select request type</option>
+                    <option value="RENT">Rent</option>
+                    <option value="PURCHASE">Purchase</option>
+                </select>
+                <small class="error-message"
+                       th:if="${#fields.hasErrors('orderType')}"
+                       th:errors="*{orderType}">
+                </small>
+            </div>
+            <div class="date-section" id="dateSection">
+                <div class="date-row">
+                    <div class="form-group">
+                        <label for="startDate">Start date</label>
+                        <input id="startDate"
+                               name="startDate"
+                               type="date"
+                               th:value="${customOrderRequest.startDate}">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="endDate">End date</label>
+                        <input id="endDate"
+                               name="endDate"
+                               type="date"
+                               th:value="${customOrderRequest.endDate}">
+                    </div>
+                </div>
+
+                <small class="error-message date-error"
+                       th:if="${dateError}"
+                       th:text="${dateError}">
+                </small>
+            </div>
+
+            <label class="checkbox-row">
+                <input type="checkbox" th:field="*{installationRequired}">
+                <span>Installation required (included in the final quote)</span>
+            </label>
+
+            <p class="payment-note">
+                Payment is made on delivery after your request is approved and priced.
+            </p>
+
+            <button type="submit">Submit Request</button>
+
+        </form>
+
+    </section>
+
+</main>
+
+<div th:insert="~{fragments/common/footer :: footer}"></div>
+
+<script>
+    const orderTypeSelect = document.getElementById('orderType');
+    const dateSection = document.getElementById('dateSection');
+    const startDateInput = document.getElementById('startDate');
+    const endDateInput = document.getElementById('endDate');
+
+    function toggleDateFields() {
+        const isPurchase = orderTypeSelect.value === 'PURCHASE';
+
+        startDateInput.disabled = isPurchase;
+        endDateInput.disabled = isPurchase;
+        dateSection.style.display = isPurchase ? 'none' : 'block';
+
+        if (isPurchase) {
+            startDateInput.value = '';
+            endDateInput.value = '';
+        }
+    }
+
+    orderTypeSelect.addEventListener('change', toggleDateFields);
+    toggleDateFields();
+</script>
+
+</body>
+</html>

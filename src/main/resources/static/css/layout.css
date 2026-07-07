@@ -1,0 +1,134 @@
+.header {
+    height: 90px;
+    background: rgba(5, 5, 5, 0.82);
+    border-bottom: 1px solid rgba(214, 31, 31, 0.4);
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 0 40px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    text-decoration: none;
+}
+
+.logo img {
+    width: 58px;
+    height: 58px;
+
+    object-fit: cover;
+
+    border-radius: 8px;
+}
+
+.logo-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+}
+
+.logo-title {
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.logo-subtitle {
+    margin-top: 4px;
+
+    color: #d61f1f;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.nav {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+}
+
+.nav a {
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+
+    transition: color 0.2s ease, background 0.2s ease;
+}
+
+.nav a:hover {
+    color: #d61f1f;
+}
+
+.register-btn,
+.login-btn,
+.logout-btn,
+.admin-btn {
+    padding: 9px 16px;
+
+    border-radius: 4px;
+
+    background: #d61f1f;
+    color: #ffffff !important;
+}
+
+.register-btn:hover,
+.login-btn:hover,
+.logout-btn:hover,
+.admin-btn:hover {
+    background: #b81818;
+    color: #ffffff !important;
+}
+
+.footer {
+    height: 90px;
+    background: rgba(5, 5, 5, 0.82);
+    border-top: 1px solid rgba(214, 31, 31, 0.4);
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 0 40px;
+}
+
+.footer-logo {
+    width: 55px;
+    height: 55px;
+
+    object-fit: cover;
+
+    border-radius: 8px;
+}
+
+.copyright,
+.powered {
+    color: #cfcfcf;
+    font-size: 13px;
+}
+
+.powered {
+    color: #d61f1f;
+}
+
+.error-message {
+    display: block;
+    margin-top: 6px;
+
+    color: #ff7777;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.35;
+    text-align: left;
+}
+
+.form-group .error-message {
+    margin-bottom: 2px;
+}

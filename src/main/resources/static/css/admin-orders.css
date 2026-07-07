@@ -1,0 +1,556 @@
+body {
+    margin: 0;
+    min-height: 100vh;
+
+    background: #050505;
+    color: #f5f5f5;
+    font-family: Arial, sans-serif;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-orders-page {
+    flex: 1;
+    padding: 60px 40px;
+
+    background: linear-gradient(rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0.92)),
+    url('/images/facade.png') center/cover no-repeat;
+}
+
+.admin-orders-panel {
+    max-width: 1250px;
+    margin: 0 auto;
+    padding: 40px 36px;
+
+    background: rgba(8, 10, 10, 0.92);
+    border: 1px solid rgba(214, 31, 31, 0.35);
+    border-radius: 10px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65);
+}
+
+.admin-page-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+}
+
+.admin-page-heading h1 {
+    margin: 0;
+
+    color: #ffffff;
+    font-size: 38px;
+    text-transform: uppercase;
+}
+
+.back-admin-link {
+    padding: 10px 16px;
+
+    background: #d61f1f;
+    border-radius: 4px;
+
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 700;
+
+    transition: background 0.2s ease;
+}
+
+.back-admin-link:hover {
+    background: #b81818;
+}
+
+.red-line {
+    width: 90px;
+    height: 4px;
+    margin: 18px 0 34px;
+
+    background: #d61f1f;
+}
+
+.table-responsive {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+
+    border-radius: 10px;
+
+    -webkit-overflow-scrolling: touch;
+}
+
+.table-responsive::-webkit-scrollbar {
+    height: 10px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 999px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: rgba(214, 31, 31, 0.55);
+    border-radius: 999px;
+}
+
+.admin-orders-table {
+    width: max-content;
+    min-width: 100%;
+
+    border-collapse: collapse;
+    table-layout: auto;
+
+    overflow: hidden;
+    border-radius: 10px;
+
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.admin-rent-purchase-table {
+    min-width: 1200px;
+}
+
+.admin-custom-orders-table {
+    min-width: 2450px;
+}
+
+.admin-orders-table thead th {
+    padding: 16px 14px;
+
+    background: #d61f1f;
+    color: #ffffff;
+
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-align: center;
+
+    overflow-wrap: break-word;
+}
+
+.admin-orders-table tbody td {
+    padding: 16px 14px;
+
+    color: #d8d8d8;
+    text-align: center;
+    vertical-align: middle;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+
+    overflow-wrap: break-word;
+}
+
+.admin-orders-table th:first-child,
+.admin-orders-table td:first-child,
+.admin-orders-table th:nth-child(2),
+.admin-orders-table td:nth-child(2),
+.admin-orders-table th:nth-child(3),
+.admin-orders-table td:nth-child(3) {
+    text-align: left;
+}
+
+.admin-orders-table tbody td:first-child,
+.admin-orders-table tbody td:nth-child(3) {
+    color: #ffffff;
+    font-weight: 700;
+}
+
+.admin-orders-table tbody tr:nth-child(odd) {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.admin-orders-table tbody tr:nth-child(even) {
+    background: rgba(255, 255, 255, 0.015);
+}
+
+.admin-orders-table th:nth-child(1),
+.admin-orders-table td:nth-child(1) {
+    width: 130px;
+}
+
+.admin-orders-table th:nth-child(2),
+.admin-orders-table td:nth-child(2) {
+    width: 190px;
+    word-break: break-word;
+}
+
+.admin-orders-table th:nth-child(3),
+.admin-orders-table td:nth-child(3) {
+    width: 210px;
+}
+
+.admin-orders-table th:nth-child(4),
+.admin-orders-table td:nth-child(4),
+.admin-orders-table th:nth-child(5),
+.admin-orders-table td:nth-child(5) {
+    width: 120px;
+}
+
+.admin-orders-table th:nth-child(8),
+.admin-orders-table td:nth-child(8) {
+    width: 150px;
+}
+
+.admin-orders-table th:nth-child(9),
+.admin-orders-table td:nth-child(9) {
+    width: 120px;
+}
+
+.admin-rent-purchase-table th:nth-child(8),
+.admin-rent-purchase-table td:nth-child(8),
+.admin-custom-orders-table th:nth-child(2),
+.admin-custom-orders-table td:nth-child(2),
+.admin-custom-orders-table th:nth-child(10),
+.admin-custom-orders-table td:nth-child(10) {
+    min-width: 240px;
+    max-width: 320px;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    text-align: left;
+}
+
+.admin-custom-orders-table th:nth-child(9) {
+    min-width: 140px;
+    white-space: nowrap;
+}
+
+.admin-custom-orders-table td:nth-child(9) {
+    min-width: 140px;
+}
+
+.admin-orders-table tbody tr:hover {
+    background: rgba(214, 31, 31, 0.12);
+}
+
+.admin-orders-table tbody tr:hover td {
+    color: #ffffff;
+}
+
+.admin-orders-table tbody td:nth-child(4) {
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+}
+
+.admin-orders-table tbody td:nth-child(7) {
+    color: #ffffff;
+    font-weight: 700;
+}
+
+.admin-orders-table td[colspan] {
+    padding: 30px 18px;
+
+    text-align: center !important;
+    color: #bdbdbd;
+    font-style: italic;
+    letter-spacing: 0.02em;
+
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.status-form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    min-width: 210px;
+}
+
+.delete-order-form {
+    margin-top: 10px;
+}
+
+.status-select {
+    width: 130px;
+    padding: 9px 10px;
+
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(214, 31, 31, 0.45);
+    border-radius: 5px;
+
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.status-update-btn {
+    min-width: 70px;
+    padding: 9px 12px;
+
+    background: #d61f1f;
+    border: none;
+    border-radius: 5px;
+
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.status-update-btn:hover {
+    background: #b81818;
+}
+
+.delete-order-btn {
+    min-width: 78px;
+    padding: 9px 12px;
+
+    background: transparent;
+    border: 1px solid rgba(255, 119, 119, 0.75);
+    border-radius: 5px;
+
+    color: #ff7777;
+    font-size: 13px;
+    font-weight: 700;
+
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.delete-order-btn:hover {
+    background: rgba(214, 31, 31, 0.22);
+    color: #ffffff;
+}
+
+.status-select option {
+    background: #111111;
+    color: #ffffff;
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 95px;
+    padding: 7px 10px;
+
+    border-radius: 999px;
+
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.status-badge.pending {
+    background: rgba(255, 193, 7, 0.18);
+    border: 1px solid rgba(255, 193, 7, 0.65);
+    color: #ffd45a;
+}
+
+.status-badge.approved {
+    background: rgba(46, 204, 113, 0.18);
+    border: 1px solid rgba(46, 204, 113, 0.7);
+    color: #69e89b;
+}
+
+.status-badge.cancelled,
+.status-badge.rejected {
+    background: rgba(214, 31, 31, 0.18);
+    border: 1px solid rgba(214, 31, 31, 0.75);
+    color: #ff7777;
+}
+
+.price-input {
+    width: 95px;
+    padding: 9px 10px;
+
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(214, 31, 31, 0.45);
+    border-radius: 5px;
+
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.price-input::placeholder {
+    color: #aaaaaa;
+}
+
+.final-status-label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 9px 14px;
+
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 6px;
+
+    color: #cfcfcf;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.flash-message {
+    margin: 0 0 20px;
+    padding: 14px 16px;
+
+    border-radius: 8px;
+
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.flash-message.success {
+    background: rgba(46, 204, 113, 0.14);
+    border: 1px solid rgba(46, 204, 113, 0.55);
+    color: #69e89b;
+}
+
+.flash-message.warning {
+    background: rgba(255, 193, 7, 0.14);
+    border: 1px solid rgba(255, 193, 7, 0.55);
+    color: #ffd45a;
+}
+
+.admin-custom-final-label {
+    align-self: flex-start;
+    margin-top: auto;
+}
+
+.empty-admin-message {
+    margin: 20px 0 0;
+    padding: 28px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    color: #bdbdbd;
+    font-style: italic;
+    text-align: center;
+}
+
+.admin-custom-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+    gap: 24px;
+}
+
+.admin-custom-card {
+    display: flex;
+    flex-direction: column;
+
+    padding: 24px;
+
+    background: rgba(12, 14, 14, 0.94);
+    border: 1px solid rgba(214, 31, 31, 0.35);
+    border-radius: 10px;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
+}
+
+.admin-custom-card.final-custom-request {
+    opacity: 0.65;
+    background: rgba(120, 120, 120, 0.14);
+}
+
+.admin-custom-card h2 {
+    margin: 0 0 18px;
+
+    color: #ffffff;
+    font-size: 26px;
+    line-height: 1.2;
+}
+
+.detail-row {
+    display: grid;
+    grid-template-columns: 145px minmax(0, 1fr);
+    gap: 16px;
+    align-items: start;
+
+    padding: 11px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.detail-row > span:first-child {
+    color: #9f9f9f;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.detail-row strong {
+    color: #ffffff;
+    font-size: 14px;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+}
+
+.detail-row a {
+    color: #72c7ff;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.detail-row a:hover {
+    color: #ffffff;
+}
+
+.admin-custom-action-form {
+    justify-content: flex-end;
+    margin-top: auto;
+    padding-top: 18px;
+    border-top: 1px solid rgba(214, 31, 31, 0.25);
+}
+
+.admin-custom-action-form .price-input {
+    width: 130px;
+}
+
+.admin-orders-table tbody tr.final-order {
+    opacity: 0.65;
+    background: rgba(120, 120, 120, 0.14) !important;
+}
+
+.admin-orders-table tbody tr.final-order:hover {
+    background: rgba(120, 120, 120, 0.20) !important;
+}
+
+@media (max-width: 800px) {
+    .admin-orders-page {
+        padding: 40px 18px;
+    }
+
+    .admin-orders-panel {
+        padding: 28px 18px;
+    }
+
+    .admin-page-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .admin-page-heading h1 {
+        font-size: 30px;
+    }
+
+    .admin-custom-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .detail-row {
+        grid-template-columns: 1fr;
+        gap: 6px;
+    }
+
+    .admin-custom-action-form {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .admin-custom-action-form .price-input,
+    .admin-custom-action-form .status-select,
+    .admin-custom-action-form .status-update-btn {
+        width: 100%;
+    }
+}

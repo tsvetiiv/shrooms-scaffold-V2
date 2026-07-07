@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Orders | Shrooms</title>
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/admin-orders.css">
+</head>
+<body>
+
+<div th:insert="~{fragments/common/header :: header}"></div>
+
+<main class="admin-orders-page">
+    <section class="admin-orders-panel">
+
+        <div class="admin-page-heading">
+            <h1>Orders</h1>
+            <a th:href="@{/admin}" class="back-admin-link">Back to Dashboard</a>
+        </div>
+
+        <div class="red-line"></div>
+
+        <div class="flash-message success"
+             th:if="${successMessage}"
+             th:text="${successMessage}">
+        </div>
+
+        <div class="flash-message warning"
+             th:if="${warningMessage}"
+             th:text="${warningMessage}">
+        </div>
+
+        <div class="table-responsive">
+            <table class="admin-orders-table admin-rent-purchase-table">
+                <thead>
+                <tr>
+                    <th>Customer</th>
+                    <th>Email</th>
+                    <th>Scaffold</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                    <th>Quantity</th>
+                    <th>Rental Weeks</th>
+                    <th>Address</th>
+                    <th>Phone</th>
+                    <th>Installation</th>
+                    <th>Total Price</th>
+                    <th>Created On</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:if="${#lists.isEmpty(orders)}">
+                    <td colspan="13">No orders yet.</td>
+                </tr>
+
+                <tr th:each="order : ${orders}"
+                    th:classappend="${order.orderStatus.name() == 'APPROVED' or order.orderStatus.name() == 'CANCELLED'} ? 'final-order' : ''">
+                    <td th:text="${order.user.username}">customer</td>
+                    <td th:text="${order.user.email}">email</td>
+                    <td th:text="${order.scaffold.name}">scaffold</td>
+                    <td th:text="${order.orderType}">type</td>
+                    <td>
+    <span class="status-badge"
+          th:classappend="${order.orderStatus.name().toLowerCase()}"
+          th:text="${order.orderStatus}">
+        status
+    </span>
+                    </td>
+                    <td th:text="${order.quantity}">quantity</td>
+                    <td th:text="${order.rentalWeeks != null ? order.rentalWeeks : '-'}">rental weeks</td>
+                    <td th:text="${order.address}">address</td>
+                    <td th:text="${order.contactPhone}">phone</td>
+                    <td th:text="${order.installationRequired ? 'Yes' : 'No'}">installation</td>
+                    <td th:text="${order.totalPrice + ' €'}">price</td>
+                    <td th:text="${#temporals.format(order.createdOn, 'dd.MM.yyyy')}">created</td>
+                    <td>
+                        <form th:if="${order.orderStatus.name() != 'APPROVED' and order.orderStatus.name() != 'CANCELLED'}"
+                              th:action="@{/admin/orders/{id}/status(id=${order.id})}"
+                              method="post"
+                              class="status-form">
+                            <input type="hidden" name="_method" value="put">
+
+                            <select name="orderStatus"
+                                    class="status-select"
+                                    aria-label="Order status">
+                                <option value="APPROVED">APPROVED</option>
+                                <option value="CANCELLED">CANCELLED</option>
+                            </select>
+
+                            <button type="submit" class="status-update-btn">Update</button>
+                        </form>
+
+                        <span th:if="${order.orderStatus.name() == 'APPROVED' or order.orderStatus.name() == 'CANCELLED'}"
+                              class="final-status-label">
+                                     Final
+                                    </span>
+
+                        <form th:if="${order.orderStatus.name() == 'APPROVED' or order.orderStatus.name() == 'CANCELLED'}"
+                              th:action="@{/admin/orders/{id}(id=${order.id})}"
+                              method="post"
+                              class="delete-order-form"
+                              onsubmit="return confirm('Are you sure you want to delete this final order?');">
+                            <input type="hidden" name="_method" value="delete">
+                            <button type="submit" class="delete-order-btn">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </section>
+</main>
+
+<div th:insert="~{fragments/common/footer :: footer}"></div>
+
+</body>
+</html>

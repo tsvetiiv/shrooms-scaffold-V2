@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Rent Scaffold | Shrooms</title>
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" th:href="@{/css/rent.css}">
+</head>
+<body>
+
+<div th:insert="~{fragments/common/header :: header}"></div>
+
+<main class="rent-page">
+    <section class="rent-wrapper">
+
+        <h1>Rent Scaffold</h1>
+        <div class="red-line"></div>
+
+        <div class="scaffold-grid">
+
+            <article class="scaffold-card" th:each="scaffold : ${scaffolds}">
+
+                <img th:src="${scaffold.imageUrl}"
+                     th:alt="${scaffold.name}">
+
+                <div class="scaffold-content">
+                    <h2 th:text="${scaffold.name}">Scaffold name</h2>
+
+                    <p th:text="${scaffold.description}">
+                        Description
+                    </p>
+
+                    <div class="scaffold-info">
+                        <span th:text="'Height: ' + ${scaffold.height} + ' m'"></span>
+                        <span th:text="'Length: ' + ${scaffold.length} + ' m'"></span>
+                        <span th:text="'Material: ' + ${scaffold.materialType}"></span>
+                    </div>
+
+                    <div class="price"
+                         th:text="'€' + ${scaffold.priceForRent} + ' / week'">
+                    </div>
+
+                    <a th:if="${scaffold.available}"
+                       th:href="@{/scaffolds/rent/{id}(id=${scaffold.id})}"
+                       class="rent-btn">
+                        Rent This Scaffold
+                    </a>
+                    <span th:if="${!scaffold.available}"
+                          class="rent-btn disabled-btn">
+                            Unavailable
+                    </span>
+                </div>
+
+            </article>
+
+        </div>
+
+    </section>
+</main>
+
+<div th:insert="~{fragments/common/footer :: footer}"></div>
+
+</body>
+</html>

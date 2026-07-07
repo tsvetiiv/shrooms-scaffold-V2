@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Profile | Shrooms</title>
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/edit-profile.css">
+</head>
+<body>
+
+<div th:insert="~{fragments/common/header :: header}"></div>
+
+<main class="edit-page">
+    <section class="edit-card">
+
+        <h1>Edit Profile</h1>
+        <div class="red-line"></div>
+        <form th:action="@{/users/profile/edit}" th:object="${userEditProfileDto}" method="post">
+            <input type="hidden" name="_method" value="put">
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" name="username" th:value="${user.username}" readonly>
+            </div>
+
+            <div class="form-group">
+                <label>First Name</label>
+                <input type="text" th:field="*{firstName}">
+                <p class="error"
+                   th:if="${#fields.hasErrors('firstName')}"
+                   th:errors="*{firstName}">
+                </p>
+            </div>
+
+            <div class="form-group">
+                <label>Last Name</label>
+                <input type="text" th:field="*{lastName}">
+                <p class="error"
+                   th:if="${#fields.hasErrors('lastName')}"
+                   th:errors="*{lastName}">
+                </p>
+            </div>
+
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" th:field="*{email}">
+                <p class="error"
+                   th:if="${#fields.hasErrors('email')}"
+                   th:errors="*{email}">
+                </p>
+            </div>
+
+            <div class="form-group">
+                <label>Profile Picture URL</label>
+                <input type="text" th:field="*{profilePicture}">
+                <p class="error"
+                   th:if="${#fields.hasErrors('profilePicture')}"
+                   th:errors="*{profilePicture}">
+                </p>
+            </div>
+
+            <button type="submit" class="save-profile-btn">Save Changes</button>
+
+        </form>
+        <a th:href="@{/users/profile}" class="back-link">
+            Back to Profile
+        </a>
+
+    </section>
+</main>
+
+<div th:insert="~{fragments/common/footer :: footer}"></div>
+
+</body>
+</html>

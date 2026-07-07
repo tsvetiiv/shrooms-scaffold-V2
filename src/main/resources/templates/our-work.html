@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Our Work | Shrooms</title>
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/our-work.css">
+</head>
+<body>
+
+<div th:insert="~{fragments/common/header :: header}"></div>
+
+<main class="our-work-page">
+
+    <section class="page-title">
+        <h1>Our Work</h1>
+        <div class="red-line"></div>
+        <p>Real scaffold projects for renovation, construction and custom access solutions.</p>
+    </section>
+
+    <section class="gallery">
+
+        <div class="work-card">
+            <img src="/images/project3.png" alt="Facade renovation scaffold">
+            <h2>Facade Renovation</h2>
+            <p>Scaffold system prepared for safe exterior renovation work.</p>
+        </div>
+
+        <div class="work-card">
+            <img src="/images/project4.JPG" alt="Commercial Building Scaffold">
+            <h2>Commercial Building Scaffold</h2>
+            <p>Large scaffold structure for professional building maintenance.</p>
+        </div>
+
+        <div class="work-card">
+            <img src="/images/project9.JPG" alt="Custom scaffold project">
+            <h2>Custom Access Scaffold</h2>
+            <p>Tailored scaffold solution for difficult access areas.</p>
+        </div>
+
+        <div class="work-card">
+            <img src="/images/project2.png" alt="Custom scaffold project">
+            <h2>Custom Access Scaffold System</h2>
+            <p>Specialized scaffold construction featuring elevated access
+                platforms and protective screening for complex urban projects.</p>
+        </div>
+        <div class="work-card">
+            <img src="/images/project1.png" alt="Custom scaffold project">
+            <h2>Historic Building Restoration</h2>
+            <p>A specialized scaffold solution providing secure
+                vertical access for restoration and maintenance work
+                on historic and architectural landmarks.</p>
+        </div>
+
+        <div class="work-card">
+            <img src="/images/project7.JPG" alt="Custom scaffold project">
+            <h2>Custom Residential Access Solution</h2>
+            <p>Specialized scaffold system installed for facade
+                and roof maintenance, ensuring safe and efficient
+                access to elevated work areas.</p>
+        </div>
+
+        <div class="work-card">
+            <img src="/images/custom-windmill.JPG" alt="Historic Windmill Scaffolding">
+            <h2>Historic Windmill Scaffolding</h2>
+            <p>Specialized scaffolding erected for the restoration of a traditional windmill. The structure provides
+                safe access to all elevations while supporting conservation and maintenance activities on this historic
+                landmark.</p>
+        </div>
+
+        <div class="work-card">
+            <img src="/images/roofCustom.JPG" alt="Roof Access Scaffolding System">
+            <h2>Roof Access Scaffolding System</h2>
+            <p>Temporary access scaffolding installed for inspection, maintenance, and refurbishment works. The system
+                provides a safe and stable working platform while ensuring minimal impact on the building and its
+                surroundings.</p>
+        </div>
+    </section>
+</main>
+
+<div th:insert="~{fragments/common/footer :: footer}"></div>
+
+</body>
+</html>

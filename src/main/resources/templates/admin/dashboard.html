@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard | Shrooms</title>
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/admin-dashboard.css">
+</head>
+<body>
+<div th:insert="~{fragments/common/header :: header}"></div>
+
+<main class="admin-page">
+    <section class="admin-panel">
+        <h1>Admin Dashboard</h1>
+        <div class="red-line"></div>
+
+        <div class="admin-actions">
+            <a th:href="@{/admin/orders}" class="admin-card">
+                <img src="/images/purchaseCard.png" alt="Orders management">
+
+                <div class="admin-card-content">
+                    <h2>Orders</h2>
+                    <p>Manage rent and purchase orders.</p>
+                </div>
+            </a>
+
+            <a th:href="@{/admin/custom-orders}" class="admin-card">
+                <img src="/images/custom-windmill.JPG" alt="Custom request management">
+
+                <div class="admin-card-content">
+                    <h2>Custom Requests</h2>
+                    <p>Review custom scaffold requests and set estimated prices.</p>
+                </div>
+            </a>
+
+            <a th:href="@{/admin/scaffolds}" class="admin-card">
+                <img src="/images/aluminiumFacade.png" alt="Scaffold catalog management">
+
+                <div class="admin-card-content">
+                    <h2>Scaffolds</h2>
+                    <p>Create, edit and manage scaffold offers.</p>
+                </div>
+            </a>
+        </div>
+    </section>
+</main>
+
+<div th:insert="~{fragments/common/footer :: footer}"></div>
+
+</body>
+</html>

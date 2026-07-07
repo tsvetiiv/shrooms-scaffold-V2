@@ -1,0 +1,110 @@
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    color: #f5f5f5;
+
+    background: linear-gradient(rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.88)),
+    url('/images/windmill.JPG');
+
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+.profile-page {
+    min-height: calc(100vh - 185px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 55px 20px;
+}
+
+.profile-card {
+    width: 520px;
+    background: rgba(8, 10, 10, 0.92);
+    padding: 45px;
+    border-radius: 14px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.75);
+}
+
+.profile-image {
+    width: 115px;
+    height: 115px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid #d61f1f;
+    margin-bottom: 22px;
+}
+
+.profile-card h1 {
+    margin: 0;
+    font-size: 42px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.red-line {
+    width: 90px;
+    height: 5px;
+    background: #d61f1f;
+    margin: 24px auto;
+    border-radius: 8px;
+}
+
+.profile-info {
+    text-align: left;
+    margin-top: 25px;
+}
+
+.profile-info p {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+
+    padding: 13px 0;
+    margin: 0;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    color: #dddddd;
+}
+
+.profile-info span {
+    color: #aaaaaa;
+}
+
+.profile-info strong {
+    color: white;
+}
+
+.profile-actions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin-top: 32px;
+}
+
+.profile-btn {
+    padding: 13px 24px;
+    border-radius: 7px;
+    background: #c71919;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.profile-btn:hover {
+    background: #e32626;
+}
+
+.profile-btn.secondary {
+    background: transparent;
+    border: 1px solid #d61f1f;
+}
+
+.profile-btn.secondary:hover {
+    background: #d61f1f;
+}

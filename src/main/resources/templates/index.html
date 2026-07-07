@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Shrooms Scaffold</title>
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/home.css">
+</head>
+<body>
+
+<div th:insert="~{fragments/common/header :: header}"></div>
+
+<section class="hero">
+    <h1>SHROOMS SCAFFOLD</h1>
+    <div class="red-line"></div>
+    <p>Professional scaffold solutions for rent, purchase and custom construction projects.</p>
+</section>
+<section class="services">
+
+    <div class="service-card"
+         th:if="${session.user == null or session.user.roleType.name() == 'USER'}">
+        <img src="/images/rentCard.png" alt="Scaffold rental">
+        <div class="service-content">
+            <h2>Rent Scaffold</h2>
+            <p>Rent safe and reliable scaffold systems for your construction or renovation project.</p>
+            <a th:href="@{/scaffolds/rent}" class="service-btn">Rent Now</a>
+        </div>
+    </div>
+
+    <div class="service-card"
+         th:if="${session.user == null or session.user.roleType.name() == 'USER'}">
+        <img src="/images/purchaseCard.png" alt="Scaffold purchase">
+        <div class="service-content">
+            <h2>Purchase Scaffold</h2>
+            <p>Buy professional scaffold systems for long-term use and business projects.</p>
+            <a th:href="@{/scaffolds/purchase}" class="service-btn">Purchase Now</a>
+        </div>
+    </div>
+
+    <div class="service-card"
+         th:if="${session.user == null or session.user.roleType.name() == 'USER'}">
+        <img src="/images/custom-windmill.JPG" alt="Custom scaffold request">
+        <div class="service-content">
+            <h2>Custom Scaffold</h2>
+            <p>Request a custom scaffold solution designed for your exact project requirements.</p>
+            <a th:href="@{/custom-order}" class="service-btn">Request Custom Offer</a>
+        </div>
+    </div>
+
+    <div class="service-card admin-service-card"
+         th:if="${session.user != null and session.user.roleType.name() == 'ADMIN'}">
+        <img src="/images/facade.png" alt="Admin order management">
+        <div class="service-content">
+            <h2>Manage Orders</h2>
+            <p>Review rent and purchase orders submitted by customers.</p>
+            <a th:href="@{/admin/orders}" class="service-btn">Open Orders</a>
+        </div>
+    </div>
+
+    <div class="service-card admin-service-card"
+         th:if="${session.user != null and session.user.roleType.name() == 'ADMIN'}">
+        <img src="/images/custom-windmill.JPG" alt="Admin custom request management">
+        <div class="service-content">
+            <h2>Custom Requests</h2>
+            <p>Review custom scaffold requests and prepare estimated prices.</p>
+            <a th:href="@{/admin/custom-orders}" class="service-btn">Open Requests</a>
+        </div>
+    </div>
+
+    <div class="service-card admin-service-card"
+         th:if="${session.user != null and session.user.roleType.name() == 'ADMIN'}">
+        <img src="/images/aluminiumFacade.png" alt="Admin scaffold management">
+        <div class="service-content">
+            <h2>Manage Scaffolds</h2>
+            <p>Edit scaffold information, prices, images and availability.</p>
+            <a th:href="@{/admin/scaffolds}" class="service-btn">Open Catalog</a>
+        </div>
+    </div>
+
+</section>
+
+<div th:insert="~{fragments/common/footer :: footer}"></div>
+</body>
+</html>

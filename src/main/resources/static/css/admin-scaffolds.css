@@ -1,0 +1,248 @@
+body {
+    margin: 0;
+    min-height: 100vh;
+
+    background: #050505;
+    color: #f5f5f5;
+    font-family: Arial, sans-serif;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-scaffolds-page {
+    flex: 1;
+    padding: 60px 40px;
+
+    background: linear-gradient(rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0.92)),
+    url('/images/facade.png') center/cover no-repeat;
+}
+
+.admin-scaffolds-panel {
+    max-width: 1250px;
+    margin: 0 auto;
+    padding: 40px 36px;
+
+    background: rgba(8, 10, 10, 0.92);
+    border: 1px solid rgba(214, 31, 31, 0.35);
+    border-radius: 10px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65);
+}
+
+.admin-page-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+}
+
+.admin-page-heading h1 {
+    margin: 0;
+
+    color: #ffffff;
+    font-size: 38px;
+    text-transform: uppercase;
+}
+
+.back-admin-link {
+    padding: 10px 16px;
+
+    background: #d61f1f;
+    border-radius: 4px;
+
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 700;
+
+    transition: background 0.2s ease;
+}
+
+.back-admin-link:hover {
+    background: #b81818;
+}
+
+.red-line {
+    width: 90px;
+    height: 4px;
+    margin: 18px 0 34px;
+
+    background: #d61f1f;
+}
+
+.scaffold-admin-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    gap: 28px;
+}
+
+.scaffold-admin-card {
+    overflow: hidden;
+
+    background: rgba(10, 10, 10, 0.94);
+    border: 1px solid rgba(214, 31, 31, 0.35);
+    border-radius: 10px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.55);
+
+    display: flex;
+    flex-direction: column;
+}
+
+.scaffold-admin-card img {
+    width: 100%;
+    height: 220px;
+
+    object-fit: contain;
+
+    background: #111111;
+    padding: 12px;
+    box-sizing: border-box;
+}
+
+.scaffold-admin-content {
+    padding: 24px;
+
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.scaffold-admin-content h2 {
+    margin: 0 0 12px;
+
+    color: #ffffff;
+    font-size: 23px;
+    text-align: center;
+}
+
+.scaffold-admin-content p {
+    height: 155px;
+    margin: 0 0 18px;
+
+    color: #d6d6d6;
+    font-size: 14px;
+    line-height: 1.55;
+
+    overflow: hidden;
+}
+
+.scaffold-admin-info {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 9px;
+
+    margin-bottom: 22px;
+}
+
+.scaffold-admin-info span {
+    padding: 7px 10px;
+
+    background: rgba(214, 31, 31, 0.15);
+    border: 1px solid rgba(214, 31, 31, 0.3);
+    border-radius: 6px;
+
+    color: #e8e8e8;
+    font-size: 13px;
+}
+
+.edit-scaffold-btn {
+    display: block;
+    margin-top: auto;
+    padding: 13px 18px;
+
+    background: #d61f1f;
+    border-radius: 6px;
+
+    color: #ffffff;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 700;
+
+    transition: background 0.2s ease;
+}
+
+.edit-scaffold-btn:hover {
+    background: #b81818;
+}
+
+.scaffold-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: auto;
+}
+
+.scaffold-actions .edit-scaffold-btn,
+.scaffold-actions .delete-scaffold-btn {
+    flex: 1;
+}
+
+.delete-scaffold-form {
+    flex: 1;
+    margin: 0;
+}
+
+.delete-scaffold-btn {
+    width: 100%;
+    padding: 13px 18px;
+
+    background: #555555;
+    border: none;
+    border-radius: 6px;
+
+    color: #ffffff;
+    text-align: center;
+    font-weight: 700;
+
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.delete-scaffold-btn:hover {
+    background: #b81818;
+}
+
+.flash-message {
+    margin-bottom: 24px;
+    padding: 14px 18px;
+
+    border-radius: 7px;
+
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.flash-message.success {
+    background: rgba(46, 204, 113, 0.16);
+    border: 1px solid rgba(46, 204, 113, 0.65);
+    color: #69e89b;
+}
+
+.flash-message.warning {
+    background: rgba(255, 193, 7, 0.15);
+    border: 1px solid rgba(255, 193, 7, 0.65);
+    color: #ffd45a;
+}
+
+@media (max-width: 800px) {
+    .admin-scaffolds-page {
+        padding: 40px 18px;
+    }
+
+    .admin-scaffolds-panel {
+        padding: 28px 18px;
+    }
+
+    .admin-page-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .admin-page-heading h1 {
+        font-size: 30px;
+    }
+
+    .scaffold-admin-content p {
+        height: auto;
+    }
+}

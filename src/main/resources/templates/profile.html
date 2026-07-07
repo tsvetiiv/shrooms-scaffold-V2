@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My Profile | Shrooms</title>
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/profile.css">
+</head>
+<body>
+
+<div th:insert="~{fragments/common/header :: header}"></div>
+
+<main class="profile-page">
+
+    <section class="profile-card">
+
+        <img class="profile-image"
+             th:src="${user.getProfilePicture}"
+             alt="Profile picture">
+
+        <h1>My Profile</h1>
+        <div class="red-line"></div>
+
+        <div class="profile-info">
+            <p><span>Id:</span> <small th:text="${user.getId()}">Id</small></p>
+            <p><span>Username:</span> <strong th:text="${user.getUsername()}">username</strong></p>
+            <p><span>First name:</span> <strong th:text="${user.getFirstName()}">First</strong></p>
+            <p><span>Last name:</span> <strong th:text="${user.getLastName()}">Last</strong></p>
+            <p><span>Email:</span> <strong th:text="${user.getEmail()}">email</strong></p>
+            <p><span>Role:</span> <strong th:text="${user.getRoleType()}">USER</strong></p>
+        </div>
+
+        <div class="profile-actions">
+            <a th:href="@{/users/profile/edit}" class="profile-btn">Edit Profile</a>
+            <a href="/orders" class="profile-btn secondary">My Orders</a>
+        </div>
+
+    </section>
+
+</main>
+
+<div th:insert="~{fragments/common/footer :: footer}"></div>
+
+</body>
+</html>

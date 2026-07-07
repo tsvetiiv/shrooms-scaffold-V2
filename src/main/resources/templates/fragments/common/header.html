@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Header Fragment</title>
+</head>
+<body>
+<header th:fragment="header" class="header">
+    <a th:if="${session.user == null or session.user.roleType.name() == 'USER'}"
+       th:href="@{/}"
+       class="logo">
+        <img src="/images/skull-logo.png" alt="Shrooms logo">
+
+        <div class="logo-text">
+            <div class="logo-title">SHROOMS</div>
+            <div class="logo-subtitle">SCAFFOLD SOLUTIONS</div>
+        </div>
+    </a>
+
+    <a th:if="${session.user != null and session.user.roleType.name() == 'ADMIN'}"
+       th:href="@{/admin}"
+       class="logo">
+        <img src="/images/skull-logo.png" alt="Shrooms logo">
+
+        <div class="logo-text">
+            <div class="logo-title">SHROOMS</div>
+            <div class="logo-subtitle">SCAFFOLD SOLUTIONS</div>
+        </div>
+    </a>
+
+    <nav class="nav">
+        <a th:if="${session.user == null or session.user.roleType.name() == 'USER'}"
+           th:href="@{/}">
+            Home
+        </a>
+
+        <a th:if="${session.user != null and session.user.roleType.name() == 'ADMIN'}"
+           th:href="@{/admin}">
+            Home
+        </a>
+
+        <a th:href="@{/our-work}">Our Work</a>
+
+        <a th:if="${session.user == null}" th:href="@{/login}">Login</a>
+        <a th:if="${session.user == null}" th:href="@{/register}" class="register-btn">Register</a>
+
+        <a th:if="${session.user != null and session.user.roleType.name() == 'USER'}"
+           th:href="@{/orders}">
+            My Orders
+        </a>
+
+        <a th:if="${session.user != null and session.user.roleType.name() == 'ADMIN'}"
+           th:href="@{/admin/orders}">
+            Orders
+        </a>
+
+        <a th:if="${session.user != null and session.user.roleType.name() == 'ADMIN'}"
+           th:href="@{/admin/custom-orders}">
+            Custom Requests
+        </a>
+
+        <a th:if="${session.user != null and session.user.roleType.name() == 'ADMIN'}"
+           th:href="@{/admin/scaffolds}">
+            Scaffolds
+        </a>
+
+        <a th:if="${session.user != null}" th:href="@{/users/profile}">Profile</a>
+        <a th:if="${session.user != null}" th:href="@{/logout}" class="logout-btn">Logout</a>
+    </nav>
+</header>
+</body>
+</html>

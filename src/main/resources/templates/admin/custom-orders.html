@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Custom Requests | Shrooms</title>
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/admin-orders.css">
+</head>
+<body>
+
+<div th:insert="~{fragments/common/header :: header}"></div>
+
+<main class="admin-orders-page">
+    <section class="admin-orders-panel">
+
+        <div class="admin-page-heading">
+            <h1>Custom Requests</h1>
+            <a th:href="@{/admin}" class="back-admin-link">Back to Dashboard</a>
+        </div>
+
+        <div class="red-line"></div>
+
+        <div class="flash-message success"
+             th:if="${successMessage}"
+             th:text="${successMessage}">
+        </div>
+
+        <div class="flash-message warning"
+             th:if="${warningMessage}"
+             th:text="${warningMessage}">
+        </div>
+
+        <p class="empty-admin-message"
+           th:if="${#lists.isEmpty(customOrders)}">
+            No custom requests yet.
+        </p>
+        <div class="admin-custom-grid">
+            <article class="admin-custom-card"
+                     th:classappend="${customOrder.requestStatus.name() == 'APPROVED' or customOrder.requestStatus.name() == 'REJECTED'} ? 'final-custom-request' : ''"
+                     th:each="customOrder : ${customOrders}">
+                <h2 th:text="${customOrder.projectName}">Project</h2>
+                <div class="detail-row">
+                    <span>Description</span>
+                    <strong th:text="${customOrder.description}">description</strong>
+                </div>
+                <div class="detail-row">
+                    <span>Image</span>
+                    <strong>
+                        <a th:if="${customOrder.projectImage != null and !customOrder.projectImage.isBlank()}"
+                           th:href="${customOrder.projectImage}"
+                           target="_blank">
+                            View image
+                        </a>
+                        <span th:if="${customOrder.projectImage == null or customOrder.projectImage.isBlank()}">-</span>
+                    </strong>
+                </div>
+                <div class="detail-row">
+                    <span>Customer</span>
+                    <strong th:text="${customOrder.user.username}">customer</strong>
+                </div>
+                <div class="detail-row">
+                    <span>Email</span>
+                    <strong th:text="${customOrder.user.email}">email</strong>
+                </div>
+                <div class="detail-row">
+                    <span>Phone</span>
+                    <strong th:text="${customOrder.contactPhone}">phone</strong>
+                </div>
+                <div class="detail-row">
+                    <span>Type</span>
+                    <strong th:text="${customOrder.orderType}">type</strong>
+                </div>
+                <div class="detail-row">
+                    <span>Status</span>
+                    <strong>
+                        <span class="status-badge"
+                              th:classappend="${customOrder.requestStatus.name().toLowerCase()}"
+                              th:text="${customOrder.requestStatus}">
+                        </span>
+                    </strong>
+                </div>
+                <div class="detail-row">
+                    <span>Dimensions</span>
+                    <strong>
+                        <span th:text="${customOrder.height}">0</span>m ×
+                        <span th:text="${customOrder.width}">0</span>m ×
+                        <span th:text="${customOrder.length}">0</span>m
+                    </strong>
+                </div>
+                <div class="detail-row">
+                    <span>Address</span>
+                    <strong th:text="${customOrder.address}">address</strong>
+                </div>
+                <div class="detail-row">
+                    <span>Installation</span>
+                    <strong th:text="${customOrder.installationRequired ? 'Yes' : 'No'}">installation</strong>
+                </div>
+                <div class="detail-row">
+                    <span>Start Date</span>
+                    <strong th:text="${customOrder.startDate != null ? customOrder.startDate : '-'}">start</strong>
+                </div>
+                <div class="detail-row">
+                    <span>End Date</span>
+                    <strong th:text="${customOrder.endDate != null ? customOrder.endDate : '-'}">end</strong>
+                </div>
+                <div class="detail-row">
+                    <span>Created On</span>
+                    <strong th:text="${#temporals.format(customOrder.createdOn, 'dd.MM.yyyy')}">created</strong>
+                </div>
+                <div class="detail-row">
+                    <span>Estimated Price</span>
+                    <strong>
+                        <span th:if="${customOrder.estimatedPrice != null}"
+                              th:text="${customOrder.estimatedPrice + ' €'}">
+                        </span>
+                        <span th:if="${customOrder.estimatedPrice == null}">
+                            Awaiting quote
+                        </span>
+                    </strong>
+                </div>
+                <form th:if="${customOrder.requestStatus.name() != 'REJECTED' and customOrder.requestStatus.name() != 'APPROVED'}"
+                      th:action="@{/admin/custom-orders/{id}(id=${customOrder.id})}"
+                      method="post"
+                      class="status-form admin-custom-action-form">
+                    <input type="hidden" name="_method" value="put">
+
+                    <input type="number"
+                           name="estimatedPrice"
+                           class="price-input custom-price-input"
+                           step="0.01"
+                           th:value="${customOrder.estimatedPrice}"
+                           placeholder="Price">
+
+                    <select name="requestStatus" class="status-select custom-status-select">
+                        <option value="APPROVED">APPROVED</option>
+                        <option value="REJECTED">REJECTED</option>
+                    </select>
+
+                    <button type="submit" class="status-update-btn">Update</button>
+                </form>
+                <small class="error-message"
+                       th:if="${priceError != null and priceErrorOrderId == customOrder.id}"
+                       th:text="${priceError}">
+                </small>
+
+                <span th:if="${customOrder.requestStatus.name() == 'APPROVED' or customOrder.requestStatus.name() == 'REJECTED'}"
+                      class="final-status-label admin-custom-final-label">
+                     Final
+                </span>
+                <form th:if="${customOrder.requestStatus.name() == 'APPROVED' or customOrder.requestStatus.name() == 'REJECTED'}"
+                      th:action="@{/admin/custom-orders/{id}(id=${customOrder.id})}"
+                      method="post"
+                      class="delete-order-form"
+                      onsubmit="return confirm('Are you sure you want to delete this final order?');">
+                    <input type="hidden" name="_method" value="delete">
+                    <button type="submit" class="delete-order-btn">Delete</button>
+                </form>
+            </article>
+        </div>
+
+    </section>
+</main>
+
+<div th:insert="~{fragments/common/footer :: footer}"></div>
+
+<script>
+    document.querySelectorAll('.admin-custom-action-form').forEach((form) => {
+        const priceInput = form.querySelector('.custom-price-input');
+        const statusSelect = form.querySelector('.custom-status-select');
+
+        const togglePriceInput = () => {
+            const rejected = statusSelect.value === 'REJECTED';
+            priceInput.hidden = rejected;
+            priceInput.disabled = rejected;
+
+            if (rejected) {
+                priceInput.value = '';
+            }
+        };
+
+        statusSelect.addEventListener('change', togglePriceInput);
+        togglePriceInput();
+    });
+</script>
+
+</body>
+</html>
