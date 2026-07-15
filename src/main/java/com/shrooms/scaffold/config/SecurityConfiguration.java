@@ -46,7 +46,11 @@ public class SecurityConfiguration {
                                     .build();
 
                             request.getSession().setAttribute("user", userDto);
-                            response.sendRedirect("/");
+                            switch (userDto.getRoleType()) {
+                                case OWNER -> response.sendRedirect("/owner");
+                                case ADMIN -> response.sendRedirect("/admin");
+                                default -> response.sendRedirect("/");
+                            }
                         })
                         .failureHandler((request, response, exception) -> {
                             if (exception instanceof org.springframework.security.authentication.DisabledException) {

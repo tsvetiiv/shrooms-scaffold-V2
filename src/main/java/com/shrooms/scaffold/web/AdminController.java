@@ -1,6 +1,7 @@
 package com.shrooms.scaffold.web;
 
 import com.shrooms.scaffold.model.dto.scaffold.ScaffoldRequest;
+import com.shrooms.scaffold.model.dto.inspection.InspectionResponseDto;
 import com.shrooms.scaffold.model.entity.customOrder.CustomOrder;
 import com.shrooms.scaffold.model.entity.customOrder.RequestStatus;
 import com.shrooms.scaffold.model.entity.order.Order;
@@ -9,6 +10,7 @@ import com.shrooms.scaffold.model.entity.scaffold.MaterialType;
 import com.shrooms.scaffold.model.entity.scaffold.Scaffold;
 import com.shrooms.scaffold.model.entity.scaffold.ScaffoldCategory;
 import com.shrooms.scaffold.service.customOrder.CustomOrderService;
+import com.shrooms.scaffold.service.inspection.InspectionIntegrationService;
 import com.shrooms.scaffold.service.order.OrderService;
 import com.shrooms.scaffold.service.scaffold.ScaffoldService;
 import jakarta.validation.Valid;
@@ -28,6 +30,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 @Controller
@@ -37,11 +41,16 @@ public class AdminController {
     private final OrderService orderService;
     private final CustomOrderService customOrderService;
     private final ScaffoldService scaffoldService;
+    private final InspectionIntegrationService inspectionIntegrationService;
 
-    public AdminController(OrderService orderService, CustomOrderService customOrderService, ScaffoldService scaffoldService) {
+    public AdminController(OrderService orderService,
+                           CustomOrderService customOrderService,
+                           ScaffoldService scaffoldService,
+                           InspectionIntegrationService inspectionIntegrationService) {
         this.orderService = orderService;
         this.customOrderService = customOrderService;
         this.scaffoldService = scaffoldService;
+        this.inspectionIntegrationService = inspectionIntegrationService;
     }
 
     @GetMapping
@@ -54,6 +63,10 @@ public class AdminController {
         List<Order> allOrders = orderService.getAllOrders();
         ModelAndView modelAndView = new ModelAndView("admin/orders");
         modelAndView.addObject("orders", allOrders);
+        modelAndView.addObject("inspectionProjectIds", getInspectionProjectIds());
+        modelAndView.addObject("inspectionByProjectId", getInspectionByProjectId(allOrders.stream()
+                .map(Order::getId)
+                .toList()));
         return modelAndView;
     }
 
@@ -62,6 +75,10 @@ public class AdminController {
         List<CustomOrder> allCustomOrders = customOrderService.getAllCustomOrders();
         ModelAndView modelAndView = new ModelAndView("admin/custom-orders");
         modelAndView.addObject("customOrders", allCustomOrders);
+        modelAndView.addObject("inspectionProjectIds", getInspectionProjectIds());
+        modelAndView.addObject("inspectionByProjectId", getInspectionByProjectId(allCustomOrders.stream()
+                .map(CustomOrder::getId)
+                .toList()));
         return modelAndView;
     }
 
@@ -96,6 +113,7 @@ public class AdminController {
                                     @RequestParam RequestStatus requestStatus,
                                     @RequestParam(required = false) BigDecimal estimatedPrice,
                                     RedirectAttributes redirectAttributes) {
+
         if (RequestStatus.APPROVED.equals(requestStatus)
                 && (estimatedPrice == null || estimatedPrice.compareTo(BigDecimal.ZERO) <= 0)) {
             redirectAttributes.addFlashAttribute("priceErrorOrderId", id);
@@ -185,5 +203,21 @@ public class AdminController {
         }
 
         return new ModelAndView("redirect:/admin/scaffolds");
+    }
+
+    private Set<UUID> getInspectionProjectIds() {
+        try {
+            return inspectionIntegrationService.getInspectionProjectIds();
+        } catch (RuntimeException exception) {
+            return Set.of();
+        }
+    }
+
+    private Map<UUID, InspectionResponseDto> getInspectionByProjectId(List<UUID> projectIds) {
+        try {
+            return inspectionIntegrationService.getInspectionsByProjectIds(projectIds);
+        } catch (RuntimeException exception) {
+            return Map.of();
+        }
     }
 }

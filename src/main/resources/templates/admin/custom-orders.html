@@ -122,7 +122,12 @@
                         </span>
                     </strong>
                 </div>
-                <form th:if="${customOrder.requestStatus.name() != 'REJECTED' and customOrder.requestStatus.name() != 'APPROVED'}"
+                <form th:if="${customOrder.requestStatus.name() != 'REJECTED'
+                              and customOrder.requestStatus.name() != 'APPROVED'
+                              and (!customOrder.installationRequired
+                                   or (inspectionByProjectId.containsKey(customOrder.id)
+                                       and inspectionByProjectId[customOrder.id].status.name() == 'REPORT_SUBMITTED'
+                                       and inspectionByProjectId[customOrder.id].recommendedAction.name() != 'REJECT'))}"
                       th:action="@{/admin/custom-orders/{id}(id=${customOrder.id})}"
                       method="post"
                       class="status-form admin-custom-action-form">
@@ -142,6 +147,21 @@
 
                     <button type="submit" class="status-update-btn">Update</button>
                 </form>
+
+                <form th:if="${customOrder.installationRequired
+                              and customOrder.requestStatus.name() != 'REJECTED'
+                              and customOrder.requestStatus.name() != 'APPROVED'
+                              and inspectionByProjectId.containsKey(customOrder.id)
+                              and inspectionByProjectId[customOrder.id].status.name() == 'REPORT_SUBMITTED'
+                              and inspectionByProjectId[customOrder.id].recommendedAction.name() == 'REJECT'}"
+                      th:action="@{/admin/custom-orders/{id}(id=${customOrder.id})}"
+                      method="post"
+                      class="delete-order-form">
+                    <input type="hidden" name="_method" value="put">
+                    <input type="hidden" name="requestStatus" value="REJECTED">
+                    <button type="submit" class="delete-order-btn">Reject Request</button>
+                </form>
+
                 <small class="error-message"
                        th:if="${priceError != null and priceErrorOrderId == customOrder.id}"
                        th:text="${priceError}">
@@ -151,6 +171,30 @@
                       class="final-status-label admin-custom-final-label">
                      Final
                 </span>
+                <form th:if="${customOrder.installationRequired
+                              and customOrder.requestStatus.name() != 'REJECTED'
+                              and customOrder.requestStatus.name() != 'APPROVED'
+                              and !inspectionProjectIds.contains(customOrder.id)}"
+                      th:action="@{/admin/inspections/custom-orders/{id}(id=${customOrder.id})}"
+                      method="post"
+                      class="delete-order-form">
+                    <button type="submit" class="status-update-btn">Request Inspection</button>
+                </form>
+                <span th:if="${customOrder.installationRequired
+                              and customOrder.requestStatus.name() != 'REJECTED'
+                              and customOrder.requestStatus.name() != 'APPROVED'
+                              and inspectionProjectIds.contains(customOrder.id)}"
+                      th:unless="${inspectionByProjectId.containsKey(customOrder.id) and inspectionByProjectId[customOrder.id].status.name() == 'REPORT_SUBMITTED'}"
+                      class="inspection-requested-label">
+                    Sent for inspection
+                </span>
+                <a th:if="${customOrder.installationRequired
+                          and inspectionByProjectId.containsKey(customOrder.id)
+                          and inspectionByProjectId[customOrder.id].status.name() == 'REPORT_SUBMITTED'}"
+                   th:href="@{/admin/inspections/{id}/report(id=${inspectionByProjectId[customOrder.id].id})}"
+                   class="view-report-btn inspection-action-link">
+                    View Report
+                </a>
                 <form th:if="${customOrder.requestStatus.name() == 'APPROVED' or customOrder.requestStatus.name() == 'REJECTED'}"
                       th:action="@{/admin/custom-orders/{id}(id=${customOrder.id})}"
                       method="post"

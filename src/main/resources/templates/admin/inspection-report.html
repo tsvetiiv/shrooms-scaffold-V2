@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Inspection Report | Shrooms</title>
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/admin-orders.css">
+</head>
+<body>
+
+<div th:insert="~{fragments/common/header :: header}"></div>
+
+<main class="admin-orders-page">
+    <section class="admin-orders-panel">
+
+        <div class="admin-page-heading">
+            <h1>Inspection Report</h1>
+            <a sec:authorize="hasRole('ADMIN')"
+               th:href="@{/admin/inspections}" class="back-admin-link">Back to Inspections</a>
+            <a sec:authorize="hasRole('OWNER')"
+               th:href="@{/admin/inspections}" class="back-admin-link">Back to Inspections</a>
+        </div>
+
+        <div class="red-line"></div>
+
+        <div class="inspection-summary">
+            <h2>Inspection Details</h2>
+
+            <div class="detail-row">
+                <span>Customer</span>
+                <strong th:text="${inspection.customerName}">Customer Name</strong>
+            </div>
+
+            <div class="detail-row">
+                <span>Project Type</span>
+                <strong th:text="${inspection.projectType}">ORDER</strong>
+            </div>
+
+            <div class="detail-row">
+                <span>Address</span>
+                <strong th:text="${inspection.projectAddress}">Project address</strong>
+            </div>
+
+            <div class="detail-row">
+                <span>Status</span>
+                <strong th:text="${inspection.status}">REQUESTED</strong>
+            </div>
+
+            <div class="detail-row">
+                <span>Height</span>
+                <strong>
+                    <span th:text="${inspection.heightMeters}">0</span> m
+                </strong>
+            </div>
+
+            <div class="detail-row">
+                <span>Area</span>
+                <strong>
+                    <span th:text="${inspection.areaSqMeters}">0</span> sq m
+                </strong>
+            </div>
+        </div>
+
+        <form th:action="@{/admin/inspections/{id}/report(id=${inspection.id})}"
+              th:object="${reportRequest}"
+              method="post"
+              class="inspection-report-form"
+              th:if="${inspection.status == null or inspection.status.name() != 'REPORT_SUBMITTED'}">
+
+            <input type="hidden" th:field="*{heightMeters}">
+            <input type="hidden" th:field="*{areaSqMeters}">
+
+            <div class="form-group">
+                <label for="inspectorName">Inspector Name</label>
+                <input id="inspectorName" type="text" th:field="*{inspectorName}">
+                <small class="error-message"
+                       th:if="${#fields.hasErrors('inspectorName')}"
+                       th:errors="*{inspectorName}">
+                    Inspector name error
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label for="accessDifficulty">Access Difficulty</label>
+                <select id="accessDifficulty" th:field="*{accessDifficulty}">
+                    <option value="">Select access difficulty</option>
+                    <option value="EASY">EASY</option>
+                    <option value="MODERATE">MODERATE</option>
+                    <option value="HARD">HARD</option>
+                </select>
+                <small class="error-message"
+                       th:if="${#fields.hasErrors('accessDifficulty')}"
+                       th:errors="*{accessDifficulty}">
+                    Access difficulty error
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label for="groundCondition">Ground Condition</label>
+                <select id="groundCondition" th:field="*{groundCondition}">
+                    <option value="">Select ground condition</option>
+                    <option value="STABLE">STABLE</option>
+                    <option value="UNEVEN">UNEVEN</option>
+                    <option value="UNSTABLE">UNSTABLE</option>
+                </select>
+                <small class="error-message"
+                       th:if="${#fields.hasErrors('groundCondition')}"
+                       th:errors="*{groundCondition}">Ground condition error</small>
+            </div>
+
+            <div class="form-group">
+                <label for="safetyRisk">Safety Risk</label>
+                <select id="safetyRisk" th:field="*{safetyRisk}">
+                    <option value="">Select safety risk</option>
+                    <option value="LOW">LOW</option>
+                    <option value="MEDIUM">MEDIUM</option>
+                    <option value="HIGH">HIGH</option>
+                </select>
+                <small class="error-message"
+                       th:if="${#fields.hasErrors('safetyRisk')}"
+                       th:errors="*{safetyRisk}">Safety risk error</small>
+            </div>
+
+            <div class="form-group">
+                <label for="notes">Notes</label>
+                <textarea id="notes" th:field="*{notes}" rows="5"></textarea>
+                <small class="error-message"
+                       th:if="${#fields.hasErrors('notes')}"
+                       th:errors="*{notes}">
+                    Notes error
+                </small>
+            </div>
+
+            <div class="inspection-report-actions">
+                <button type="submit" class="status-update-btn">Submit Report</button>
+                <a th:href="@{/admin/inspections}" class="delete-order-btn">Cancel</a>
+            </div>
+
+        </form>
+
+        <div class="submitted-report-summary"
+             th:if="${inspection.status != null and inspection.status.name() == 'REPORT_SUBMITTED'}">
+            <h2>Submitted Report</h2>
+
+            <div class="detail-row">
+                <span>Inspector</span>
+                <strong th:text="${inspection.inspectorName != null ? inspection.inspectorName : '-'}">-</strong>
+            </div>
+
+            <div class="detail-row">
+                <span>Risk Level</span>
+                <strong th:text="${inspection.riskLevel != null ? inspection.riskLevel : '-'}">-</strong>
+            </div>
+
+            <div class="detail-row">
+                <span>Recommended Action</span>
+                <strong th:text="${inspection.recommendedAction != null ? inspection.recommendedAction : '-'}">-</strong>
+            </div>
+
+            <div class="detail-row">
+                <span>Notes</span>
+                <strong th:text="${inspection.notes != null and !inspection.notes.isBlank() ? inspection.notes : '-'}">-</strong>
+            </div>
+        </div>
+
+    </section>
+</main>
+
+<div th:insert="~{fragments/common/footer :: footer}"></div>
+
+</body>
+</html>

@@ -110,19 +110,49 @@ img {
     backdrop-filter: blur(4px);
 }
 
+.orders-page-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+}
+
 .orders-card h1 {
     margin: 0;
-    text-align: center;
     color: #ffffff;
     font-size: clamp(1.85rem, 3vw, 2.5rem);
     font-weight: 800;
     letter-spacing: 0.02em;
 }
 
+.back-home-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 10px 16px;
+
+    background: #d61f1f;
+    border-radius: 4px;
+
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.15;
+    text-align: center;
+    text-decoration: none;
+
+    transition: background 0.2s ease;
+}
+
+.back-home-link:hover {
+    background: #b81818;
+}
+
 .red-line {
     width: 96px;
     height: 4px;
-    margin: 14px auto 28px;
+    margin: 14px 0 28px;
     border-radius: var(--radius-pill);
 
     background: linear-gradient(
@@ -341,6 +371,35 @@ small {
     background: rgba(214, 31, 31, 0.18);
     border: 1px solid rgba(214, 31, 31, 0.75);
     color: #ff7777;
+}
+
+.inspection-status-label,
+.inspection-completed-label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 110px;
+    padding: 8px 10px;
+
+    border-radius: 5px;
+
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.15;
+    text-align: center;
+}
+
+.inspection-status-label {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    color: #cfcfcf;
+}
+
+.inspection-completed-label {
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.38);
+    color: #f1f1f1;
 }
 
 .orders-table tbody tr.final-order {

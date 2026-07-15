@@ -12,7 +12,10 @@
 <main class="orders-page">
 
     <section class="orders-card">
-        <h1>My Orders</h1>
+        <div class="orders-page-heading">
+            <h1>My Orders</h1>
+            <a th:href="@{/}" class="back-home-link">Back to Home</a>
+        </div>
         <div class="red-line"></div>
 
         <h2>Rent & Purchase Orders</h2>
@@ -29,6 +32,7 @@
                     <th>Address</th>
                     <th>Phone</th>
                     <th>Installation</th>
+                    <th>Inspection</th>
                     <th>Total Price</th>
                     <th>Created On</th>
                 </tr>
@@ -36,7 +40,7 @@
 
                 <tbody>
                 <tr th:if="${#lists.isEmpty(orders)}">
-                    <td colspan="10">No rent or purchase orders yet.</td>
+                    <td colspan="11">No rent or purchase orders yet.</td>
                 </tr>
 
                 <tr th:each="order : ${orders}"
@@ -55,6 +59,18 @@
                     <td th:text="${order.address}">Address</td>
                     <td th:text="${order.contactPhone}">Phone</td>
                     <td th:text="${order.installationRequired ? 'Yes' : 'No'}">Installation</td>
+                    <td>
+                        <span th:if="${!order.installationRequired}">Not required</span>
+                        <span th:if="${order.installationRequired and !inspectionByProjectId.containsKey(order.id)}">-</span>
+                        <span class="inspection-status-label"
+                              th:if="${order.installationRequired and inspectionByProjectId.containsKey(order.id) and inspectionByProjectId[order.id].status.name() != 'REPORT_SUBMITTED'}">
+                            Sent for inspection
+                        </span>
+                        <span class="inspection-completed-label"
+                              th:if="${order.installationRequired and inspectionByProjectId.containsKey(order.id) and inspectionByProjectId[order.id].status.name() == 'REPORT_SUBMITTED'}">
+                            Inspection completed
+                        </span>
+                    </td>
                     <td th:text="${order.totalPrice + ' €'}">Price</td>
                     <td th:text="${#temporals.format(order.createdOn, 'dd.MM.yyyy')}">Created On</td>
                 </tr>
@@ -160,6 +176,22 @@
                     <span>Created On</span>
                     <strong th:text="${#temporals.format(customOrder.createdOn, 'dd.MM.yyyy')}">Created
                         On</strong>
+                </div>
+
+                <div class="detail-row">
+                    <span>Inspection</span>
+                    <strong>
+                        <span th:if="${!customOrder.installationRequired}">Not required</span>
+                        <span th:if="${customOrder.installationRequired and !inspectionByProjectId.containsKey(customOrder.id)}">-</span>
+                        <span class="inspection-status-label"
+                              th:if="${customOrder.installationRequired and inspectionByProjectId.containsKey(customOrder.id) and inspectionByProjectId[customOrder.id].status.name() != 'REPORT_SUBMITTED'}">
+                            Sent for inspection
+                        </span>
+                        <span class="inspection-completed-label"
+                              th:if="${customOrder.installationRequired and inspectionByProjectId.containsKey(customOrder.id) and inspectionByProjectId[customOrder.id].status.name() == 'REPORT_SUBMITTED'}">
+                            Inspection completed
+                        </span>
+                    </strong>
                 </div>
             </article>
         </div>

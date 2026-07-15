@@ -115,6 +115,47 @@ body {
     min-width: 2450px;
 }
 
+.admin-inspections-table {
+    width: 100%;
+    min-width: 980px;
+}
+
+.admin-inspections-table th:nth-child(1),
+.admin-inspections-table td:nth-child(1) {
+    width: 145px;
+}
+
+.admin-inspections-table th:nth-child(2),
+.admin-inspections-table td:nth-child(2) {
+    width: 110px;
+}
+
+.admin-inspections-table th:nth-child(3),
+.admin-inspections-table td:nth-child(3) {
+    width: 180px;
+}
+
+.admin-inspections-table th:nth-child(4),
+.admin-inspections-table td:nth-child(4),
+.admin-inspections-table th:nth-child(5),
+.admin-inspections-table td:nth-child(5),
+.admin-inspections-table th:nth-child(6),
+.admin-inspections-table td:nth-child(6),
+.admin-inspections-table th:nth-child(7),
+.admin-inspections-table td:nth-child(7) {
+    width: 120px;
+}
+
+.admin-inspections-table th:nth-child(8),
+.admin-inspections-table td:nth-child(8) {
+    width: 130px;
+}
+
+.admin-inspections-table th:nth-child(9),
+.admin-inspections-table td:nth-child(9) {
+    width: 135px;
+}
+
 .admin-orders-table thead th {
     padding: 16px 14px;
 
@@ -277,6 +318,9 @@ body {
 }
 
 .status-update-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     min-width: 70px;
     padding: 9px 12px;
 
@@ -287,6 +331,9 @@ body {
     color: #ffffff;
     font-size: 13px;
     font-weight: 700;
+    line-height: 1.15;
+    text-align: center;
+    text-decoration: none;
 
     cursor: pointer;
     transition: background 0.2s ease;
@@ -296,7 +343,39 @@ body {
     background: #b81818;
 }
 
+.view-report-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 88px;
+    padding: 9px 12px;
+
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.38);
+    border-radius: 5px;
+
+    color: #f1f1f1;
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1.15;
+    text-align: center;
+    text-decoration: none;
+
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.view-report-btn:hover {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.65);
+    color: #ffffff;
+}
+
 .delete-order-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     min-width: 78px;
     padding: 9px 12px;
 
@@ -307,6 +386,9 @@ body {
     color: #ff7777;
     font-size: 13px;
     font-weight: 700;
+    line-height: 1.15;
+    text-align: center;
+    text-decoration: none;
 
     cursor: pointer;
     transition: background 0.2s ease, color 0.2s ease;
@@ -392,6 +474,30 @@ body {
     text-transform: uppercase;
 }
 
+.inspection-requested-label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 130px;
+    margin-top: 10px;
+    padding: 9px 12px;
+
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 5px;
+
+    color: #cfcfcf;
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1.15;
+    text-align: center;
+}
+
+.inspection-action-link {
+    margin-top: 10px;
+}
+
 .flash-message {
     margin: 0 0 20px;
     padding: 14px 16px;
@@ -449,7 +555,6 @@ body {
 }
 
 .admin-custom-card.final-custom-request {
-    opacity: 0.65;
     background: rgba(120, 120, 120, 0.14);
 }
 
@@ -507,8 +612,81 @@ body {
     width: 130px;
 }
 
+.inspection-summary,
+.submitted-report-summary {
+    max-width: 760px;
+    margin-bottom: 28px;
+}
+
+.inspection-summary h2,
+.submitted-report-summary h2 {
+    margin: 0 0 18px;
+
+    color: #ffffff;
+    font-size: 24px;
+}
+
+.inspection-report-form {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+
+    max-width: 760px;
+    min-width: 0;
+}
+
+.inspection-report-form .form-group {
+    display: grid;
+    gap: 7px;
+}
+
+.inspection-report-form label {
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.inspection-report-form input,
+.inspection-report-form select,
+.inspection-report-form textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 11px 12px;
+
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(214, 31, 31, 0.45);
+    border-radius: 5px;
+
+    color: #ffffff;
+    font-size: 14px;
+}
+
+.inspection-report-form select option {
+    background: #111111;
+    color: #ffffff;
+}
+
+.inspection-report-form textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.inspection-report-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: flex-start;
+
+    padding-top: 6px;
+}
+
+.inspection-report-actions .delete-order-btn {
+    text-decoration: none;
+}
+
 .admin-orders-table tbody tr.final-order {
-    opacity: 0.65;
     background: rgba(120, 120, 120, 0.14) !important;
 }
 

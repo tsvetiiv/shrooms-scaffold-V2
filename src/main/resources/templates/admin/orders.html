@@ -80,7 +80,12 @@
                     <td th:text="${order.totalPrice + ' €'}">price</td>
                     <td th:text="${#temporals.format(order.createdOn, 'dd.MM.yyyy')}">created</td>
                     <td>
-                        <form th:if="${order.orderStatus.name() != 'APPROVED' and order.orderStatus.name() != 'CANCELLED'}"
+                        <form th:if="${order.orderStatus.name() != 'APPROVED'
+                                      and order.orderStatus.name() != 'CANCELLED'
+                                      and (!order.installationRequired
+                                           or (inspectionByProjectId.containsKey(order.id)
+                                               and inspectionByProjectId[order.id].status.name() == 'REPORT_SUBMITTED'
+                                               and inspectionByProjectId[order.id].recommendedAction.name() != 'REJECT'))}"
                               th:action="@{/admin/orders/{id}/status(id=${order.id})}"
                               method="post"
                               class="status-form">
@@ -96,10 +101,51 @@
                             <button type="submit" class="status-update-btn">Update</button>
                         </form>
 
+                        <form th:if="${order.installationRequired
+                                      and order.orderStatus.name() != 'APPROVED'
+                                      and order.orderStatus.name() != 'CANCELLED'
+                                      and inspectionByProjectId.containsKey(order.id)
+                                      and inspectionByProjectId[order.id].status.name() == 'REPORT_SUBMITTED'
+                                      and inspectionByProjectId[order.id].recommendedAction.name() == 'REJECT'}"
+                              th:action="@{/admin/orders/{id}/status(id=${order.id})}"
+                              method="post"
+                              class="delete-order-form">
+                            <input type="hidden" name="_method" value="put">
+                            <input type="hidden" name="orderStatus" value="CANCELLED">
+                            <button type="submit" class="delete-order-btn">Cancel Order</button>
+                        </form>
+
                         <span th:if="${order.orderStatus.name() == 'APPROVED' or order.orderStatus.name() == 'CANCELLED'}"
                               class="final-status-label">
                                      Final
                                     </span>
+
+                        <form th:if="${order.installationRequired
+                                      and order.orderStatus.name() != 'APPROVED'
+                                      and order.orderStatus.name() != 'CANCELLED'
+                                      and !inspectionProjectIds.contains(order.id)}"
+                              th:action="@{/admin/inspections/orders/{id}(id=${order.id})}"
+                              method="post"
+                              class="delete-order-form">
+                            <button type="submit" class="status-update-btn">Request Inspection</button>
+                        </form>
+
+                        <span th:if="${order.installationRequired
+                                      and order.orderStatus.name() != 'APPROVED'
+                                      and order.orderStatus.name() != 'CANCELLED'
+                                      and inspectionProjectIds.contains(order.id)}"
+                              th:unless="${inspectionByProjectId.containsKey(order.id) and inspectionByProjectId[order.id].status.name() == 'REPORT_SUBMITTED'}"
+                              class="inspection-requested-label">
+                            Sent for inspection
+                        </span>
+
+                        <a th:if="${order.installationRequired
+                                  and inspectionByProjectId.containsKey(order.id)
+                                  and inspectionByProjectId[order.id].status.name() == 'REPORT_SUBMITTED'}"
+                           th:href="@{/admin/inspections/{id}/report(id=${inspectionByProjectId[order.id].id})}"
+                           class="view-report-btn inspection-action-link">
+                            View Report
+                        </a>
 
                         <form th:if="${order.orderStatus.name() == 'APPROVED' or order.orderStatus.name() == 'CANCELLED'}"
                               th:action="@{/admin/orders/{id}(id=${order.id})}"

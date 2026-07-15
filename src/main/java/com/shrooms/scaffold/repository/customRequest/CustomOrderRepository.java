@@ -10,7 +10,7 @@ import java.util.UUID;
 @Repository
 public interface CustomOrderRepository extends JpaRepository<CustomOrder, UUID> {
 
-    List<CustomOrder> findAllByUserId(UUID userId);
+    List<CustomOrder> findAllByUserIdOrderByCreatedOnDesc(UUID userId);
 
     List<CustomOrder> findAllByOrderByCreatedOnDesc();
 

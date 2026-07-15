@@ -39,6 +39,16 @@
                 </div>
             </a>
 
+            <a th:href="@{/admin/inspections}" class="admin-card">
+                <img src="/images/facade.png" alt="Inspection management">
+
+                <div class="admin-card-content">
+                    <h2>Inspections</h2>
+                    <p>Review inspection requests and submit scaffold safety reports.</p>
+                    <span class="admin-card-btn">Open Inspections</span>
+                </div>
+            </a>
+
             <a sec:authorize="hasRole('ADMIN')"
                     th:href="@{/our-work}" class="admin-card">
                 <img src="/images/aluminiumFacade.png" alt="Our work catalog">

@@ -85,6 +85,11 @@
             Custom Requests
         </a>
 
+        <a sec:authorize="hasAnyRole('ADMIN', 'OWNER')"
+           th:href="@{/admin/inspections}">
+            Inspections
+        </a>
+
         <a sec:authorize="hasRole('OWNER')"
            th:href="@{/admin/scaffolds}">
             Scaffolds

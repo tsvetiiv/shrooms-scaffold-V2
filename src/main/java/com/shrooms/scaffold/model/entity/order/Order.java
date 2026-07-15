@@ -48,6 +48,7 @@ public class Order {
 
     private Integer rentalWeeks;
     @Column(nullable = false)
+
     private LocalDateTime createdOn;
 
     @Column(nullable = false)

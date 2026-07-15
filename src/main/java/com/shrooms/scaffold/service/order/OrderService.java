@@ -1,6 +1,7 @@
 package com.shrooms.scaffold.service.order;
 
 import com.shrooms.scaffold.event.OrderStatusChangedEvent;
+import com.shrooms.scaffold.model.dto.inspection.InspectionResponseDto;
 import com.shrooms.scaffold.model.dto.order.PurchaseOrderRequest;
 import com.shrooms.scaffold.model.dto.order.RentOrderRequest;
 import com.shrooms.scaffold.model.dto.user.UserDto;
@@ -10,10 +11,13 @@ import com.shrooms.scaffold.model.entity.order.OrderStatus;
 import com.shrooms.scaffold.model.entity.order.OrderType;
 import com.shrooms.scaffold.model.entity.scaffold.Scaffold;
 import com.shrooms.scaffold.model.entity.user.User;
+import com.shrooms.scaffold.model.enums.inspection.InspectionStatus;
+import com.shrooms.scaffold.model.enums.inspection.RecommendedAction;
 import com.shrooms.scaffold.repository.accountClosure.AccountClosureRequestRepository;
 import com.shrooms.scaffold.repository.order.OrderRepository;
 import com.shrooms.scaffold.repository.scaffold.ScaffoldRepository;
 import com.shrooms.scaffold.repository.user.UserRepository;
+import com.shrooms.scaffold.service.inspection.InspectionIntegrationService;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
@@ -30,17 +34,20 @@ public class OrderService {
     private final ScaffoldRepository scaffoldRepository;
     private final AccountClosureRequestRepository accountClosureRequestRepository;
     private final ApplicationEventPublisher publisher;
+   private final InspectionIntegrationService inspectionIntegrationService;
 
     public OrderService(OrderRepository orderRepository,
                         UserRepository userRepository,
                         ScaffoldRepository scaffoldRepository,
                         AccountClosureRequestRepository accountClosureRequestRepository,
-                        ApplicationEventPublisher publisher) {
+                        ApplicationEventPublisher publisher,
+                        InspectionIntegrationService inspectionIntegrationService) {
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
         this.scaffoldRepository = scaffoldRepository;
         this.accountClosureRequestRepository = accountClosureRequestRepository;
         this.publisher = publisher;
+        this.inspectionIntegrationService = inspectionIntegrationService;
     }
 
     public List<Order> getOrdersByUserId(UUID userId) {
@@ -132,9 +139,7 @@ public class OrderService {
     public void updateOrderStatus(UUID orderId, OrderStatus orderStatus) {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found"));
 
-        if (order.getOrderStatus().equals(OrderStatus.APPROVED) || order.getOrderStatus().equals(OrderStatus.CANCELLED)) {
-            throw new RuntimeException("Final orders cannot be updated.");
-        }
+        validateInspectionReportAllowsOrderUpdate(order, orderStatus);
 
         order.setOrderStatus(orderStatus);
         orderRepository.save(order);
@@ -157,4 +162,34 @@ public class OrderService {
 
         orderRepository.delete(order);
     }
+
+    private void validateInspectionReportAllowsOrderUpdate(Order order, OrderStatus orderStatus) {
+        if (OrderStatus.APPROVED.equals(order.getOrderStatus()) ||
+                OrderStatus.CANCELLED.equals(order.getOrderStatus())) {
+            throw new RuntimeException("This order has already been finalized.");
+        }
+
+        if (!order.isInstallationRequired()) {
+            return;
+        }
+
+        List<InspectionResponseDto> inspection =
+                inspectionIntegrationService.getInspectionsByProjectOrderId(order.getId());
+
+        if (inspection.isEmpty()) {
+            throw new RuntimeException("Inspection report is required before updating this order.");
+        }
+
+        InspectionResponseDto inspectionReport = inspection.get(0);
+
+        if (inspectionReport.getStatus() != InspectionStatus.REPORT_SUBMITTED) {
+            throw new RuntimeException("Inspection report must be submitted before updating this order.");
+        }
+
+        if (inspectionReport.getRecommendedAction() == RecommendedAction.REJECT &&
+                orderStatus == OrderStatus.APPROVED) {
+            throw new RuntimeException("This order cannot be approved because the inspection report recommends rejection.");
+        }
+    }
+
 }

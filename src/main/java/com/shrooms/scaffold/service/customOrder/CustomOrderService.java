@@ -1,6 +1,7 @@
 package com.shrooms.scaffold.service.customOrder;
 
 import com.shrooms.scaffold.event.CustomOrderStatusChangedEvent;
+import com.shrooms.scaffold.model.dto.inspection.InspectionResponseDto;
 import com.shrooms.scaffold.model.dto.order.CustomOrderRequest;
 import com.shrooms.scaffold.model.dto.user.UserDto;
 import com.shrooms.scaffold.model.entity.accountClosure.AccountClosureStatus;
@@ -8,9 +9,12 @@ import com.shrooms.scaffold.model.entity.customOrder.CustomOrder;
 import com.shrooms.scaffold.model.entity.customOrder.RequestStatus;
 import com.shrooms.scaffold.model.entity.order.OrderType;
 import com.shrooms.scaffold.model.entity.user.User;
+import com.shrooms.scaffold.model.enums.inspection.InspectionStatus;
+import com.shrooms.scaffold.model.enums.inspection.RecommendedAction;
 import com.shrooms.scaffold.repository.accountClosure.AccountClosureRequestRepository;
 import com.shrooms.scaffold.repository.customRequest.CustomOrderRepository;
 import com.shrooms.scaffold.repository.user.UserRepository;
+import com.shrooms.scaffold.service.inspection.InspectionIntegrationService;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
@@ -27,19 +31,22 @@ public class CustomOrderService {
     private final CustomOrderRepository customOrderRepository;
     private final AccountClosureRequestRepository accountClosureRequestRepository;
     private final ApplicationEventPublisher publisher;
+    private final InspectionIntegrationService inspectionIntegrationService;
 
     public CustomOrderService(UserRepository userRepository,
                               CustomOrderRepository customOrderRepository,
                               AccountClosureRequestRepository accountClosureRequestRepository,
-                              ApplicationEventPublisher publisher) {
+                              ApplicationEventPublisher publisher,
+                              InspectionIntegrationService inspectionIntegrationService) {
         this.userRepository = userRepository;
         this.customOrderRepository = customOrderRepository;
         this.accountClosureRequestRepository = accountClosureRequestRepository;
         this.publisher = publisher;
+        this.inspectionIntegrationService = inspectionIntegrationService;
     }
 
     public List<CustomOrder> getOrdersByUserId(UUID userId) {
-        return customOrderRepository.findAllByUserId(userId);
+        return customOrderRepository.findAllByUserIdOrderByCreatedOnDesc(userId);
     }
 
     public void createCustomOrder(CustomOrderRequest customRequest, UserDto userDto) {
@@ -100,10 +107,7 @@ public class CustomOrderService {
         CustomOrder customOrder = customOrderRepository.findById(customOrderId)
                 .orElseThrow(() -> new RuntimeException("Custom order not found"));
 
-        if (RequestStatus.APPROVED.equals(customOrder.getRequestStatus()) ||
-                RequestStatus.REJECTED.equals(customOrder.getRequestStatus())) {
-            throw new RuntimeException("This custom request has already been finalized.");
-        }
+        validateInspectionReportAllowsCustomOrderUpdate(customOrder, requestStatus);
 
         customOrder.setRequestStatus(requestStatus);
         customOrder.setEstimatedPrice(RequestStatus.APPROVED.equals(requestStatus) ? estimatedPrice : null);
@@ -127,5 +131,36 @@ public class CustomOrderService {
         }
 
         customOrderRepository.delete(finalCustomOrder);
+    }
+
+    private void validateInspectionReportAllowsCustomOrderUpdate(CustomOrder customOrder,
+                                                                 RequestStatus requestStatus) {
+
+        if (RequestStatus.APPROVED.equals(customOrder.getRequestStatus()) ||
+                RequestStatus.REJECTED.equals(customOrder.getRequestStatus())) {
+            throw new RuntimeException("This custom request has already been finalized.");
+        }
+
+        if (!customOrder.isInstallationRequired()) {
+            return;
+        }
+
+        List<InspectionResponseDto> inspection =
+                inspectionIntegrationService.getInspectionsByProjectOrderId(customOrder.getId());
+
+        if (inspection.isEmpty()) {
+            throw new RuntimeException("Inspection report is required before updating this custom order.");
+        }
+
+        InspectionResponseDto inspectionReport = inspection.get(0);
+
+        if (inspectionReport.getStatus() != InspectionStatus.REPORT_SUBMITTED) {
+            throw new RuntimeException("Inspection report must be submitted before updating this custom order.");
+        }
+
+        if (inspectionReport.getRecommendedAction() == RecommendedAction.REJECT &&
+                requestStatus == RequestStatus.APPROVED) {
+            throw new RuntimeException("This custom order cannot be approved because the inspection report recommends rejection.");
+        }
     }
 }
