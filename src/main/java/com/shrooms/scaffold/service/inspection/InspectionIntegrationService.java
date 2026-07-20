@@ -1,5 +1,9 @@
 package com.shrooms.scaffold.service.inspection;
 
+import com.shrooms.scaffold.Exception.customOrder.CustomOrderNotFoundException;
+import com.shrooms.scaffold.Exception.inspection.InspectionApiException;
+import com.shrooms.scaffold.Exception.inspection.InspectionManagementException;
+import com.shrooms.scaffold.Exception.order.OrderNotFoundException;
 import com.shrooms.scaffold.inspection.InspectionClient;
 import com.shrooms.scaffold.model.dto.inspection.InspectionCreateRequestDto;
 import com.shrooms.scaffold.model.dto.inspection.InspectionReportRequestDto;
@@ -35,7 +39,11 @@ public class InspectionIntegrationService {
     }
 
     public List<InspectionResponseDto> getAllInspections() {
-      return  inspectionClient.getInspections().getBody();
+        try {
+            return inspectionClient.getInspections().getBody();
+        } catch (RuntimeException exception) {
+            throw new InspectionApiException("Inspection data could not be loaded right now.");
+        }
     }
 
     public Set<UUID> getInspectionProjectIds() {
@@ -80,10 +88,10 @@ public class InspectionIntegrationService {
 
     public InspectionResponseDto requestInspectionForOrder(UUID orderId){
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+                .orElseThrow(OrderNotFoundException::new);
 
         if (!order.isInstallationRequired()) {
-            throw new RuntimeException("Inspection is needed only when installation is required.");
+            throw new InspectionManagementException("Inspection is needed only when installation is required.");
         }
 
         ensureInspectionDoesNotExist(order.getId());
@@ -102,10 +110,10 @@ public class InspectionIntegrationService {
 
     public InspectionResponseDto requestInspectionForCustomOrder(UUID customOrderId){
         CustomOrder customOrder = customOrderRepository.findById(customOrderId)
-                .orElseThrow(() -> new RuntimeException("Custom Order not found"));
+                .orElseThrow(CustomOrderNotFoundException::new);
 
         if (!customOrder.isInstallationRequired()) {
-            throw new RuntimeException("Inspection is needed only when installation is required.");
+            throw new InspectionManagementException("Inspection is needed only when installation is required.");
         }
 
         ensureInspectionDoesNotExist(customOrder.getId());
@@ -134,7 +142,7 @@ public class InspectionIntegrationService {
         List<InspectionResponseDto> existingInspections = getInspectionsByProjectOrderId(projectId);
 
         if (existingInspections != null && !existingInspections.isEmpty()) {
-            throw new RuntimeException("Inspection request already exists for this project.");
+            throw new InspectionManagementException("Inspection request already exists for this project.");
         }
     }
 

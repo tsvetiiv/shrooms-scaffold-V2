@@ -1,5 +1,6 @@
 package com.shrooms.scaffold.web;
 
+import com.shrooms.scaffold.Exception.user.RegistrationException;
 import com.shrooms.scaffold.model.dto.user.UserRegisterRequest;
 import com.shrooms.scaffold.service.user.UserService;
 import jakarta.validation.Valid;
@@ -14,7 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class UserController {
 
-    private UserService userService;
+    private final UserService userService;
 
     public UserController(UserService userService) {
         this.userService = userService;
@@ -41,29 +42,15 @@ public class UserController {
             return new ModelAndView("register");
         }
 
-        if (!userRegisterRequest.getPassword().equals(userRegisterRequest.getConfirmPassword())) {
-            ModelAndView modelAndView = new ModelAndView("register");
-            modelAndView.addObject("userRegisterRequest", userRegisterRequest);
-            modelAndView.addObject("passwordError", "Passwords do not match!");
-            return modelAndView;
-        }
-
         try {
             userService.register(userRegisterRequest);
-        } catch (RuntimeException exception) {
-            if ("Username already exists".equals(exception.getMessage())) {
-                bindingResult.addError(new FieldError(
-                        "userRegisterRequest",
-                        "username",
-                        exception.getMessage()));
-            } else if ("Email already exists".equals(exception.getMessage())) {
-                bindingResult.addError(new FieldError(
-                        "userRegisterRequest",
-                        "email",
-                        exception.getMessage()));
-            } else {
-                throw exception;
-            }
+        } catch (RegistrationException exception) {
+            bindingResult.addError(new FieldError(
+                    "userRegisterRequest",
+                    exception.getField(),
+                    exception.getMessage()
+            ));
+
             return new ModelAndView("register");
         }
 

@@ -1,5 +1,7 @@
 package com.shrooms.scaffold.web;
 
+import com.shrooms.scaffold.Exception.accountClosure.AccountClosureException;
+import com.shrooms.scaffold.Exception.customOrder.CustomOrderManagementException;
 import com.shrooms.scaffold.model.dto.order.CustomOrderRequest;
 import com.shrooms.scaffold.model.dto.user.UserDto;
 import com.shrooms.scaffold.service.customOrder.CustomOrderService;
@@ -52,7 +54,7 @@ public class CustomOrderController {
             customOrderService.createCustomOrder(customOrderRequest, user);
             return new ModelAndView("redirect:/orders");
 
-        } catch (RuntimeException exception) {
+        } catch (CustomOrderManagementException | AccountClosureException exception) {
             ModelAndView modelAndView = new ModelAndView("custom-order");
             modelAndView.addObject("customOrderRequest", customOrderRequest);
             modelAndView.addObject("customOrderError", exception.getMessage());

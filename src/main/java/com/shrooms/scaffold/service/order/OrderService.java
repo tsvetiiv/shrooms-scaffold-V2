@@ -1,5 +1,9 @@
 package com.shrooms.scaffold.service.order;
 
+import com.shrooms.scaffold.Exception.order.OrderManagementException;
+import com.shrooms.scaffold.Exception.order.OrderNotFoundException;
+import com.shrooms.scaffold.Exception.scaffold.ScaffoldNotFoundException;
+import com.shrooms.scaffold.Exception.user.UserNotFoundException;
 import com.shrooms.scaffold.event.OrderStatusChangedEvent;
 import com.shrooms.scaffold.model.dto.inspection.InspectionResponseDto;
 import com.shrooms.scaffold.model.dto.order.PurchaseOrderRequest;
@@ -57,15 +61,15 @@ public class OrderService {
     public void createRentOrder(RentOrderRequest request, UserDto userDto) {
         User user = userRepository
                 .findById(userDto.getId())
-                .orElseThrow();
+                .orElseThrow(UserNotFoundException::new);
 
         validateUserCanPlaceOrder(user);
 
         Scaffold scaffold = scaffoldRepository
                 .findById(request.getScaffoldId())
-                .orElseThrow();
+                .orElseThrow(ScaffoldNotFoundException::new);
         if (!scaffold.isAvailable()) {
-            throw new RuntimeException("The scaffold is not available");
+            throw new OrderManagementException("The scaffold is not available");
         }
 
         BigDecimal totalPrice = scaffold.getPriceForRent()
@@ -92,16 +96,16 @@ public class OrderService {
     public void createPurchaseOrder(PurchaseOrderRequest request, UserDto userDto) {
         User user = userRepository
                 .findById(userDto.getId())
-                .orElseThrow();
+                .orElseThrow(UserNotFoundException::new);
 
         validateUserCanPlaceOrder(user);
 
         Scaffold scaffold = scaffoldRepository
                 .findById(request.getScaffoldId())
-                .orElseThrow();
+                .orElseThrow(ScaffoldNotFoundException::new);
 
         if (!scaffold.isAvailable()) {
-            throw new RuntimeException("The scaffold is not available");
+            throw new OrderManagementException("The scaffold is not available");
         }
 
         BigDecimal totalPrice = scaffold.getPriceForSale()
@@ -132,12 +136,13 @@ public class OrderService {
                 .existsByUserIdAndStatus(user.getId(), AccountClosureStatus.PENDING);
 
         if (user.isBlocked() || hasPendingClosureRequest) {
-            throw new RuntimeException("You cannot place new orders because you requested account closure");
+            throw new OrderManagementException("You cannot place new orders because you requested account closure");
         }
     }
 
     public void updateOrderStatus(UUID orderId, OrderStatus orderStatus) {
-        Order order = orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found"));
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(OrderNotFoundException::new);
 
         validateInspectionReportAllowsOrderUpdate(order, orderStatus);
 
@@ -154,10 +159,11 @@ public class OrderService {
     }
 
     public void deleteFinalOrder(UUID orderId) {
-        Order order = orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found"));
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(OrderNotFoundException::new);
 
         if (!order.getOrderStatus().equals(OrderStatus.APPROVED) && !order.getOrderStatus().equals(OrderStatus.CANCELLED)) {
-            throw new RuntimeException("Only final orders can be deleted.");
+            throw new OrderManagementException("Only final orders can be deleted.");
         }
 
         orderRepository.delete(order);
@@ -166,7 +172,7 @@ public class OrderService {
     private void validateInspectionReportAllowsOrderUpdate(Order order, OrderStatus orderStatus) {
         if (OrderStatus.APPROVED.equals(order.getOrderStatus()) ||
                 OrderStatus.CANCELLED.equals(order.getOrderStatus())) {
-            throw new RuntimeException("This order has already been finalized.");
+            throw new OrderManagementException("This order has already been finalized.");
         }
 
         if (!order.isInstallationRequired()) {
@@ -177,18 +183,18 @@ public class OrderService {
                 inspectionIntegrationService.getInspectionsByProjectOrderId(order.getId());
 
         if (inspection.isEmpty()) {
-            throw new RuntimeException("Inspection report is required before updating this order.");
+            throw new OrderManagementException("Inspection report is required before updating this order.");
         }
 
         InspectionResponseDto inspectionReport = inspection.get(0);
 
         if (inspectionReport.getStatus() != InspectionStatus.REPORT_SUBMITTED) {
-            throw new RuntimeException("Inspection report must be submitted before updating this order.");
+            throw new OrderManagementException("Inspection report must be submitted before updating this order.");
         }
 
         if (inspectionReport.getRecommendedAction() == RecommendedAction.REJECT &&
                 orderStatus == OrderStatus.APPROVED) {
-            throw new RuntimeException("This order cannot be approved because the inspection report recommends rejection.");
+            throw new OrderManagementException("This order cannot be approved because the inspection report recommends rejection.");
         }
     }
 

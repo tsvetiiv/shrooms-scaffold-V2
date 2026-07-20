@@ -1,5 +1,10 @@
 package com.shrooms.scaffold.service.user;
 
+import com.shrooms.scaffold.Exception.accountClosure.AccountClosureException;
+import com.shrooms.scaffold.Exception.owner.OnlyOwnerCanManageUsersException;
+import com.shrooms.scaffold.Exception.owner.OwnerAccountCannotBeModifyException;
+import com.shrooms.scaffold.Exception.owner.OwnerNotFoundException;
+import com.shrooms.scaffold.Exception.user.*;
 import com.shrooms.scaffold.event.role.RoleChangedEvent;
 import com.shrooms.scaffold.mapper.user.UserMapper;
 import com.shrooms.scaffold.model.dto.user.UserDto;
@@ -53,14 +58,14 @@ public class UserService implements UserDetailsService {
 
     public UserDto register(UserRegisterRequest userRegisterRequest) {
         if (userRepository.findByUsername(userRegisterRequest.getUsername()).isPresent()) {
-            throw new RuntimeException("Username already exists");
+            throw new RegistrationException("username", "Username already exists");
         }
         if (userRepository.existsByEmail(userRegisterRequest.getEmail())) {
-            throw new RuntimeException("Email already exists");
+            throw new RegistrationException("email", "Email already exists");
         }
         if (!userRegisterRequest.getPassword()
                 .equals(userRegisterRequest.getConfirmPassword())) {
-            throw new RuntimeException("Passwords don't match");
+            throw new RegistrationException("confirmPassword", "Passwords don't match");
         }
         User user = UserMapper.toUserEntity(userRegisterRequest);
         user.setPassword(passwordEncoder.encode(userRegisterRequest.getPassword()));
@@ -73,11 +78,11 @@ public class UserService implements UserDetailsService {
 
     public UserDto editProfile(UUID userId, UserEditProfileDto userEditProfileDto) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(UserNotFoundException::new);
 
         if (!user.getEmail().equals(userEditProfileDto.getEmail())
                 && userRepository.existsByEmail(userEditProfileDto.getEmail())) {
-            throw new RuntimeException("Email already exists");
+            throw new RegistrationException("email", "Email already exists");
         }
 
         user.setFirstName(userEditProfileDto.getFirstName());
@@ -124,7 +129,7 @@ public class UserService implements UserDetailsService {
 
     public UserDto getUserById(UUID id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("Username not found"));
 
         return UserMapper.toUserDto(user);
     }
@@ -132,21 +137,21 @@ public class UserService implements UserDetailsService {
     private User getTargetUserForOwnerAction(UUID ownerId, UUID targetUserId) {
 
         User owner = userRepository.findById(ownerId)
-                .orElseThrow(() -> new RuntimeException("Owner not found"));
+                .orElseThrow(OwnerNotFoundException::new);
 
         if (owner.getRoleType() != RoleType.OWNER) {
-            throw new RuntimeException("Only owner can manage users");
+            throw new OnlyOwnerCanManageUsersException();
         }
 
         User targetUser = userRepository.findById(targetUserId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(UserNotFoundException::new);
 
         if (owner.getId().equals(targetUser.getId())) {
-            throw new RuntimeException("Owner accounts cannot be modify");
+            throw new OwnerAccountCannotBeModifyException();
         }
 
         if (targetUser.getRoleType() == RoleType.OWNER) {
-            throw new RuntimeException("Owner accounts cannot be modify");
+            throw new OwnerAccountCannotBeModifyException();
         }
 
         return targetUser;
@@ -158,11 +163,11 @@ public class UserService implements UserDetailsService {
         checkNoPendingAccountClosure(targetUserId);
 
         if (targetUser.getRoleType() != RoleType.USER) {
-            throw new RuntimeException("Only users can be blocked");
+            throw new UserManagementException("Only users can be blocked");
         }
 
         if (targetUser.isBlocked()) {
-            throw new RuntimeException("User is already blocked");
+            throw new UserManagementException ("User is already blocked");
         }
 
         targetUser.setBlocked(true);
@@ -176,11 +181,11 @@ public class UserService implements UserDetailsService {
         checkNoPendingAccountClosure(targetUserId);
 
         if (targetUser.getRoleType() != RoleType.USER) {
-            throw new RuntimeException("Only users can be unblocked");
+            throw new UserManagementException("Only users can be unblocked");
         }
 
         if (!targetUser.isBlocked() && targetUser.isActive()) {
-            throw new RuntimeException("User is already active");
+            throw new UserManagementException ("User is already active");
         }
 
         targetUser.setBlocked(false);
@@ -194,14 +199,14 @@ public class UserService implements UserDetailsService {
         checkNoPendingAccountClosure(targetUserId);
 
         if (targetUser.isBlocked()) {
-            throw new RuntimeException("Blocked users cannot be promoted to admin");
+            throw new UserManagementException ("Blocked users cannot be promoted to admin");
         }
         if (!targetUser.isActive()) {
-            throw new RuntimeException("Inactive users cannot be promoted to admin");
+            throw new UserManagementException ("Inactive users cannot be promoted to admin");
         }
 
         if (targetUser.getRoleType() == RoleType.ADMIN) {
-            throw new RuntimeException("User is already admin");
+            throw new UserManagementException ("User is already admin");
         }
         targetUser.setRoleType(RoleType.ADMIN);
         userRepository.save(targetUser);
@@ -220,7 +225,7 @@ public class UserService implements UserDetailsService {
         checkNoPendingAccountClosure(targetUserId);
 
         if (targetUser.getRoleType() == RoleType.USER) {
-            throw new RuntimeException("User is not admin");
+            throw new UserManagementException ("User is not admin");
         }
         targetUser.setRoleType(RoleType.USER);
         userRepository.save(targetUser);
@@ -247,18 +252,18 @@ public class UserService implements UserDetailsService {
     public void requestAccountClosure(UUID userId) {
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(UserNotFoundException::new);
 
         if (user.getRoleType() != RoleType.USER) {
-            throw new RuntimeException("Only users can request account closure");
+            throw new AccountClosureException("Only users can request account closure");
         }
 
         if (hasPendingAccountClosureRequest(userId)) {
-            throw new RuntimeException("Account closure request is already pending approval");
+            throw new AccountClosureException ("Account closure request is already pending approval");
         }
 
         if (hasUnfinishedOrders(userId)) {
-            throw new RuntimeException("You cannot close your account while you have unfinished orders");
+            throw new AccountClosureException ("You cannot close your account while you have unfinished orders");
         }
 
         AccountClosureRequest accountClosureRequest = AccountClosureRequest.builder()
@@ -275,7 +280,7 @@ public class UserService implements UserDetailsService {
 
     private void checkNoPendingAccountClosure(UUID userId) {
         if (accountClosureRequestRepository.existsByUserIdAndStatus(userId, AccountClosureStatus.PENDING)) {
-            throw new RuntimeException("This user has pending account closure request");
+            throw new AccountClosureException ("This user has pending account closure request");
         }
     }
 }

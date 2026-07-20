@@ -1,8 +1,9 @@
 package com.shrooms.scaffold.web;
 
+import com.shrooms.scaffold.Exception.accountClosure.AccountClosureException;
+import com.shrooms.scaffold.Exception.user.UserManagementException;
 import com.shrooms.scaffold.model.dto.owner.AccountClosureRequestDto;
 import com.shrooms.scaffold.model.dto.user.UserManagementDto;
-import com.shrooms.scaffold.service.ourWork.OurWorkService;
 import com.shrooms.scaffold.service.owner.AccountClosureRequestService;
 import com.shrooms.scaffold.service.user.UserDetailsData;
 import com.shrooms.scaffold.service.user.UserService;
@@ -24,12 +25,10 @@ public class OwnerController {
 
     private final UserService userService;
     private final AccountClosureRequestService accountClosureRequestService;
-    private final OurWorkService ourWorkService;
 
-    public OwnerController(UserService userService, AccountClosureRequestService accountClosureRequestService, OurWorkService ourWorkService) {
+    public OwnerController(UserService userService, AccountClosureRequestService accountClosureRequestService) {
         this.userService = userService;
         this.accountClosureRequestService = accountClosureRequestService;
-        this.ourWorkService = ourWorkService;
     }
 
 
@@ -53,7 +52,7 @@ public class OwnerController {
         try {
             userService.blockUser(userDetails.getId(), targetUserId);
             redirectAttributes.addFlashAttribute("successMessage", "User blocked successfully.");
-        } catch (RuntimeException exception) {
+        } catch (UserManagementException | AccountClosureException exception) {
             redirectAttributes.addFlashAttribute("warningMessage", exception.getMessage());
         }
 
@@ -67,7 +66,7 @@ public class OwnerController {
         try {
             userService.unblockUser(userDetails.getId(), targetUserId);
             redirectAttributes.addFlashAttribute("successMessage", "User account restored successfully.");
-        } catch (RuntimeException exception) {
+        } catch (UserManagementException | AccountClosureException exception) {
             redirectAttributes.addFlashAttribute("warningMessage", exception.getMessage());
         }
 
@@ -81,7 +80,7 @@ public class OwnerController {
         try {
             userService.makeAdmin(userDetails.getId(), targetUserId);
             redirectAttributes.addFlashAttribute("successMessage", "User promoted to admin successfully.");
-        } catch (RuntimeException exception) {
+        } catch (UserManagementException | AccountClosureException exception) {
             redirectAttributes.addFlashAttribute("warningMessage", exception.getMessage());
         }
         return new ModelAndView("redirect:/owner/users");
@@ -94,7 +93,7 @@ public class OwnerController {
         try {
             userService.demoteAdmin(userDetails.getId(), targetUserId);
             redirectAttributes.addFlashAttribute("successMessage", "Admin changed to user successfully.");
-        } catch (RuntimeException exception) {
+        } catch (UserManagementException | AccountClosureException exception) {
             redirectAttributes.addFlashAttribute("warningMessage", exception.getMessage());
         }
         return new ModelAndView("redirect:/owner/users");
@@ -117,7 +116,7 @@ public class OwnerController {
         try {
             accountClosureRequestService.rejectRequest(requestId);
             redirectAttributes.addFlashAttribute("successMessage", "Account closure request rejected successfully.");
-        } catch (RuntimeException exception) {
+        } catch (AccountClosureException exception) {
             redirectAttributes.addFlashAttribute("warningMessage", exception.getMessage());
         }
         return new ModelAndView("redirect:/owner/account-closures");
@@ -129,7 +128,7 @@ public class OwnerController {
         try {
             accountClosureRequestService.approveRequest(requestId);
             redirectAttributes.addFlashAttribute("successMessage", "Account closure request approved successfully.");
-        } catch (RuntimeException exception) {
+        } catch (AccountClosureException exception) {
             redirectAttributes.addFlashAttribute("warningMessage", exception.getMessage());
         }
         return new ModelAndView("redirect:/owner/account-closures");

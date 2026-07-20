@@ -1,5 +1,6 @@
 package com.shrooms.scaffold.service.scaffold;
 
+import com.shrooms.scaffold.Exception.scaffold.ScaffoldNotFoundException;
 import com.shrooms.scaffold.mapper.scaffold.ScaffoldMapper;
 import com.shrooms.scaffold.model.dto.scaffold.ScaffoldRequest;
 import com.shrooms.scaffold.model.entity.scaffold.Scaffold;
@@ -28,7 +29,7 @@ public class ScaffoldService {
 
     public Scaffold findById(UUID id) {
         return scaffoldRepository.findById(id)
-                .orElseThrow();
+                .orElseThrow(ScaffoldNotFoundException::new);
     }
 
     @Cacheable("scaffolds")
@@ -39,8 +40,8 @@ public class ScaffoldService {
 
     @CacheEvict(value = "scaffolds", allEntries = true)
     public void editScaffold(UUID id, ScaffoldRequest scaffoldRequest) {
-        Scaffold scaffold = scaffoldRepository.findById(id).orElseThrow(()
-                -> new RuntimeException("Scaffold not found"));
+        Scaffold scaffold = scaffoldRepository.findById(id)
+                .orElseThrow(ScaffoldNotFoundException::new);
 
         ScaffoldMapper.updateScaffoldFromRequest(scaffold, scaffoldRequest);
 
@@ -49,7 +50,7 @@ public class ScaffoldService {
 
     public ScaffoldRequest getScaffoldForEdit(UUID id) {
         Scaffold scaffold = scaffoldRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Scaffold not found"));
+                .orElseThrow(ScaffoldNotFoundException::new);
 
         return ScaffoldMapper.toScaffoldRequest(scaffold);
     }
@@ -63,7 +64,7 @@ public class ScaffoldService {
     @CacheEvict(value = "scaffolds", allEntries = true)
     public boolean deleteScaffold(UUID id) {
         Scaffold scaffoldForDelete = scaffoldRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Scaffold not found"));
+                .orElseThrow(ScaffoldNotFoundException::new);
         boolean hasOrders = orderRepository.existsByScaffoldId(id);
         if (hasOrders) {
             scaffoldForDelete.setAvailable(false);

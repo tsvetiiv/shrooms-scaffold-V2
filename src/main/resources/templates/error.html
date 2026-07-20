@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Error | Shrooms Scaffold</title>
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/error.css">
+</head>
+<body>
+
+<div th:insert="~{fragments/common/header :: header}"></div>
+
+<main class="error-page">
+    <section class="error-panel">
+        <div class="error-code" th:text="${errorCode} ?: '500'">500</div>
+
+        <div class="error-line"></div>
+
+        <h1 th:text="${errorTitle} ?: 'Unexpected error'">Unexpected error</h1>
+
+        <p th:text="${errorMessage} ?: 'Something went wrong. Please try again later.'">
+            Something went wrong. Please try again later.
+        </p>
+
+        <a th:href="@{/}" class="home-btn">Back to Home</a>
+    </section>
+</main>
+
+<div th:insert="~{fragments/common/footer :: footer}"></div>
+
+</body>
+</html>

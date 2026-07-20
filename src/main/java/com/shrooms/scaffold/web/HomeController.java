@@ -1,6 +1,6 @@
 package com.shrooms.scaffold.web;
 
-import com.shrooms.scaffold.service.scaffold.ScaffoldService;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -8,19 +8,27 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class HomeController {
 
-    private final ScaffoldService scaffoldService;
+    @GetMapping({"/", "/home"})
+    public ModelAndView getHomePage(Authentication authentication) {
 
-    public HomeController(ScaffoldService scaffoldService) {
-        this.scaffoldService = scaffoldService;
-    }
+        if (authentication != null && authentication.isAuthenticated()) {
+            boolean isOwner = authentication.getAuthorities()
+                    .stream()
+                    .anyMatch(authority -> authority.getAuthority().equals("ROLE_OWNER"));
 
-    @GetMapping("/")
-    public ModelAndView getHomePage() {
-        ModelAndView modelAndView = new ModelAndView();
+            if (isOwner) {
+                return new ModelAndView("redirect:/owner");
+            }
 
-        modelAndView.setViewName("index");
-        modelAndView.addObject("scaffolds", scaffoldService.findAll());
+            boolean isAdmin = authentication.getAuthorities()
+                    .stream()
+                    .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
 
-        return modelAndView;
+            if (isAdmin) {
+                return new ModelAndView("redirect:/admin");
+            }
+        }
+
+        return new ModelAndView("index");
     }
 }

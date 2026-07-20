@@ -1,5 +1,6 @@
 package com.shrooms.scaffold.web;
 
+import com.shrooms.scaffold.Exception.order.OrderManagementException;
 import com.shrooms.scaffold.model.dto.order.RentOrderRequest;
 import com.shrooms.scaffold.model.dto.user.UserDto;
 import com.shrooms.scaffold.service.order.OrderService;
@@ -75,7 +76,7 @@ public class RentController {
         try {
             orderService.createRentOrder(rentOrderRequest, user);
             return new ModelAndView("redirect:/orders");
-        } catch (RuntimeException exception) {
+        } catch (OrderManagementException exception) {
             ModelAndView modelAndView = new ModelAndView("rent-form");
             modelAndView.addObject("scaffold", scaffoldService.findById(id));
             modelAndView.addObject("rentOrderRequest", rentOrderRequest);

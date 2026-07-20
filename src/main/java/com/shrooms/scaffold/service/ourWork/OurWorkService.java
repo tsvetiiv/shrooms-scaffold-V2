@@ -1,5 +1,6 @@
 package com.shrooms.scaffold.service.ourWork;
 
+import com.shrooms.scaffold.Exception.ourWork.ProjectNotFoundException;
 import com.shrooms.scaffold.mapper.ourWork.OurWorkMapper;
 import com.shrooms.scaffold.model.dto.ourWork.OurWorkProjectRequest;
 import com.shrooms.scaffold.model.entity.ourWork.OurWorkProject;
@@ -27,11 +28,6 @@ public class OurWorkService {
         return ourWorkProjectRepository.findAll();
     }
 
-    public OurWorkProject findProjectById(UUID id) {
-        return ourWorkProjectRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Project not found"));
-    }
-
     public void createProject(OurWorkProjectRequest request) {
         OurWorkProject newProject = OurWorkMapper.toProjectEntity(request);
         ourWorkProjectRepository.save(newProject);
@@ -39,14 +35,14 @@ public class OurWorkService {
 
     public OurWorkProjectRequest getProjectForEdit(UUID id) {
         OurWorkProject oldProject = ourWorkProjectRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Project not found"));
+                .orElseThrow(ProjectNotFoundException::new);
 
         return OurWorkMapper.toProjectRequest(oldProject);
     }
 
     public void updateProject(UUID id, @Valid OurWorkProjectRequest request) {
         OurWorkProject project = ourWorkProjectRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Project not found"));
+                .orElseThrow(ProjectNotFoundException::new);
 
         OurWorkMapper.updateOurWorkProjectFormRequest(project, request);
         ourWorkProjectRepository.save(project);
@@ -54,7 +50,7 @@ public class OurWorkService {
 
     public void hideProject(UUID id) {
         OurWorkProject projectToHide = ourWorkProjectRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Project not found"));
+                .orElseThrow(ProjectNotFoundException::new);
 
         projectToHide.setVisible(false);
         ourWorkProjectRepository.save(projectToHide);
@@ -62,7 +58,7 @@ public class OurWorkService {
 
     public void deleteProject(UUID id) {
         OurWorkProject projectToDelete = ourWorkProjectRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Project not found"));
+                .orElseThrow(ProjectNotFoundException::new);
 
         ourWorkProjectRepository.delete(projectToDelete);
     }

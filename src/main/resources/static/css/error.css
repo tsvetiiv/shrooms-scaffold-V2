@@ -1,0 +1,110 @@
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    color: #f5f5f5;
+
+    background: linear-gradient(rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.88)),
+    url('/images/windmill.JPG');
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+.error-page {
+    min-height: calc(100vh - 180px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 24px;
+    box-sizing: border-box;
+}
+
+.error-panel {
+    width: min(720px, 100%);
+    padding: 54px 48px;
+    box-sizing: border-box;
+
+    background: rgba(8, 10, 10, 0.92);
+    border: 1px solid rgba(214, 31, 31, 0.45);
+    border-radius: 10px;
+    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.72);
+
+    text-align: center;
+}
+
+.error-code {
+    color: #d61f1f;
+    font-size: 88px;
+    font-weight: 900;
+    line-height: 1;
+}
+
+.error-line {
+    width: 92px;
+    height: 4px;
+    margin: 28px auto;
+
+    background: #d61f1f;
+    border-radius: 4px;
+}
+
+.error-panel h1 {
+    margin: 0;
+
+    color: #ffffff;
+    font-size: 34px;
+    font-weight: 800;
+}
+
+.error-panel p {
+    max-width: 540px;
+    margin: 18px auto 34px;
+
+    color: #d8d8d8;
+    font-size: 17px;
+    line-height: 1.6;
+}
+
+.home-btn {
+    display: inline-block;
+    padding: 13px 24px;
+
+    background: #d61f1f;
+    color: #ffffff;
+    border-radius: 4px;
+
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+
+    transition: background 0.2s ease;
+}
+
+.home-btn:hover {
+    background: #b81818;
+}
+
+@media (max-width: 700px) {
+    .error-page {
+        padding: 36px 18px;
+    }
+
+    .error-panel {
+        padding: 42px 26px;
+    }
+
+    .error-code {
+        font-size: 68px;
+    }
+
+    .error-panel h1 {
+        font-size: 28px;
+    }
+
+    .error-panel p {
+        font-size: 16px;
+    }
+}

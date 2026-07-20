@@ -1,5 +1,7 @@
 package com.shrooms.scaffold.web;
 
+import com.shrooms.scaffold.Exception.accountClosure.AccountClosureException;
+import com.shrooms.scaffold.Exception.user.RegistrationException;
 import com.shrooms.scaffold.model.dto.user.UserDto;
 import com.shrooms.scaffold.model.dto.user.UserEditProfileDto;
 import com.shrooms.scaffold.service.user.UserDetailsData;
@@ -8,6 +10,7 @@ import jakarta.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -71,7 +74,24 @@ public class ProfileController {
             return modelAndView;
         }
 
-        userService.editProfile(userDetails.getId(), userEditProfileDto);
+        try {
+            userService.editProfile(userDetails.getId(), userEditProfileDto);
+        } catch (RegistrationException exception) {
+            UserDto currentUser = userService.getUserById(userDetails.getId());
+
+            bindingResult.addError(new FieldError(
+                    "userEditProfileDto",
+                    exception.getField(),
+                    exception.getMessage()
+            ));
+
+            ModelAndView modelAndView = new ModelAndView("edit-profile");
+            modelAndView.addObject("user", currentUser);
+            modelAndView.addObject("userEditProfileDto", userEditProfileDto);
+            addAccountClosureAttributes(modelAndView, userDetails.getId());
+
+            return modelAndView;
+        }
 
         return new ModelAndView("redirect:/users/profile");
     }
@@ -85,7 +105,7 @@ public class ProfileController {
 
             redirectAttributes.addFlashAttribute("accountClosureMessage",
                     "Your account closure request is waiting for owner approval.");
-        } catch (RuntimeException exception) {
+        } catch (AccountClosureException exception) {
             redirectAttributes.addFlashAttribute("accountClosureError", exception.getMessage());
         }
 

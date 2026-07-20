@@ -1,5 +1,7 @@
 package com.shrooms.scaffold.service.owner;
 
+import com.shrooms.scaffold.Exception.accountClosure.AccountClosureRequestNotFoundException;
+import com.shrooms.scaffold.Exception.accountClosure.AccountClosureException;
 import com.shrooms.scaffold.event.accountClosure.AccountClosureStatusChangedEvent;
 import com.shrooms.scaffold.model.dto.owner.AccountClosureRequestDto;
 import com.shrooms.scaffold.model.entity.accountClosure.AccountClosureRequest;
@@ -44,10 +46,10 @@ public class AccountClosureRequestService {
     @Transactional
     public void rejectRequest(UUID requestId) {
         AccountClosureRequest request = accountClosureRequestRepository.findById(requestId)
-                .orElseThrow(() -> new RuntimeException("Account closure request not found"));
+                .orElseThrow(AccountClosureRequestNotFoundException::new);
 
         if (request.getStatus() != AccountClosureStatus.PENDING) {
-            throw new RuntimeException("This request is already reviewed");
+            throw new AccountClosureException("This request is already reviewed");
         }
 
         User user = request.getUser();
@@ -72,10 +74,10 @@ public class AccountClosureRequestService {
     public void approveRequest(UUID requestId) {
 
         AccountClosureRequest request = accountClosureRequestRepository.findById(requestId)
-                .orElseThrow(() -> new RuntimeException("Account closure request not found"));
+                .orElseThrow(AccountClosureRequestNotFoundException::new);
 
         if (request.getStatus() != AccountClosureStatus.PENDING) {
-            throw new RuntimeException("This request is already reviewed");
+            throw new AccountClosureException("This request is already reviewed");
         }
 
         User user = request.getUser();

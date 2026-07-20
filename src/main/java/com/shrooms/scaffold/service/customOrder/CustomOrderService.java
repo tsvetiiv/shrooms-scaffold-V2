@@ -1,5 +1,9 @@
 package com.shrooms.scaffold.service.customOrder;
 
+import com.shrooms.scaffold.Exception.customOrder.CustomOrderManagementException;
+import com.shrooms.scaffold.Exception.customOrder.CustomOrderNotFoundException;
+import com.shrooms.scaffold.Exception.accountClosure.AccountClosureException;
+import com.shrooms.scaffold.Exception.user.UserNotFoundException;
 import com.shrooms.scaffold.event.CustomOrderStatusChangedEvent;
 import com.shrooms.scaffold.model.dto.inspection.InspectionResponseDto;
 import com.shrooms.scaffold.model.dto.order.CustomOrderRequest;
@@ -53,29 +57,29 @@ public class CustomOrderService {
 
         if (OrderType.RENT.equals(customRequest.getOrderType())) {
             if (customRequest.getStartDate() == null) {
-                throw new RuntimeException("Start date is required");
+                throw new CustomOrderManagementException("Start date is required");
             }
             if (customRequest.getEndDate() == null) {
-                throw new RuntimeException("End date is required");
+                throw new CustomOrderManagementException("End date is required");
             }
             if (customRequest.getStartDate().isBefore(LocalDate.now())) {
-                throw new RuntimeException(
+                throw new CustomOrderManagementException(
                         "Start date cannot be in the past.");
             }
             if (customRequest.getEndDate().isBefore(customRequest.getStartDate())) {
-                throw new RuntimeException("End date cannot be before start date.");
+                throw new CustomOrderManagementException("End date cannot be before start date.");
             }
         }
 
         User user = userRepository
                 .findById(userDto.getId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(UserNotFoundException::new);
 
         boolean hasPendingClosureRequest = accountClosureRequestRepository
                 .existsByUserIdAndStatus(user.getId(), AccountClosureStatus.PENDING);
 
         if (user.isBlocked() || hasPendingClosureRequest) {
-            throw new RuntimeException("You cannot place new custom orders because you requested account closure");
+            throw new AccountClosureException("You cannot place new custom orders because you requested account closure");
         }
 
         CustomOrder customOrder = CustomOrder.builder()
@@ -105,7 +109,7 @@ public class CustomOrderService {
 
     public void updateCustomOrder(UUID customOrderId, RequestStatus requestStatus, BigDecimal estimatedPrice) {
         CustomOrder customOrder = customOrderRepository.findById(customOrderId)
-                .orElseThrow(() -> new RuntimeException("Custom order not found"));
+                .orElseThrow(CustomOrderNotFoundException::new);
 
         validateInspectionReportAllowsCustomOrderUpdate(customOrder, requestStatus);
 
@@ -122,12 +126,12 @@ public class CustomOrderService {
         publisher.publishEvent(event);
     }
 
-    public void deleteFinalCustomOrder(UUID orderId) {
-        CustomOrder finalCustomOrder = customOrderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+    public void deleteFinalCustomOrder(UUID customOrderId) {
+        CustomOrder finalCustomOrder = customOrderRepository.findById(customOrderId)
+                .orElseThrow(CustomOrderNotFoundException::new);
 
         if (!finalCustomOrder.getRequestStatus().equals(RequestStatus.APPROVED) && !finalCustomOrder.getRequestStatus().equals(RequestStatus.REJECTED)) {
-            throw new RuntimeException("Only final custom orders can be deleted.");
+            throw new CustomOrderManagementException("Only final custom orders can be deleted.");
         }
 
         customOrderRepository.delete(finalCustomOrder);
@@ -138,7 +142,7 @@ public class CustomOrderService {
 
         if (RequestStatus.APPROVED.equals(customOrder.getRequestStatus()) ||
                 RequestStatus.REJECTED.equals(customOrder.getRequestStatus())) {
-            throw new RuntimeException("This custom request has already been finalized.");
+            throw new CustomOrderManagementException("This custom request has already been finalized.");
         }
 
         if (!customOrder.isInstallationRequired()) {
@@ -148,19 +152,19 @@ public class CustomOrderService {
         List<InspectionResponseDto> inspection =
                 inspectionIntegrationService.getInspectionsByProjectOrderId(customOrder.getId());
 
-        if (inspection.isEmpty()) {
-            throw new RuntimeException("Inspection report is required before updating this custom order.");
+        if (inspection == null || inspection.isEmpty()) {
+            throw new CustomOrderManagementException("Inspection report is required before updating this custom order.");
         }
 
         InspectionResponseDto inspectionReport = inspection.get(0);
 
         if (inspectionReport.getStatus() != InspectionStatus.REPORT_SUBMITTED) {
-            throw new RuntimeException("Inspection report must be submitted before updating this custom order.");
+            throw new CustomOrderManagementException("Inspection report must be submitted before updating this custom order.");
         }
 
         if (inspectionReport.getRecommendedAction() == RecommendedAction.REJECT &&
                 requestStatus == RequestStatus.APPROVED) {
-            throw new RuntimeException("This custom order cannot be approved because the inspection report recommends rejection.");
+            throw new CustomOrderManagementException("This custom order cannot be approved because the inspection report recommends rejection.");
         }
     }
 }

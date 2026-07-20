@@ -33,7 +33,7 @@ public class SecurityConfiguration {
                         .loginPage("/login")
                         .successHandler((request, response, authentication) -> {
                             User user = userRepository.findByUsername(authentication.getName())
-                                    .orElseThrow();
+                                    .orElseThrow(() -> new IllegalStateException("Authenticated user was not found."));
 
                             UserDto userDto = UserDto.builder()
                                     .id(user.getId())

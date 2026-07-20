@@ -1,5 +1,8 @@
 package com.shrooms.scaffold.web;
 
+import com.shrooms.scaffold.Exception.customOrder.CustomOrderManagementException;
+import com.shrooms.scaffold.Exception.inspection.InspectionApiException;
+import com.shrooms.scaffold.Exception.order.OrderManagementException;
 import com.shrooms.scaffold.model.dto.scaffold.ScaffoldRequest;
 import com.shrooms.scaffold.model.dto.inspection.InspectionResponseDto;
 import com.shrooms.scaffold.model.entity.customOrder.CustomOrder;
@@ -91,8 +94,15 @@ public class AdminController {
     }
 
     @PutMapping("/orders/{id}/status")
-    public String updateOrderStatus(@PathVariable UUID id, @RequestParam OrderStatus orderStatus) {
-        orderService.updateOrderStatus(id, orderStatus);
+    public String updateOrderStatus(@PathVariable UUID id,
+                                    @RequestParam OrderStatus orderStatus,
+                                    RedirectAttributes redirectAttributes) {
+        try {
+            orderService.updateOrderStatus(id, orderStatus);
+        } catch (OrderManagementException exception) {
+            redirectAttributes.addFlashAttribute("warningMessage", exception.getMessage());
+        }
+
         return "redirect:/admin/orders";
     }
 
@@ -101,13 +111,12 @@ public class AdminController {
         try {
             orderService.deleteFinalOrder(id);
             redirectAttributes.addFlashAttribute("successMessage", "Order deleted successfully.");
-        } catch (RuntimeException exception) {
+        } catch (OrderManagementException exception) {
             redirectAttributes.addFlashAttribute("warningMessage", exception.getMessage());
         }
 
         return "redirect:/admin/orders";
     }
-
     @PutMapping("/custom-orders/{id}")
     public String updateCustomOrder(@PathVariable UUID id,
                                     @RequestParam RequestStatus requestStatus,
@@ -121,7 +130,12 @@ public class AdminController {
             return "redirect:/admin/custom-orders";
         }
 
-        customOrderService.updateCustomOrder(id, requestStatus, estimatedPrice);
+        try {
+            customOrderService.updateCustomOrder(id, requestStatus, estimatedPrice);
+        } catch (CustomOrderManagementException exception) {
+            redirectAttributes.addFlashAttribute("warningMessage", exception.getMessage());
+        }
+
         return "redirect:/admin/custom-orders";
     }
 
@@ -130,7 +144,7 @@ public class AdminController {
         try {
             customOrderService.deleteFinalCustomOrder(id);
             redirectAttributes.addFlashAttribute("successMessage", "Custom order deleted successfully.");
-        } catch (RuntimeException exception) {
+        } catch (CustomOrderManagementException exception) {
             redirectAttributes.addFlashAttribute("warningMessage", exception.getMessage());
         }
         return "redirect:/admin/custom-orders";
@@ -208,7 +222,7 @@ public class AdminController {
     private Set<UUID> getInspectionProjectIds() {
         try {
             return inspectionIntegrationService.getInspectionProjectIds();
-        } catch (RuntimeException exception) {
+        } catch (InspectionApiException exception) {
             return Set.of();
         }
     }
@@ -216,7 +230,7 @@ public class AdminController {
     private Map<UUID, InspectionResponseDto> getInspectionByProjectId(List<UUID> projectIds) {
         try {
             return inspectionIntegrationService.getInspectionsByProjectIds(projectIds);
-        } catch (RuntimeException exception) {
+        } catch (InspectionApiException exception) {
             return Map.of();
         }
     }

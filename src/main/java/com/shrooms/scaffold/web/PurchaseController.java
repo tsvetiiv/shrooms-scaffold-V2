@@ -1,5 +1,6 @@
 package com.shrooms.scaffold.web;
 
+import com.shrooms.scaffold.Exception.order.OrderManagementException;
 import com.shrooms.scaffold.model.dto.order.PurchaseOrderRequest;
 import com.shrooms.scaffold.model.dto.user.UserDto;
 import com.shrooms.scaffold.service.order.OrderService;
@@ -75,7 +76,7 @@ public class PurchaseController {
             orderService.createPurchaseOrder(purchaseOrderRequest, user);
             return new ModelAndView("redirect:/orders");
 
-        } catch (RuntimeException exception) {
+        } catch (OrderManagementException exception) {
             ModelAndView modelAndView = new ModelAndView("purchase-form");
             modelAndView.addObject("scaffold", scaffoldService.findById(id));
             modelAndView.addObject("purchaseOrderRequest", purchaseOrderRequest);
