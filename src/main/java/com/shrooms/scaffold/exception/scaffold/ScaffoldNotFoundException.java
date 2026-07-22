@@ -1,6 +1,6 @@
-package com.shrooms.scaffold.Exception.scaffold;
+package com.shrooms.scaffold.exception.scaffold;
 
-import com.shrooms.scaffold.Exception.ApplicationException;
+import com.shrooms.scaffold.exception.ApplicationException;
 
 public class ScaffoldNotFoundException extends ApplicationException {
 

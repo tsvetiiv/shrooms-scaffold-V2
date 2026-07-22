@@ -1,4 +1,4 @@
-package com.shrooms.scaffold.Exception.user;
+package com.shrooms.scaffold.exception.user;
 
 public class RegistrationException extends RuntimeException {
 

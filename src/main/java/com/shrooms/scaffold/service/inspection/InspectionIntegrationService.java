@@ -1,9 +1,9 @@
 package com.shrooms.scaffold.service.inspection;
 
-import com.shrooms.scaffold.Exception.customOrder.CustomOrderNotFoundException;
-import com.shrooms.scaffold.Exception.inspection.InspectionApiException;
-import com.shrooms.scaffold.Exception.inspection.InspectionManagementException;
-import com.shrooms.scaffold.Exception.order.OrderNotFoundException;
+import com.shrooms.scaffold.exception.customOrder.CustomOrderNotFoundException;
+import com.shrooms.scaffold.exception.inspection.InspectionApiException;
+import com.shrooms.scaffold.exception.inspection.InspectionManagementException;
+import com.shrooms.scaffold.exception.order.OrderNotFoundException;
 import com.shrooms.scaffold.inspection.InspectionClient;
 import com.shrooms.scaffold.model.dto.inspection.InspectionCreateRequestDto;
 import com.shrooms.scaffold.model.dto.inspection.InspectionReportRequestDto;

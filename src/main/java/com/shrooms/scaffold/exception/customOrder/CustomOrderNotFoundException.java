@@ -1,6 +1,6 @@
-package com.shrooms.scaffold.Exception.customOrder;
+package com.shrooms.scaffold.exception.customOrder;
 
-import com.shrooms.scaffold.Exception.ApplicationException;
+import com.shrooms.scaffold.exception.ApplicationException;
 
 public class CustomOrderNotFoundException extends ApplicationException {
 

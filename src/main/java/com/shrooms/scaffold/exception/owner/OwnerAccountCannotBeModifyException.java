@@ -1,6 +1,6 @@
-package com.shrooms.scaffold.Exception.owner;
+package com.shrooms.scaffold.exception.owner;
 
-import com.shrooms.scaffold.Exception.ApplicationException;
+import com.shrooms.scaffold.exception.ApplicationException;
 
 public class OwnerAccountCannotBeModifyException extends ApplicationException {
 

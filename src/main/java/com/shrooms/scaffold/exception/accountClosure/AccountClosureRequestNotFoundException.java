@@ -1,6 +1,6 @@
-package com.shrooms.scaffold.Exception.accountClosure;
+package com.shrooms.scaffold.exception.accountClosure;
 
-import com.shrooms.scaffold.Exception.ApplicationException;
+import com.shrooms.scaffold.exception.ApplicationException;
 
 public class AccountClosureRequestNotFoundException extends ApplicationException {
 

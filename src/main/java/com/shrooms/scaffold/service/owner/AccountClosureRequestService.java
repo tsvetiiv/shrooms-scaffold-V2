@@ -1,7 +1,7 @@
 package com.shrooms.scaffold.service.owner;
 
-import com.shrooms.scaffold.Exception.accountClosure.AccountClosureRequestNotFoundException;
-import com.shrooms.scaffold.Exception.accountClosure.AccountClosureException;
+import com.shrooms.scaffold.exception.accountClosure.AccountClosureRequestNotFoundException;
+import com.shrooms.scaffold.exception.accountClosure.AccountClosureException;
 import com.shrooms.scaffold.event.accountClosure.AccountClosureStatusChangedEvent;
 import com.shrooms.scaffold.model.dto.owner.AccountClosureRequestDto;
 import com.shrooms.scaffold.model.entity.accountClosure.AccountClosureRequest;

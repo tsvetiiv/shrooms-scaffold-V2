@@ -1,9 +1,9 @@
 package com.shrooms.scaffold.service.order;
 
-import com.shrooms.scaffold.Exception.order.OrderManagementException;
-import com.shrooms.scaffold.Exception.order.OrderNotFoundException;
-import com.shrooms.scaffold.Exception.scaffold.ScaffoldNotFoundException;
-import com.shrooms.scaffold.Exception.user.UserNotFoundException;
+import com.shrooms.scaffold.exception.order.OrderManagementException;
+import com.shrooms.scaffold.exception.order.OrderNotFoundException;
+import com.shrooms.scaffold.exception.scaffold.ScaffoldNotFoundException;
+import com.shrooms.scaffold.exception.user.UserNotFoundException;
 import com.shrooms.scaffold.event.OrderStatusChangedEvent;
 import com.shrooms.scaffold.model.dto.inspection.InspectionResponseDto;
 import com.shrooms.scaffold.model.dto.order.PurchaseOrderRequest;

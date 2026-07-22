@@ -1,4 +1,4 @@
-package com.shrooms.scaffold.Exception.order;
+package com.shrooms.scaffold.exception.order;
 
 public class OrderManagementException extends RuntimeException {
 

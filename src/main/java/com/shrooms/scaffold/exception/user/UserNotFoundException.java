@@ -1,6 +1,6 @@
-package com.shrooms.scaffold.Exception.user;
+package com.shrooms.scaffold.exception.user;
 
-import com.shrooms.scaffold.Exception.ApplicationException;
+import com.shrooms.scaffold.exception.ApplicationException;
 
 public class UserNotFoundException extends ApplicationException {
 

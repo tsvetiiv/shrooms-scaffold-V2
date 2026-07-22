@@ -1,6 +1,6 @@
 package com.shrooms.scaffold.web;
 
-import com.shrooms.scaffold.Exception.order.OrderManagementException;
+import com.shrooms.scaffold.exception.order.OrderManagementException;
 import com.shrooms.scaffold.model.dto.order.RentOrderRequest;
 import com.shrooms.scaffold.model.dto.user.UserDto;
 import com.shrooms.scaffold.service.order.OrderService;

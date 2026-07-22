@@ -1,7 +1,7 @@
 package com.shrooms.scaffold.web;
 
-import com.shrooms.scaffold.Exception.accountClosure.AccountClosureException;
-import com.shrooms.scaffold.Exception.user.UserManagementException;
+import com.shrooms.scaffold.exception.accountClosure.AccountClosureException;
+import com.shrooms.scaffold.exception.user.UserManagementException;
 import com.shrooms.scaffold.model.dto.owner.AccountClosureRequestDto;
 import com.shrooms.scaffold.model.dto.user.UserManagementDto;
 import com.shrooms.scaffold.service.owner.AccountClosureRequestService;

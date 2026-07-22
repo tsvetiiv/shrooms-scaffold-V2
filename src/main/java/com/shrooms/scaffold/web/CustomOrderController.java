@@ -1,7 +1,7 @@
 package com.shrooms.scaffold.web;
 
-import com.shrooms.scaffold.Exception.accountClosure.AccountClosureException;
-import com.shrooms.scaffold.Exception.customOrder.CustomOrderManagementException;
+import com.shrooms.scaffold.exception.accountClosure.AccountClosureException;
+import com.shrooms.scaffold.exception.customOrder.CustomOrderManagementException;
 import com.shrooms.scaffold.model.dto.order.CustomOrderRequest;
 import com.shrooms.scaffold.model.dto.user.UserDto;
 import com.shrooms.scaffold.service.customOrder.CustomOrderService;

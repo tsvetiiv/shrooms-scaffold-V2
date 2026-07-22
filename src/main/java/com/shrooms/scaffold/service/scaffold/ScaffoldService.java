@@ -1,6 +1,6 @@
 package com.shrooms.scaffold.service.scaffold;
 
-import com.shrooms.scaffold.Exception.scaffold.ScaffoldNotFoundException;
+import com.shrooms.scaffold.exception.scaffold.ScaffoldNotFoundException;
 import com.shrooms.scaffold.mapper.scaffold.ScaffoldMapper;
 import com.shrooms.scaffold.model.dto.scaffold.ScaffoldRequest;
 import com.shrooms.scaffold.model.entity.scaffold.Scaffold;

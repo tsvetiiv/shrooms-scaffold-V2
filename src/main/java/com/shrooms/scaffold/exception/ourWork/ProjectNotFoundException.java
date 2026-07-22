@@ -1,6 +1,6 @@
-package com.shrooms.scaffold.Exception.ourWork;
+package com.shrooms.scaffold.exception.ourWork;
 
-import com.shrooms.scaffold.Exception.ApplicationException;
+import com.shrooms.scaffold.exception.ApplicationException;
 
 public class ProjectNotFoundException extends ApplicationException {
 

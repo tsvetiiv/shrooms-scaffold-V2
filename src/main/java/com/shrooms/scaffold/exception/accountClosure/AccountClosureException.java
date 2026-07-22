@@ -1,4 +1,4 @@
-package com.shrooms.scaffold.Exception.accountClosure;
+package com.shrooms.scaffold.exception.accountClosure;
 
 public class AccountClosureException extends RuntimeException {
 

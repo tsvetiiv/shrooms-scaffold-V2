@@ -1,7 +1,7 @@
 package com.shrooms.scaffold.web;
 
-import com.shrooms.scaffold.Exception.inspection.InspectionApiException;
-import com.shrooms.scaffold.Exception.inspection.InspectionManagementException;
+import com.shrooms.scaffold.exception.inspection.InspectionApiException;
+import com.shrooms.scaffold.exception.inspection.InspectionManagementException;
 import com.shrooms.scaffold.model.dto.inspection.InspectionReportRequestDto;
 import com.shrooms.scaffold.model.dto.inspection.InspectionResponseDto;
 import com.shrooms.scaffold.model.enums.inspection.InspectionStatus;

@@ -1,6 +1,6 @@
 package com.shrooms.scaffold.service.ourWork;
 
-import com.shrooms.scaffold.Exception.ourWork.ProjectNotFoundException;
+import com.shrooms.scaffold.exception.ourWork.ProjectNotFoundException;
 import com.shrooms.scaffold.mapper.ourWork.OurWorkMapper;
 import com.shrooms.scaffold.model.dto.ourWork.OurWorkProjectRequest;
 import com.shrooms.scaffold.model.entity.ourWork.OurWorkProject;

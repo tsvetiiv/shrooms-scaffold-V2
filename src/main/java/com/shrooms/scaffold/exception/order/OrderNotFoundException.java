@@ -1,6 +1,6 @@
-package com.shrooms.scaffold.Exception.order;
+package com.shrooms.scaffold.exception.order;
 
-import com.shrooms.scaffold.Exception.ApplicationException;
+import com.shrooms.scaffold.exception.ApplicationException;
 
 public class OrderNotFoundException extends ApplicationException {
     public OrderNotFoundException() {

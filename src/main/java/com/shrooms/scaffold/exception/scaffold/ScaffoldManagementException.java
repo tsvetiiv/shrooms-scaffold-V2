@@ -1,4 +1,4 @@
-package com.shrooms.scaffold.Exception.scaffold;
+package com.shrooms.scaffold.exception.scaffold;
 
 public class ScaffoldManagementException extends RuntimeException {
 

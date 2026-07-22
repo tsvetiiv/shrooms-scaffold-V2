@@ -1,4 +1,4 @@
-package com.shrooms.scaffold.Exception.inspection;
+package com.shrooms.scaffold.exception.inspection;
 
 public class InspectionApiException extends RuntimeException {
 

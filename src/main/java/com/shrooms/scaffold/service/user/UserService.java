@@ -1,10 +1,10 @@
 package com.shrooms.scaffold.service.user;
 
-import com.shrooms.scaffold.Exception.accountClosure.AccountClosureException;
-import com.shrooms.scaffold.Exception.owner.OnlyOwnerCanManageUsersException;
-import com.shrooms.scaffold.Exception.owner.OwnerAccountCannotBeModifyException;
-import com.shrooms.scaffold.Exception.owner.OwnerNotFoundException;
-import com.shrooms.scaffold.Exception.user.*;
+import com.shrooms.scaffold.exception.accountClosure.AccountClosureException;
+import com.shrooms.scaffold.exception.owner.OnlyOwnerCanManageUsersException;
+import com.shrooms.scaffold.exception.owner.OwnerAccountCannotBeModifyException;
+import com.shrooms.scaffold.exception.owner.OwnerNotFoundException;
+import com.shrooms.scaffold.exception.user.*;
 import com.shrooms.scaffold.event.role.RoleChangedEvent;
 import com.shrooms.scaffold.mapper.user.UserMapper;
 import com.shrooms.scaffold.model.dto.user.UserDto;

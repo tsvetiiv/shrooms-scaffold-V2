@@ -1,8 +1,8 @@
 package com.shrooms.scaffold.web;
 
-import com.shrooms.scaffold.Exception.customOrder.CustomOrderManagementException;
-import com.shrooms.scaffold.Exception.inspection.InspectionApiException;
-import com.shrooms.scaffold.Exception.order.OrderManagementException;
+import com.shrooms.scaffold.exception.customOrder.CustomOrderManagementException;
+import com.shrooms.scaffold.exception.inspection.InspectionApiException;
+import com.shrooms.scaffold.exception.order.OrderManagementException;
 import com.shrooms.scaffold.model.dto.scaffold.ScaffoldRequest;
 import com.shrooms.scaffold.model.dto.inspection.InspectionResponseDto;
 import com.shrooms.scaffold.model.entity.customOrder.CustomOrder;

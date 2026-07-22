@@ -1,4 +1,4 @@
-package com.shrooms.scaffold.Exception;
+package com.shrooms.scaffold.exception;
 
 import lombok.Getter;
 
