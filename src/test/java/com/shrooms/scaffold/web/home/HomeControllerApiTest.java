@@ -3,17 +3,21 @@ package com.shrooms.scaffold.web.home;
 import com.shrooms.scaffold.web.HomeController;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.web.servlet.MockMvc;
 
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import java.util.List;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(HomeController.class)
+@AutoConfigureMockMvc(addFilters = false)
 public class HomeControllerApiTest {
 
     @Autowired
@@ -25,7 +29,7 @@ public class HomeControllerApiTest {
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get("/");
 
         mockMvc.perform(request)
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(status().isOk())
                 .andExpect(view().name("index"));
     }
 
@@ -34,29 +38,39 @@ public class HomeControllerApiTest {
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get("/home");
 
         mockMvc.perform(request)
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(status().isOk())
                 .andExpect(view().name("index"));
     }
 
     @Test
-    @WithMockUser(roles = "OWNER")
     public void getHomePage_shouldRedirectToOwnerWhenUserIsOwner() throws Exception {
 
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get("/");
+        Authentication authentication =
+                new UsernamePasswordAuthenticationToken(
+                        "owner",
+                        null,
+                        List.of(new SimpleGrantedAuthority("ROLE_OWNER"))
+                );
 
-        mockMvc.perform(request)
-                .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
-                .andExpect(MockMvcResultMatchers.redirectedUrl("/owner"));
+        mockMvc.perform(MockMvcRequestBuilders.get("/")
+                        .principal(authentication))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/owner"));
     }
 
     @Test
-    @WithMockUser(roles = "ADMIN")
     public void getHomePage_shouldRedirectToAdminWhenUserIsAdmin() throws Exception {
 
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get("/");
+        Authentication authentication =
+                new UsernamePasswordAuthenticationToken(
+                        "admin",
+                        null,
+                        List.of(new SimpleGrantedAuthority("ROLE_ADMIN"))
+                );
 
-        mockMvc.perform(request)
-                .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
-                .andExpect(MockMvcResultMatchers.redirectedUrl("/admin"));
+        mockMvc.perform(MockMvcRequestBuilders.get("/")
+                        .principal(authentication))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/admin"));
     }
 }
