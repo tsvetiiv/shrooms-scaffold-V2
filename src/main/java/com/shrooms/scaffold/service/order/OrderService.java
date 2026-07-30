@@ -24,6 +24,8 @@ import com.shrooms.scaffold.repository.user.UserRepository;
 import com.shrooms.scaffold.service.inspection.InspectionIntegrationService;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -33,12 +35,14 @@ import java.util.UUID;
 @Service
 public class OrderService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(OrderService.class);
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final ScaffoldRepository scaffoldRepository;
     private final AccountClosureRequestRepository accountClosureRequestRepository;
     private final ApplicationEventPublisher publisher;
    private final InspectionIntegrationService inspectionIntegrationService;
+
 
     public OrderService(OrderRepository orderRepository,
                         UserRepository userRepository,
@@ -91,6 +95,7 @@ public class OrderService {
                 .build();
 
         orderRepository.save(order);
+        LOGGER.info("Rent order created for user {} and scaffold {}", user.getId(), scaffold.getId());
     }
 
     public void createPurchaseOrder(PurchaseOrderRequest request, UserDto userDto) {
@@ -125,6 +130,7 @@ public class OrderService {
                 .build();
 
         orderRepository.save(order);
+        LOGGER.info("Purchase order created for user {} and scaffold {}", user.getId(), scaffold.getId());
     }
 
     public List<Order> getAllOrders() {
@@ -148,6 +154,7 @@ public class OrderService {
 
         order.setOrderStatus(orderStatus);
         orderRepository.save(order);
+        LOGGER.info("Order {} status updated to {}", orderId, orderStatus);
 
         OrderStatusChangedEvent event = new OrderStatusChangedEvent(
                 order.getUser().getEmail(),
@@ -167,6 +174,7 @@ public class OrderService {
         }
 
         orderRepository.delete(order);
+        LOGGER.info("Final order {} deleted", orderId);
     }
 
     private void validateInspectionReportAllowsOrderUpdate(Order order, OrderStatus orderStatus) {

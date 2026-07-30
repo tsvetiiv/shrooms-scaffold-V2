@@ -27,6 +27,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -36,6 +38,7 @@ import java.util.UUID;
 @Service
 public class UserService implements UserDetailsService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final OrderRepository orderRepository;
@@ -71,6 +74,7 @@ public class UserService implements UserDetailsService {
         user.setPassword(passwordEncoder.encode(userRegisterRequest.getPassword()));
 
         User savedUser = userRepository.save(user);
+        LOGGER.info("User registered with id {} and username {}", savedUser.getId(), savedUser.getUsername());
 
         return UserMapper.toUserDto(savedUser);
 
@@ -91,6 +95,7 @@ public class UserService implements UserDetailsService {
         user.setProfilePicture(userEditProfileDto.getProfilePicture());
 
         User savedUser = userRepository.save(user);
+        LOGGER.info("User {} updated profile", savedUser.getId());
 
         return UserMapper.toUserDto(savedUser);
     }
@@ -172,6 +177,7 @@ public class UserService implements UserDetailsService {
 
         targetUser.setBlocked(true);
         userRepository.save(targetUser);
+        LOGGER.info("User {} was blocked by owner {}", targetUserId, ownerId);
     }
 
     public void unblockUser(UUID ownerId, UUID targetUserId) {
@@ -191,6 +197,7 @@ public class UserService implements UserDetailsService {
         targetUser.setBlocked(false);
         targetUser.setActive(true);
         userRepository.save(targetUser);
+        LOGGER.info("User {} was unblocked by owner {}", targetUserId, ownerId);
     }
 
     public void makeAdmin(UUID ownerId, UUID targetUserId) {
@@ -210,6 +217,7 @@ public class UserService implements UserDetailsService {
         }
         targetUser.setRoleType(RoleType.ADMIN);
         userRepository.save(targetUser);
+        LOGGER.info("User {} was promoted to ADMIN by owner {}", targetUserId, ownerId);
 
         RoleChangedEvent event = new RoleChangedEvent(
                 targetUser.getUsername(),
@@ -229,6 +237,7 @@ public class UserService implements UserDetailsService {
         }
         targetUser.setRoleType(RoleType.USER);
         userRepository.save(targetUser);
+        LOGGER.info("Admin {} was demoted to USER by owner {}", targetUserId, ownerId);
 
         RoleChangedEvent event = new RoleChangedEvent(
                 targetUser.getUsername(),
@@ -276,6 +285,7 @@ public class UserService implements UserDetailsService {
 
         user.setActive(false);
         userRepository.save(user);
+        LOGGER.info("User {} requested account closure", userId);
     }
 
     private void checkNoPendingAccountClosure(UUID userId) {

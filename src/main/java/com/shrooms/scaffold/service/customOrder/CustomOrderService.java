@@ -21,6 +21,8 @@ import com.shrooms.scaffold.repository.user.UserRepository;
 import com.shrooms.scaffold.service.inspection.InspectionIntegrationService;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -30,7 +32,7 @@ import java.util.UUID;
 @Service
 public class CustomOrderService {
 
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(CustomOrderService.class);
     private final UserRepository userRepository;
     private final CustomOrderRepository customOrderRepository;
     private final AccountClosureRequestRepository accountClosureRequestRepository;
@@ -101,6 +103,7 @@ public class CustomOrderService {
                 .build();
 
         customOrderRepository.save(customOrder);
+        LOGGER.info("Custom order created for user {} with project name {}", user.getId(), customOrder.getProjectName());
     }
 
     public List<CustomOrder> getAllCustomOrders() {
@@ -116,6 +119,7 @@ public class CustomOrderService {
         customOrder.setRequestStatus(requestStatus);
         customOrder.setEstimatedPrice(RequestStatus.APPROVED.equals(requestStatus) ? estimatedPrice : null);
         customOrderRepository.save(customOrder);
+        LOGGER.info("Custom order {} status updated to {}", customOrderId, requestStatus);
 
         CustomOrderStatusChangedEvent event = new CustomOrderStatusChangedEvent(
                 customOrder.getUser().getEmail(),
@@ -135,6 +139,7 @@ public class CustomOrderService {
         }
 
         customOrderRepository.delete(finalCustomOrder);
+        LOGGER.info("Final custom order {} deleted", customOrderId);
     }
 
     private void validateInspectionReportAllowsCustomOrderUpdate(CustomOrder customOrder,

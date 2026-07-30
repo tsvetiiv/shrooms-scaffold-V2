@@ -4,6 +4,8 @@ import com.shrooms.scaffold.event.CustomOrderStatusChangedEvent;
 import com.shrooms.scaffold.event.OrderStatusChangedEvent;
 import com.shrooms.scaffold.event.accountClosure.AccountClosureStatusChangedEvent;
 import com.shrooms.scaffold.event.role.RoleChangedEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmailService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(EmailService.class);
     private final JavaMailSender mailSender;
 
     public EmailService(JavaMailSender mailSender) {
@@ -37,6 +40,7 @@ public class EmailService {
         ));
 
         mailSender.send(message);
+        LOGGER.info("Order status email sent for scaffold {}", event.getScaffoldName());
     }
 
     public void sendCustomOrderStatusChangedEmail(CustomOrderStatusChangedEvent event) {
@@ -59,6 +63,7 @@ public class EmailService {
         ));
 
         mailSender.send(message);
+        LOGGER.info("Custom order status email sent for project {}", event.getProjectName());
     }
 
     public void sendRoleChangedEmail(RoleChangedEvent event) {
@@ -79,6 +84,7 @@ public class EmailService {
                 event.getRoleType()
         ));
         mailSender.send(message);
+        LOGGER.info("Role changed email sent for user {}", event.getUsername());
     }
 
     public void sendAccountClosureStatusChangedEmail(AccountClosureStatusChangedEvent event) {
@@ -99,5 +105,6 @@ public class EmailService {
                 event.getClosureStatus()
         ));
         mailSender.send(message);
+        LOGGER.info("Account closure status email sent for user {}", event.getUsername());
     }
 }

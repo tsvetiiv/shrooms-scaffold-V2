@@ -13,6 +13,8 @@ import com.shrooms.scaffold.model.entity.order.Order;
 import com.shrooms.scaffold.model.enums.inspection.ProjectType;
 import com.shrooms.scaffold.repository.customRequest.CustomOrderRepository;
 import com.shrooms.scaffold.repository.order.OrderRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -26,6 +28,7 @@ import java.util.stream.Collectors;
 @Service
 public class InspectionIntegrationService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(InspectionIntegrationService.class);
     private final InspectionClient inspectionClient;
     private final OrderRepository orderRepository;
     private final CustomOrderRepository customOrderRepository;
@@ -42,6 +45,7 @@ public class InspectionIntegrationService {
         try {
             return inspectionClient.getInspections().getBody();
         } catch (RuntimeException exception) {
+            LOGGER.warn("Failed to load inspections from inspection service: {}", exception.getMessage());
             throw new InspectionApiException("Inspection data could not be loaded right now.");
         }
     }
@@ -83,7 +87,9 @@ public class InspectionIntegrationService {
     }
 
     public InspectionResponseDto createInspection(InspectionCreateRequestDto request) {
-        return inspectionClient.createInspection(request);
+        InspectionResponseDto response = inspectionClient.createInspection(request);
+        LOGGER.info("Inspection created for project {}", request.getProjectId());
+        return response;
     }
 
     public InspectionResponseDto requestInspectionForOrder(UUID orderId){
@@ -105,7 +111,9 @@ public class InspectionIntegrationService {
         requestDto.setAreaSqMeters(order.getScaffold().getHeight() * order.getScaffold().getLength() * order.getQuantity());
         requestDto.setInspectionDate(LocalDate.now());
 
-        return inspectionClient.createInspection(requestDto);
+        InspectionResponseDto response = inspectionClient.createInspection(requestDto);
+        LOGGER.info("Inspection requested for order {}", orderId);
+        return response;
     }
 
     public InspectionResponseDto requestInspectionForCustomOrder(UUID customOrderId){
@@ -127,15 +135,20 @@ public class InspectionIntegrationService {
         requestDto.setAreaSqMeters(customOrder.getHeight() * customOrder.getLength());
         requestDto.setInspectionDate(LocalDate.now());
 
-        return inspectionClient.createInspection(requestDto);
+        InspectionResponseDto response = inspectionClient.createInspection(requestDto);
+        LOGGER.info("Inspection requested for custom order {}", customOrderId);
+        return response;
     }
 
     public InspectionResponseDto submitReport(UUID id, InspectionReportRequestDto request) {
-        return inspectionClient.submitReport(id, request);
+        InspectionResponseDto response = inspectionClient.submitReport(id, request);
+        LOGGER.info("Inspection report submitted for inspection {}", id);
+        return response;
     }
 
     public void deleteInspection(UUID id) {
         inspectionClient.deleteInspection(id);
+        LOGGER.info("Inspection {} deleted", id);
     }
 
     private void ensureInspectionDoesNotExist(UUID projectId) {

@@ -20,7 +20,7 @@ public class ScaffoldService {
 
     private final ScaffoldRepository scaffoldRepository;
     private final OrderRepository orderRepository;
-    private static final Logger logger = LoggerFactory.getLogger(ScaffoldService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScaffoldService.class);
 
     public ScaffoldService(ScaffoldRepository scaffoldRepository, OrderRepository orderRepository) {
         this.scaffoldRepository = scaffoldRepository;
@@ -34,7 +34,7 @@ public class ScaffoldService {
 
     @Cacheable("scaffolds")
     public List<Scaffold> findAll() {
-        logger.info("Loading from database...");
+        LOGGER.info("Loading scaffolds from database...");
         return scaffoldRepository.findAll();
     }
 
@@ -46,6 +46,7 @@ public class ScaffoldService {
         ScaffoldMapper.updateScaffoldFromRequest(scaffold, scaffoldRequest);
 
         scaffoldRepository.save(scaffold);
+        LOGGER.info("Scaffold {} updated", id);
     }
 
     public ScaffoldRequest getScaffoldForEdit(UUID id) {
@@ -59,6 +60,7 @@ public class ScaffoldService {
     public void createScaffold(ScaffoldRequest request) {
         Scaffold newScaffold = ScaffoldMapper.toScaffoldEntity(request);
         scaffoldRepository.save(newScaffold);
+        LOGGER.info("Scaffold created with name {}", newScaffold.getName());
     }
 
     @CacheEvict(value = "scaffolds", allEntries = true)
@@ -69,9 +71,11 @@ public class ScaffoldService {
         if (hasOrders) {
             scaffoldForDelete.setAvailable(false);
             scaffoldRepository.save(scaffoldForDelete);
+            LOGGER.info("Scaffold {} marked unavailable because it has orders", id);
             return false;
         }
         scaffoldRepository.deleteById(id);
+        LOGGER.info("Scaffold {} deleted", id);
         return true;
     }
 }

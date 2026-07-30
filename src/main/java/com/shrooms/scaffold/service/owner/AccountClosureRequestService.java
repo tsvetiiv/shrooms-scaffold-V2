@@ -9,6 +9,8 @@ import com.shrooms.scaffold.model.entity.accountClosure.AccountClosureStatus;
 import com.shrooms.scaffold.model.entity.user.User;
 import com.shrooms.scaffold.repository.accountClosure.AccountClosureRequestRepository;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,7 @@ import java.util.UUID;
 @Service
 public class AccountClosureRequestService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(AccountClosureRequestService.class);
     private final AccountClosureRequestRepository accountClosureRequestRepository;
     private final ApplicationEventPublisher publisher;
 
@@ -68,6 +71,7 @@ public class AccountClosureRequestService {
                 user.isActive()
         );
         publisher.publishEvent(event);
+        LOGGER.info("Account closure request {} rejected", requestId);
     }
 
     @Transactional
@@ -96,6 +100,6 @@ public class AccountClosureRequestService {
                 user.isActive()
         );
         publisher.publishEvent(event);
+        LOGGER.info("Account closure request {} approved", requestId);
     }
 }
-
