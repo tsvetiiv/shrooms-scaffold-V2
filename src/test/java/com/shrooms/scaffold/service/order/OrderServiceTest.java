@@ -1,4 +1,4 @@
-package com.shrooms.scaffold.service;
+package com.shrooms.scaffold.service.order;
 
 import com.shrooms.scaffold.exception.order.OrderManagementException;
 import com.shrooms.scaffold.model.dto.order.RentOrderRequest;
@@ -11,7 +11,6 @@ import com.shrooms.scaffold.repository.accountClosure.AccountClosureRequestRepos
 import com.shrooms.scaffold.repository.order.OrderRepository;
 import com.shrooms.scaffold.repository.scaffold.ScaffoldRepository;
 import com.shrooms.scaffold.repository.user.UserRepository;
-import com.shrooms.scaffold.service.order.OrderService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
