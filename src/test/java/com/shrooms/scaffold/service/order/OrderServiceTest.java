@@ -2,7 +2,10 @@ package com.shrooms.scaffold.service.order;
 
 import com.shrooms.scaffold.event.OrderStatusChangedEvent;
 import com.shrooms.scaffold.exception.order.OrderManagementException;
+import com.shrooms.scaffold.exception.order.OrderNotFoundException;
+import com.shrooms.scaffold.exception.user.UserNotFoundException;
 import com.shrooms.scaffold.model.dto.inspection.InspectionResponseDto;
+import com.shrooms.scaffold.model.dto.order.PurchaseOrderRequest;
 import com.shrooms.scaffold.model.dto.order.RentOrderRequest;
 import com.shrooms.scaffold.model.dto.user.UserDto;
 import com.shrooms.scaffold.model.entity.accountClosure.AccountClosureStatus;
@@ -102,7 +105,7 @@ public class OrderServiceTest {
     }
 
     @Test
-    public void createRentOrder_shouldThrowExceptionWhenScaffoldIsNotAvailable(){
+    public void createRentOrder_shouldThrowExceptionWhenScaffoldIsNotAvailable() {
         UUID userId = UUID.randomUUID();
         UUID scaffoldId = UUID.randomUUID();
 
@@ -146,52 +149,168 @@ public class OrderServiceTest {
     }
 
 
-     @Test
-     public void updateOrderStatus_shouldUpdateWhenInspectionReportAllowsUpdate(){
-            UUID orderId = UUID.randomUUID();
-            UUID scaffoldId = UUID.randomUUID();
+    @Test
+    public void updateOrderStatus_shouldUpdateWhenInspectionReportAllowsUpdate() {
+        UUID orderId = UUID.randomUUID();
+        UUID scaffoldId = UUID.randomUUID();
 
-           User user = User.builder()
-                    .firstName("Ivan")
-                   .email("ivan@mail.com")
-                   .build();
+        User user = User.builder()
+                .firstName("Ivan")
+                .email("ivan@mail.com")
+                .build();
 
-         Scaffold scaffold = Scaffold.builder()
-                 .id(scaffoldId)
-                 .name("Facade")
-                 .available(false)
-                 .priceForRent(new BigDecimal("100.00"))
-                 .build();
+        Scaffold scaffold = Scaffold.builder()
+                .id(scaffoldId)
+                .name("Facade")
+                .available(false)
+                .priceForRent(new BigDecimal("100.00"))
+                .build();
 
-            Order order = Order.builder()
-                    .id(orderId)
-                    .user(user)
-                    .scaffold(scaffold)
-                    .orderStatus(OrderStatus.PENDING)
-                    .orderType(OrderType.RENT)
-                    .address("Varna")
-                    .installationRequired(true)
-                    .contactPhone("0888123456")
-                    .quantity(2)
-                    .rentalWeeks(3)
-                    .build();
+        Order order = Order.builder()
+                .id(orderId)
+                .user(user)
+                .scaffold(scaffold)
+                .orderStatus(OrderStatus.PENDING)
+                .orderType(OrderType.RENT)
+                .address("Varna")
+                .installationRequired(true)
+                .contactPhone("0888123456")
+                .quantity(2)
+                .rentalWeeks(3)
+                .build();
 
-            InspectionResponseDto inspectionDto = new InspectionResponseDto();
-                inspectionDto.setStatus(InspectionStatus.REPORT_SUBMITTED);
-                inspectionDto.setRecommendedAction(RecommendedAction.APPROVE);
+        InspectionResponseDto inspectionDto = new InspectionResponseDto();
+        inspectionDto.setStatus(InspectionStatus.REPORT_SUBMITTED);
+        inspectionDto.setRecommendedAction(RecommendedAction.APPROVE);
 
-                when(orderRepository.findById(orderId))
+        when(orderRepository.findById(orderId))
                 .thenReturn(Optional.of(order));
-                when(inspectionIntegrationService.getInspectionsByProjectOrderId(orderId))
-                        .thenReturn(List.of(inspectionDto));
+        when(inspectionIntegrationService.getInspectionsByProjectOrderId(orderId))
+                .thenReturn(List.of(inspectionDto));
 
-                orderService.updateOrderStatus(orderId, OrderStatus.APPROVED);
+        orderService.updateOrderStatus(orderId, OrderStatus.APPROVED);
 
-               assertEquals(OrderStatus.APPROVED, order.getOrderStatus());
-                assertEquals(2, order.getQuantity());
+        assertEquals(OrderStatus.APPROVED, order.getOrderStatus());
+        assertEquals(2, order.getQuantity());
 
-               verify(orderRepository).save(order);
-                verify(publisher).publishEvent(any(OrderStatusChangedEvent.class));
-        }
+        verify(orderRepository).save(order);
+        verify(publisher).publishEvent(any(OrderStatusChangedEvent.class));
+    }
 
+    @Test
+    public void updateOrderStatus_shouldThrowsExceptionWhenOrderDoesNotExists() {
+        UUID orderId = UUID.randomUUID();
+
+        when(orderRepository.findById(orderId))
+                .thenReturn(Optional.empty());
+
+        assertThrows(OrderNotFoundException.class,
+                () -> orderService.updateOrderStatus(orderId, OrderStatus.APPROVED));
+
+        verify(orderRepository, never()).save(any(Order.class));
+        verify(publisher, never()).publishEvent(any(OrderStatusChangedEvent.class));
+    }
+
+    @Test
+    public void createPurchaseOrder_shouldSavePurchaseOrderWhenRequestIsValid() {
+        UUID userId = UUID.randomUUID();
+        UUID scaffoldId = UUID.randomUUID();
+
+        User user = User.builder()
+                .id(userId)
+                .blocked(false)
+                .build();
+
+        UserDto userDto = UserDto.builder()
+                .id(userId)
+                .build();
+
+        Scaffold scaffold = Scaffold.builder()
+                .id(scaffoldId)
+                .available(true)
+                .priceForSale(new BigDecimal("100.00"))
+                .build();
+
+        PurchaseOrderRequest request = PurchaseOrderRequest.builder()
+                .scaffoldId(scaffoldId)
+                .quantity(3)
+                .address("Sofia")
+                .installationRequired(true)
+                .contactPhone("08812345677")
+                .build();
+
+        when(userRepository.findById(userId))
+                .thenReturn(Optional.of(user));
+
+        when(scaffoldRepository.findById(scaffoldId))
+                .thenReturn(Optional.of(scaffold));
+
+        when(accountClosureRequestRepository.existsByUserIdAndStatus(userId, AccountClosureStatus.PENDING))
+                .thenReturn(false);
+
+        orderService.createPurchaseOrder(request, userDto);
+
+        verify(orderRepository).save(any(Order.class));
+    }
+
+    @Test
+    public void createPurchaseOrder_shouldThrowExceptionWhenUserDoesNotExist() {
+        UUID userId = UUID.randomUUID();
+        UUID scaffoldId = UUID.randomUUID();
+
+        UserDto userDto = UserDto.builder()
+                .id(userId)
+                .build();
+
+        PurchaseOrderRequest request = PurchaseOrderRequest.builder()
+                .scaffoldId(scaffoldId)
+                .quantity(3)
+                .address("Sofia")
+                .installationRequired(true)
+                .contactPhone("08812345677")
+                .build();
+
+        when(userRepository.findById(userId))
+                .thenReturn(Optional.empty());
+
+        assertThrows(UserNotFoundException.class,
+                () -> orderService.createPurchaseOrder(request, userDto));
+
+        verify(orderRepository, never()).save(any(Order.class));
+        verify(scaffoldRepository, never()).findById(any(UUID.class));
+    }
+
+    @Test
+    public void deleteFinalOrder_shouldDeleteWhenOrderStatusIsApproved(){
+        UUID orderId = UUID.randomUUID();
+
+        Order order = Order.builder()
+                .id(orderId)
+                .orderStatus(OrderStatus.APPROVED)
+                .build();
+
+        when(orderRepository.findById(orderId))
+                .thenReturn(Optional.of(order));
+
+        orderService.deleteFinalOrder(orderId);
+        verify(orderRepository).delete(order);
+        verify(orderRepository, never()).save(any(Order.class));
+    }
+
+    @Test
+    public void deleteFinalOrder_shouldNotDeleteWhenOrderStatusIsPending() {
+        UUID orderId = UUID.randomUUID();
+
+        Order order = Order.builder()
+                .id(orderId)
+                .orderStatus(OrderStatus.PENDING)
+                .build();
+        when(orderRepository.findById(orderId))
+                .thenReturn(Optional.of(order));
+
+        assertThrows(OrderManagementException.class,
+                () -> orderService.deleteFinalOrder(orderId));
+
+        verify(orderRepository, never()).delete(any(Order.class));
+    }
 }
