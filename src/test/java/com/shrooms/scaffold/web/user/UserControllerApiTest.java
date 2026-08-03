@@ -1,5 +1,6 @@
 package com.shrooms.scaffold.web.user;
 
+import com.shrooms.scaffold.exception.user.RegistrationException;
 import com.shrooms.scaffold.model.dto.user.UserRegisterRequest;
 import com.shrooms.scaffold.service.user.UserService;
 import com.shrooms.scaffold.web.UserController;
@@ -13,8 +14,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -76,5 +76,34 @@ public class UserControllerApiTest {
                 .andExpect(model().attributeExists("userRegisterRequest"));
 
         verify(userService, never()).register(any(UserRegisterRequest.class));
+    }
+    @Test
+    public void getRegisterSuccessPage_shouldReturnRegisterSuccessView() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/register/success"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("register-success"));
+    }
+
+    @Test
+    public void register_shouldReturnRegisterViewWhenRegistrationExceptionIsThrown() throws Exception {
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post("/register")
+                .formField("username", "Ivancho")
+                .formField("password", "123456")
+                .formField("confirmPassword", "123456")
+                .formField("email", "ivan@mail.com")
+                .formField("firstName", "Ivan")
+                .formField("lastName", "Ivanov")
+                .with(csrf());
+
+        doThrow(new RegistrationException("email", "Email already exists"))
+                .when(userService)
+                .register(any(UserRegisterRequest.class));
+
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(model().hasErrors())
+                .andExpect(view().name("register"));
+
+        verify(userService).register(any(UserRegisterRequest.class));
     }
 }

@@ -73,4 +73,19 @@ public class HomeControllerApiTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/admin"));
     }
+    @Test
+    public void getHomePage_shouldReturnIndexWhenUserHasUserRole() throws Exception {
+
+        Authentication authentication =
+                new UsernamePasswordAuthenticationToken(
+                        "user",
+                        null,
+                        List.of(new SimpleGrantedAuthority("ROLE_USER"))
+                );
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/")
+                        .principal(authentication))
+                .andExpect(status().isOk())
+                .andExpect(view().name("index"));
+    }
 }
