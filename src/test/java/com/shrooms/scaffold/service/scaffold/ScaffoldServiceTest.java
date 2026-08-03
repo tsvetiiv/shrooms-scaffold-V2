@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -170,5 +171,60 @@ public class ScaffoldServiceTest {
         assertThrows(ScaffoldNotFoundException.class,
                 () -> scaffoldService.findById(scaffoldId));
         verify(scaffoldRepository).findById(scaffoldId);
+    }
+
+    @Test
+    public void editScaffold_shouldUpdateAndSaveScaffoldWhenScaffoldExists() {
+        UUID scaffoldId = UUID.randomUUID();
+
+        Scaffold scaffold = Scaffold.builder()
+                .id(scaffoldId)
+                .name("Old name")
+                .description("Old description")
+                .height(1.0)
+                .width(1.0)
+                .length(1.0)
+                .available(false)
+                .build();
+
+        ScaffoldRequest request = ScaffoldRequest.builder()
+                .name("New name")
+                .description("New description")
+                .height(2.0)
+                .width(3.0)
+                .length(4.0)
+                .available(true)
+                .build();
+
+        when(scaffoldRepository.findById(scaffoldId))
+                .thenReturn(Optional.of(scaffold));
+
+        scaffoldService.editScaffold(scaffoldId, request);
+
+        assertEquals("New name", scaffold.getName());
+        assertEquals("New description", scaffold.getDescription());
+        assertEquals(2.0, scaffold.getHeight());
+        assertEquals(3.0, scaffold.getWidth());
+        assertEquals(4.0, scaffold.getLength());
+        assertTrue(scaffold.isAvailable());
+
+        verify(scaffoldRepository).save(scaffold);
+    }
+
+    @Test
+    public void findAll_shouldReturnAllScaffolds() {
+        Scaffold scaffold = Scaffold.builder()
+                .name("Scaffold")
+                .build();
+
+        when(scaffoldRepository.findAll())
+                .thenReturn(List.of(scaffold));
+
+        List<Scaffold> result = scaffoldService.findAll();
+
+        assertEquals(1, result.size());
+        assertEquals(scaffold, result.get(0));
+
+        verify(scaffoldRepository).findAll();
     }
 }
