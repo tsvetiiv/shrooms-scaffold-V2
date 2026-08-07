@@ -8,6 +8,11 @@ separate REST microservice.
 
 The main application uses Spring MVC and Thymeleaf. It communicates with the inspection microservice through OpenFeign.
 
+## Tests and Coverage
+
+- Latest test run: 152 tests, 0 failures, 0 errors, 0 skipped
+- JaCoCo coverage: 73%
+
 ## Technology Stack
 
 - Java 17
@@ -705,7 +710,7 @@ Password: owner123
 - `/admin/scaffolds/create` - create scaffold form
 - `/admin/scaffolds/{id}/edit` - edit scaffold form
 
-## Testing
+## Running Tests
 
 Run all tests:
 
@@ -723,6 +728,8 @@ The main application includes:
 Latest local verification:
 
 ```text
-Tests run: 137, Failures: 0, Errors: 0, Skipped: 0
-Line coverage: 70.21%
+Tests run: 152, Failures: 0, Errors: 0, Skipped: 0
+JaCoCo coverage: 73%
+Classes covered: 65 of 68
+Methods covered: 197 of 248
 ```
