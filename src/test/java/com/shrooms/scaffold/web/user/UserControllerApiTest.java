@@ -77,6 +77,7 @@ public class UserControllerApiTest {
 
         verify(userService, never()).register(any(UserRegisterRequest.class));
     }
+
     @Test
     public void getRegisterSuccessPage_shouldReturnRegisterSuccessView() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/register/success"))

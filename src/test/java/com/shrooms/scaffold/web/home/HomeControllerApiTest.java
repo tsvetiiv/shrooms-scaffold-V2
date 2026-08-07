@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
 import java.util.List;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -73,6 +74,7 @@ public class HomeControllerApiTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/admin"));
     }
+
     @Test
     public void getHomePage_shouldReturnIndexWhenUserHasUserRole() throws Exception {
 

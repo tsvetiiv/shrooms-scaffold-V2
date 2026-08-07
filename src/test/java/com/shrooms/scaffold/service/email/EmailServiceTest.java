@@ -46,7 +46,7 @@ class EmailServiceTest {
     }
 
     @Test
-   public void sendOrderStatusChangedEmail_shouldThrowExceptionWhenMailSenderFails() {
+    public void sendOrderStatusChangedEmail_shouldThrowExceptionWhenMailSenderFails() {
         OrderStatusChangedEvent event = new OrderStatusChangedEvent(
                 "ivan@mail.com",
                 "Ivan",
@@ -63,7 +63,7 @@ class EmailServiceTest {
     }
 
     @Test
-    public void sendCustomOrderStatusChangedEmail_shouldSendEmail(){
+    public void sendCustomOrderStatusChangedEmail_shouldSendEmail() {
         CustomOrderStatusChangedEvent event = new CustomOrderStatusChangedEvent(
                 "iva@mail.com",
                 "Ivan",

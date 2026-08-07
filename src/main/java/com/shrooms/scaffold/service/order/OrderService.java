@@ -41,7 +41,7 @@ public class OrderService {
     private final ScaffoldRepository scaffoldRepository;
     private final AccountClosureRequestRepository accountClosureRequestRepository;
     private final ApplicationEventPublisher publisher;
-   private final InspectionIntegrationService inspectionIntegrationService;
+    private final InspectionIntegrationService inspectionIntegrationService;
 
 
     public OrderService(OrderRepository orderRepository,
@@ -205,5 +205,4 @@ public class OrderService {
             throw new OrderManagementException("This order cannot be approved because the inspection report recommends rejection.");
         }
     }
-
 }

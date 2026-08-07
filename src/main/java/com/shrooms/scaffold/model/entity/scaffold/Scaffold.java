@@ -22,7 +22,7 @@ public class Scaffold {
 
     @Column(nullable = false)
     private String name;
-    @Column(nullable = false,columnDefinition = "TEXT")
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
 
     private double height;
@@ -43,7 +43,7 @@ public class Scaffold {
 
     private boolean available;
 
-    @Column(name = "scaffold_category",  nullable = false)
+    @Column(name = "scaffold_category", nullable = false)
     @Enumerated(EnumType.STRING)
     private ScaffoldCategory scaffoldCategory;
 }

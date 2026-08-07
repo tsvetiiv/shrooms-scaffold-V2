@@ -65,5 +65,4 @@ public class CustomOrder {
 
     @Column(nullable = false)
     private LocalDate createdOn;
-
 }

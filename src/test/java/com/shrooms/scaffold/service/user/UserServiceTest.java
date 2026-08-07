@@ -736,7 +736,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void demoteAdmin_shouldDemoteAdminToUserAndSaveWhenRequestIsValid(){
+    public void demoteAdmin_shouldDemoteAdminToUserAndSaveWhenRequestIsValid() {
         UUID targetUserId = UUID.randomUUID();
         UUID ownerId = UUID.randomUUID();
 
@@ -771,7 +771,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void demoteAdmin_shouldThrowExceptionWhenUserIsNotAdmin(){
+    public void demoteAdmin_shouldThrowExceptionWhenUserIsNotAdmin() {
         UUID targetUserId = UUID.randomUUID();
         UUID ownerId = UUID.randomUUID();
 

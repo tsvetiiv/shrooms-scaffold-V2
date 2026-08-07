@@ -20,7 +20,6 @@ public class OurWorkMapper {
                 .description(request.getDescription())
                 .visible(true)
                 .build();
-
     }
 
     public static OurWorkProjectRequest toProjectRequest(OurWorkProject project) {
@@ -44,8 +43,5 @@ public class OurWorkMapper {
         project.setImageUrl(request.getImageUrl());
         project.setDescription(request.getDescription());
         project.setVisible(request.isVisible());
-
     }
-
-
 }

@@ -36,7 +36,7 @@ public class AccountClosureRequestServiceTest {
     private AccountClosureRequestService accountClosureRequestService;
 
     @Test
-    public void getPendingRequestsForOwner_shouldReturnPendingRequestDtos(){
+    public void getPendingRequestsForOwner_shouldReturnPendingRequestDtos() {
         UUID request1Id = UUID.randomUUID();
         UUID request2Id = UUID.randomUUID();
 
@@ -74,7 +74,7 @@ public class AccountClosureRequestServiceTest {
     }
 
     @Test
-    public void rejectRequest_shouldRejectRequestAndActivateUser(){
+    public void rejectRequest_shouldRejectRequestAndActivateUser() {
         UUID requestId = UUID.randomUUID();
 
         User user = User.builder()
@@ -105,7 +105,7 @@ public class AccountClosureRequestServiceTest {
     }
 
     @Test
-    public void rejectRequest_shouldThrowExceptionWhenThereIsNoRequest(){
+    public void rejectRequest_shouldThrowExceptionWhenThereIsNoRequest() {
         UUID requestId = UUID.randomUUID();
 
         when(accountClosureRequestRepository.findById(requestId))
@@ -122,7 +122,7 @@ public class AccountClosureRequestServiceTest {
     }
 
     @Test
-    public void approveRequest_shouldApproveRequestAndBlockUser(){
+    public void approveRequest_shouldApproveRequestAndBlockUser() {
         UUID requestId = UUID.randomUUID();
         User user = User.builder()
                 .username("IvanIvan")
@@ -152,7 +152,7 @@ public class AccountClosureRequestServiceTest {
     }
 
     @Test
-    public void approveRequest_shouldThrowExceptionWhenThereIsNoRequest(){
+    public void approveRequest_shouldThrowExceptionWhenThereIsNoRequest() {
         UUID requestId = UUID.randomUUID();
         when(accountClosureRequestRepository.findById(requestId))
                 .thenReturn(Optional.empty());
@@ -166,6 +166,5 @@ public class AccountClosureRequestServiceTest {
         verify(publisher, never())
                 .publishEvent(any(AccountClosureStatusChangedEvent.class));
     }
-
 }
 

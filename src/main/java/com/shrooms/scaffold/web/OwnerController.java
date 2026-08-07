@@ -133,5 +133,4 @@ public class OwnerController {
         }
         return new ModelAndView("redirect:/owner/account-closures");
     }
-
 }

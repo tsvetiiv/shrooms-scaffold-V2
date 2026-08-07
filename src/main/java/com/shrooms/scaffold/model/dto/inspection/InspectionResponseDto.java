@@ -1,7 +1,6 @@
 package com.shrooms.scaffold.model.dto.inspection;
 
 
-
 import com.shrooms.scaffold.model.enums.inspection.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

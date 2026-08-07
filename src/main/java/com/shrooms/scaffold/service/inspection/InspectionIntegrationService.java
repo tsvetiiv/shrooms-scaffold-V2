@@ -92,7 +92,7 @@ public class InspectionIntegrationService {
         return response;
     }
 
-    public InspectionResponseDto requestInspectionForOrder(UUID orderId){
+    public InspectionResponseDto requestInspectionForOrder(UUID orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(OrderNotFoundException::new);
 
@@ -116,7 +116,7 @@ public class InspectionIntegrationService {
         return response;
     }
 
-    public InspectionResponseDto requestInspectionForCustomOrder(UUID customOrderId){
+    public InspectionResponseDto requestInspectionForCustomOrder(UUID customOrderId) {
         CustomOrder customOrder = customOrderRepository.findById(customOrderId)
                 .orElseThrow(CustomOrderNotFoundException::new);
 
@@ -158,5 +158,4 @@ public class InspectionIntegrationService {
             throw new InspectionManagementException("Inspection request already exists for this project.");
         }
     }
-
 }

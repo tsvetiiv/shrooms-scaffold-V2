@@ -64,6 +64,5 @@ public class ScaffoldMapper {
         scaffold.setPriceForSale(request.getPriceForSale());
         scaffold.setImageUrl(request.getImageUrl());
         scaffold.setAvailable(request.isAvailable());
-
     }
 }

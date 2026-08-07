@@ -232,7 +232,7 @@ public class CustomOrderServiceTest {
     }
 
     @Test
-    public void updateCustomOrder_shouldUpdateWhenInspectionReportAllowsUpdate(){
+    public void updateCustomOrder_shouldUpdateWhenInspectionReportAllowsUpdate() {
         UUID customOrderId = UUID.randomUUID();
 
         User user = User.builder()
@@ -248,25 +248,25 @@ public class CustomOrderServiceTest {
                 .build();
 
         InspectionResponseDto inspectionDto = new InspectionResponseDto();
-            inspectionDto.setStatus(InspectionStatus.REPORT_SUBMITTED);
-            inspectionDto.setRecommendedAction(RecommendedAction.APPROVE);
+        inspectionDto.setStatus(InspectionStatus.REPORT_SUBMITTED);
+        inspectionDto.setRecommendedAction(RecommendedAction.APPROVE);
 
-            when(customOrderRepository.findById(customOrderId))
-            .thenReturn(Optional.of(customOrder));
-            when(inspectionIntegrationService.getInspectionsByProjectOrderId(customOrderId))
-                    .thenReturn(List.of(inspectionDto));
+        when(customOrderRepository.findById(customOrderId))
+                .thenReturn(Optional.of(customOrder));
+        when(inspectionIntegrationService.getInspectionsByProjectOrderId(customOrderId))
+                .thenReturn(List.of(inspectionDto));
 
-            customOrderService.updateCustomOrder(customOrderId,RequestStatus.APPROVED, new BigDecimal ("12.00"));
+        customOrderService.updateCustomOrder(customOrderId, RequestStatus.APPROVED, new BigDecimal("12.00"));
 
-            assertEquals(RequestStatus.APPROVED, customOrder.getRequestStatus());
-            assertEquals(new BigDecimal("12.00"), customOrder.getEstimatedPrice());
+        assertEquals(RequestStatus.APPROVED, customOrder.getRequestStatus());
+        assertEquals(new BigDecimal("12.00"), customOrder.getEstimatedPrice());
 
-            verify(customOrderRepository).save(customOrder);
-            verify(publisher).publishEvent(any(CustomOrderStatusChangedEvent.class));
+        verify(customOrderRepository).save(customOrder);
+        verify(publisher).publishEvent(any(CustomOrderStatusChangedEvent.class));
     }
 
     @Test
-    public void updateCustomOrder_shouldThrowExceptionWhenInspectionReportDoesNotAllowUpdate(){
+    public void updateCustomOrder_shouldThrowExceptionWhenInspectionReportDoesNotAllowUpdate() {
         UUID customOrderId = UUID.randomUUID();
 
         User user = User.builder()
@@ -281,11 +281,11 @@ public class CustomOrderServiceTest {
                 .user(user)
                 .build();
 
-         when(customOrderRepository.findById(customOrderId))
+        when(customOrderRepository.findById(customOrderId))
                 .thenReturn(Optional.of(customOrder));
 
         assertThrows(CustomOrderManagementException.class,
-                () -> customOrderService.updateCustomOrder(customOrderId,RequestStatus.APPROVED, new BigDecimal ("12.00")));
+                () -> customOrderService.updateCustomOrder(customOrderId, RequestStatus.APPROVED, new BigDecimal("12.00")));
 
         verify(customOrderRepository, never()).save(any(CustomOrder.class));
         verify(publisher, never()).publishEvent(any(CustomOrderStatusChangedEvent.class));

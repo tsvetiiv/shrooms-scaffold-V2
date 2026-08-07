@@ -17,7 +17,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -173,11 +172,10 @@ public class OrdersControllerApiTest {
                 .andExpect(model().attributeExists("orders"))
                 .andExpect(model().attributeExists("customOrders"))
                 .andExpect(model().attributeExists("inspectionByProjectId"))
-                .andExpect(model().attribute("inspectionByProjectId", Map.of()));;
+                .andExpect(model().attribute("inspectionByProjectId", Map.of()));
 
         verify(orderService).getOrdersByUserId(userId);
         verify(customOrderService).getOrdersByUserId(userId);
         verify(inspectionIntegrationService).getInspectionsByProjectIds(any());
     }
-
 }

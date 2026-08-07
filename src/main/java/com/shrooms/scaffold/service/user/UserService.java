@@ -172,7 +172,7 @@ public class UserService implements UserDetailsService {
         }
 
         if (targetUser.isBlocked()) {
-            throw new UserManagementException ("User is already blocked");
+            throw new UserManagementException("User is already blocked");
         }
 
         targetUser.setBlocked(true);
@@ -191,7 +191,7 @@ public class UserService implements UserDetailsService {
         }
 
         if (!targetUser.isBlocked() && targetUser.isActive()) {
-            throw new UserManagementException ("User is already active");
+            throw new UserManagementException("User is already active");
         }
 
         targetUser.setBlocked(false);
@@ -206,14 +206,14 @@ public class UserService implements UserDetailsService {
         checkNoPendingAccountClosure(targetUserId);
 
         if (targetUser.isBlocked()) {
-            throw new UserManagementException ("Blocked users cannot be promoted to admin");
+            throw new UserManagementException("Blocked users cannot be promoted to admin");
         }
         if (!targetUser.isActive()) {
-            throw new UserManagementException ("Inactive users cannot be promoted to admin");
+            throw new UserManagementException("Inactive users cannot be promoted to admin");
         }
 
         if (targetUser.getRoleType() == RoleType.ADMIN) {
-            throw new UserManagementException ("User is already admin");
+            throw new UserManagementException("User is already admin");
         }
         targetUser.setRoleType(RoleType.ADMIN);
         userRepository.save(targetUser);
@@ -233,7 +233,7 @@ public class UserService implements UserDetailsService {
         checkNoPendingAccountClosure(targetUserId);
 
         if (targetUser.getRoleType() == RoleType.USER) {
-            throw new UserManagementException ("User is not admin");
+            throw new UserManagementException("User is not admin");
         }
         targetUser.setRoleType(RoleType.USER);
         userRepository.save(targetUser);
@@ -268,11 +268,11 @@ public class UserService implements UserDetailsService {
         }
 
         if (hasPendingAccountClosureRequest(userId)) {
-            throw new AccountClosureException ("Account closure request is already pending approval");
+            throw new AccountClosureException("Account closure request is already pending approval");
         }
 
         if (hasUnfinishedOrders(userId)) {
-            throw new AccountClosureException ("You cannot close your account while you have unfinished orders");
+            throw new AccountClosureException("You cannot close your account while you have unfinished orders");
         }
 
         AccountClosureRequest accountClosureRequest = AccountClosureRequest.builder()
@@ -290,7 +290,7 @@ public class UserService implements UserDetailsService {
 
     private void checkNoPendingAccountClosure(UUID userId) {
         if (accountClosureRequestRepository.existsByUserIdAndStatus(userId, AccountClosureStatus.PENDING)) {
-            throw new AccountClosureException ("This user has pending account closure request");
+            throw new AccountClosureException("This user has pending account closure request");
         }
     }
 }

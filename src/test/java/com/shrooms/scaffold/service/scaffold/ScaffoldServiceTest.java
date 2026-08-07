@@ -73,7 +73,7 @@ public class ScaffoldServiceTest {
     }
 
     @Test
-    public void deleteScaffold_shouldMakeScaffoldUnavailableWhenOrdersExist(){
+    public void deleteScaffold_shouldMakeScaffoldUnavailableWhenOrdersExist() {
         UUID scaffoldId = UUID.randomUUID();
 
         Scaffold scaffold = Scaffold.builder()
@@ -99,7 +99,7 @@ public class ScaffoldServiceTest {
     }
 
     @Test
-    public void getScaffoldForEdit_shouldReturnScaffoldRequestWhenScaffoldExists(){
+    public void getScaffoldForEdit_shouldReturnScaffoldRequestWhenScaffoldExists() {
         UUID scaffoldId = UUID.randomUUID();
 
         Scaffold scaffold = new Scaffold();
@@ -127,19 +127,19 @@ public class ScaffoldServiceTest {
     }
 
     @Test
-    public void getScaffoldForEdit_shouldThrowExceptionWhenScaffoldDoesNotExist(){
+    public void getScaffoldForEdit_shouldThrowExceptionWhenScaffoldDoesNotExist() {
         UUID scaffoldId = UUID.randomUUID();
 
         when(scaffoldRepository.findById(scaffoldId))
                 .thenReturn(Optional.empty());
 
         assertThrows(ScaffoldNotFoundException.class,
-                () ->  scaffoldService.getScaffoldForEdit(scaffoldId));
+                () -> scaffoldService.getScaffoldForEdit(scaffoldId));
         verify(scaffoldRepository).findById(scaffoldId);
     }
 
     @Test
-    public void findById_shouldReturnScaffoldWhenScaffoldExists(){
+    public void findById_shouldReturnScaffoldWhenScaffoldExists() {
         UUID scaffoldId = UUID.randomUUID();
 
         Scaffold scaffold = new Scaffold();
@@ -162,7 +162,7 @@ public class ScaffoldServiceTest {
     }
 
     @Test
-    public void findById_shouldThrowExceptionWhenScaffoldDoesNotExist(){
+    public void findById_shouldThrowExceptionWhenScaffoldDoesNotExist() {
         UUID scaffoldId = UUID.randomUUID();
 
         when(scaffoldRepository.findById(scaffoldId))

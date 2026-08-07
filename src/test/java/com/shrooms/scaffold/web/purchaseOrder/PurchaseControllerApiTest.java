@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class PurchaseControllerApiTest {
 
     @MockitoBean
-    OrderService  orderService;
+    OrderService orderService;
 
     @MockitoBean
     private ScaffoldService scaffoldService;
@@ -104,5 +104,4 @@ public class PurchaseControllerApiTest {
 
         verify(orderService, never()).createPurchaseOrder(any(), any());
     }
-
 }

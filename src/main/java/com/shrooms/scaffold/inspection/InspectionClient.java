@@ -35,6 +35,4 @@ public interface InspectionClient {
 
     @DeleteMapping("/{id}")
     void deleteInspection(@PathVariable("id") UUID id);
-
-
 }

@@ -281,7 +281,7 @@ public class OrderServiceTest {
     }
 
     @Test
-    public void deleteFinalOrder_shouldDeleteWhenOrderStatusIsApproved(){
+    public void deleteFinalOrder_shouldDeleteWhenOrderStatusIsApproved() {
         UUID orderId = UUID.randomUUID();
 
         Order order = Order.builder()

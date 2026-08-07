@@ -33,6 +33,4 @@ public class UserRegisterRequest {
 
     @NotBlank(message = "Last name is required")
     private String lastName;
-
-
 }

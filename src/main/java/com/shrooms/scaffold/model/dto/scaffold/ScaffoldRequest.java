@@ -46,12 +46,12 @@ public class ScaffoldRequest {
     @Positive(message = "Price for rent must be greater than 0")
     private BigDecimal priceForRent;
 
-    @NotNull (message = "Price for sale is required")
+    @NotNull(message = "Price for sale is required")
     @Positive(message = "Price for sale must be greater than 0")
     private BigDecimal priceForSale;
 
     @NotBlank(message = "Image URL is required")
-    @Size(max = 500,message = "Image URL must be up to 500 characters")
+    @Size(max = 500, message = "Image URL must be up to 500 characters")
     private String imageUrl;
 
     private boolean available;

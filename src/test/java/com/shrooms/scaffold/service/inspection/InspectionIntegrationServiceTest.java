@@ -170,7 +170,7 @@ public class InspectionIntegrationServiceTest {
     }
 
     @Test
-    public void requestInspectionForCustomOrder_shouldCreateInspectionWhenInstallationRequired(){
+    public void requestInspectionForCustomOrder_shouldCreateInspectionWhenInstallationRequired() {
         UUID customOrderId = UUID.randomUUID();
 
         User user = User.builder()
@@ -208,14 +208,14 @@ public class InspectionIntegrationServiceTest {
     }
 
     @Test
-    public void requestInspectionForCustomOrder_shouldThrowExceptionWhenCustomOrderDoesNotExist(){
+    public void requestInspectionForCustomOrder_shouldThrowExceptionWhenCustomOrderDoesNotExist() {
         UUID customOrderId = UUID.randomUUID();
 
         when(customOrderRepository.findById(customOrderId))
                 .thenReturn(Optional.empty());
 
         assertThrows(CustomOrderNotFoundException.class,
-                () ->  inspectionIntegrationService.requestInspectionForCustomOrder(customOrderId));
+                () -> inspectionIntegrationService.requestInspectionForCustomOrder(customOrderId));
 
         verify(inspectionClient, never()).createInspection(any(InspectionCreateRequestDto.class));
     }
@@ -271,5 +271,4 @@ public class InspectionIntegrationServiceTest {
         assertThrows(RuntimeException.class,
                 () -> inspectionIntegrationService.deleteInspection(inspectionId));
     }
-
 }

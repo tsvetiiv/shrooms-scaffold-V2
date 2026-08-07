@@ -1,7 +1,6 @@
 package com.shrooms.scaffold.integration.user;
 
 import com.shrooms.scaffold.exception.user.RegistrationException;
-import com.shrooms.scaffold.exception.user.UserManagementException;
 import com.shrooms.scaffold.model.dto.user.UserDto;
 import com.shrooms.scaffold.model.dto.user.UserRegisterRequest;
 import com.shrooms.scaffold.model.entity.user.User;
@@ -66,7 +65,7 @@ public class UserServiceIntegrationTest {
     }
 
     @Test
-    public void register_shouldThrowException_whenUsernameAlreadyExists(){
+    public void register_shouldThrowException_whenUsernameAlreadyExists() {
 
         UserRegisterRequest request = UserRegisterRequest.builder()
                 .username("Aleksandar")
@@ -90,7 +89,7 @@ public class UserServiceIntegrationTest {
     }
 
     @Test
-    public void register_shouldThrowException_whenEmailAlreadyExists(){
+    public void register_shouldThrowException_whenEmailAlreadyExists() {
 
         UserRegisterRequest request = UserRegisterRequest.builder()
                 .username("Aleksandar")
@@ -124,7 +123,7 @@ public class UserServiceIntegrationTest {
     }
 
     @Test
-    public void register_shouldThrowException_whenPasswordsDoNotMatch(){
+    public void register_shouldThrowException_whenPasswordsDoNotMatch() {
 
         UserRegisterRequest request = UserRegisterRequest.builder()
                 .username("Aleksandar")
